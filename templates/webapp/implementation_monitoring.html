@@ -1,0 +1,549 @@
+{% extends "base.html" %}
+{% block title %}Solution Implementation and Impact Monitoring Plan — Solution Co-Development Toolkit{% endblock %}
+{% block content %}
+<style>
+    .section-intro p { margin-bottom: 0.9rem; line-height: 1.7; }
+
+    /* Phase grid */
+    .phases-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.75rem;
+        margin: 1.5rem 0;
+    }
+    .phase-card {
+        border-radius: 6px;
+        padding: 1rem;
+        font-size: 0.88rem;
+    }
+    .phase-card h4 { margin: 0 0 0.6rem 0; font-size: 0.9rem; color: #0b3d91; }
+    .phase-card ul { margin: 0; padding-left: 1.1rem; }
+    .phase-card ul li { margin-bottom: 0.3rem; line-height: 1.5; }
+    .phase-1 { background: #cce0f5; }
+    .phase-2 { background: #c8dff5; outline: 2px solid #c0392b; }
+    .phase-3 { background: #d4edda; outline: 2px dashed #c0392b; }
+    .phase-4 { background: #d5eddf; outline: 2px dashed #c0392b; }
+
+    /* Tools reference list */
+    .tools-list { margin: 0.5rem 0 1rem 1.5rem; }
+    .tools-list li { margin-bottom: 0.35rem; line-height: 1.6; font-size: 0.93rem; }
+
+    /* Solution title bar */
+    .solution-title-bar {
+        background: #0b3d91;
+        color: #fff;
+        padding: 0.75rem 1.2rem;
+        border-radius: 4px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin: 1.5rem 0 0.5rem 0;
+    }
+
+    /* SIIMP numbered sections */
+    .siimp-section {
+        margin-top: 2.2rem;
+        padding-top: 0.5rem;
+        border-top: 1px solid #d0dae8;
+    }
+    .siimp-section > h2 {
+        color: #0b3d91;
+        font-size: 1.2rem;
+        margin-bottom: 0.7rem;
+    }
+    .siimp-section p { margin-bottom: 0.8rem; line-height: 1.7; }
+
+    /* Sub-section within SIIMP */
+    .siimp-subsection { margin-top: 1.2rem; }
+    .siimp-subsection > h3 { color: #1a5276; font-size: 1rem; margin-bottom: 0.6rem; }
+    .siimp-subsection p { margin-bottom: 0.8rem; line-height: 1.7; }
+
+    /* Bullet lists */
+    .content-list { margin: 0.4rem 0 1rem 1.5rem; }
+    .content-list li { margin-bottom: 0.4rem; line-height: 1.6; font-size: 0.93rem; }
+
+    /* Cross-ref note */
+    .ref-note {
+        background: #e8f4fb;
+        border: 1px dashed #00a0b0;
+        border-radius: 4px;
+        padding: 0.6rem 1rem;
+        margin: 0.5rem 0 1rem 0;
+        font-size: 0.9rem;
+        font-style: italic;
+        color: #1a5276;
+    }
+
+    /* Tables - shared base */
+    .siimp-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0;
+        font-size: 0.87rem;
+    }
+    .siimp-table caption {
+        text-align: center;
+        font-weight: 700;
+        color: #0b3d91;
+        margin-bottom: 0.4rem;
+        font-size: 0.9rem;
+    }
+    .siimp-table th {
+        background: #0b3d91;
+        color: #fff;
+        padding: 0.6rem 0.9rem;
+        text-align: left;
+        font-weight: 600;
+    }
+    .siimp-table td {
+        padding: 0.6rem 0.9rem;
+        border: 1px solid #c0cfe0;
+        vertical-align: top;
+        line-height: 1.55;
+    }
+    .siimp-table tr:nth-child(odd) td { background: #f5f8fc; }
+    .siimp-table tr:nth-child(even) td { background: #fff; }
+    .siimp-table td.row-label { font-weight: 600; color: #1a3a5c; background: #eaf1fb !important; }
+    .siimp-table td.subtotal { font-weight: 600; background: #dce8f5 !important; }
+
+    /* Org chart */
+    .org-chart {
+        margin: 1.2rem auto;
+        max-width: 680px;
+        font-size: 0.83rem;
+        text-align: center;
+    }
+    .org-row { display: flex; justify-content: center; gap: 1rem; margin-bottom: 0; }
+    .org-box {
+        background: #cce0f5;
+        border: 1px solid #7baad0;
+        border-radius: 6px;
+        padding: 0.5rem 0.7rem;
+        font-weight: 600;
+        color: #0b3d91;
+        min-width: 110px;
+        text-align: center;
+        line-height: 1.3;
+        font-size: 0.8rem;
+    }
+    .org-box.root { background: #0b3d91; color: #fff; min-width: 150px; margin-bottom: 0.4rem; }
+    .org-connector {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        position: relative;
+        margin: 0.3rem 0;
+    }
+    .org-connector::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 2px;
+        height: 0.5rem;
+        background: #7baad0;
+    }
+    .org-branch {
+        display: flex;
+        justify-content: center;
+        gap: 4rem;
+        margin-top: 0.4rem;
+    }
+    .org-subtree { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
+    .org-children { display: flex; gap: 0.7rem; }
+    .org-line-down {
+        width: 2px;
+        height: 0.5rem;
+        background: #7baad0;
+        margin: 0 auto;
+    }
+    .org-line-across {
+        border-top: 2px solid #7baad0;
+        width: 100%;
+        margin-top: 0.3rem;
+    }
+    .org-caption {
+        text-align: center;
+        font-style: italic;
+        font-size: 0.82rem;
+        color: #555;
+        margin-top: 0.5rem;
+    }
+
+    hr.section-rule { border: none; border-top: 1px solid #d0dae8; margin: 2rem 0; }
+
+    .page-note {
+        font-size: 0.8rem;
+        color: #888;
+        text-align: right;
+        margin-top: 0.5rem;
+        font-style: italic;
+    }
+</style>
+
+<div class="page-header">
+    <div class="section-tag">Section 11</div>
+    <h1>Solution Implementation and Impact Monitoring Plan</h1>
+</div>
+
+<div class="section-intro">
+    <h2>Purpose:</h2>
+    <p>This template is a practical management and planning resource to operationalize solution co-development and monitor progress towards achieving results. Once developed, the SIIMP provides critical information for decision-making, in order to guide the implementation of activities toward achieving expected outputs and outcomes and an approach to capturing intended impact and is used throughout the solution development lifecycle.</p>
+
+    <h3 style="color:#1a5276; margin-top:1.2rem; margin-bottom:0.5rem;">Why this Tool is Important:</h3>
+    <p>This tool supports program management elements and helps in connecting needs and concepts to real-world, executable solutions. It provides clarity across teams and implementing partners on the roles, responsibilities, expectations, and commitments for solution delivery, ensuring that activities are implemented at the right time.</p>
+    <p>It also serves as a tool for systematically reviewing solution progress, testing the validity of risks and assumptions, and determining whether specific inputs and outputs require adjustment or refocusing to respond to evolving conditions. It can be used to capture best practices, lessons learned, and feedback for broader NASA initiatives as part of the Earth Science to Action Strategy (ES2A).</p>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 85</p>
+</div>
+
+<div style="margin-top:2rem;">
+    <h2 style="color:#0b3d91; border-bottom:2px solid #00a0b0; padding-bottom:0.4rem; margin-bottom:1rem;">How and When to Use this Tool:</h2>
+
+    <div class="phases-grid">
+        <div class="phase-card phase-1">
+            <h4>Phase 1: Assessing Needs &amp; Potential Impact</h4>
+            <ul>
+                <li>Identify stakeholders</li>
+                <li>Assess user needs, constraint, and decision context</li>
+                <li>Define problem and opportunity for impact</li>
+            </ul>
+        </div>
+        <div class="phase-card phase-2">
+            <h4>Phase 2: Solution Co-Design</h4>
+            <ul>
+                <li>Co-design solution concepts</li>
+                <li>Define requirements and success metrics</li>
+                <li>Plan implementation and sustainability</li>
+            </ul>
+        </div>
+        <div class="phase-card phase-3">
+            <h4>Phase 3: Prototyping and Co-Development</h4>
+            <ul>
+                <li>Build and test prototypes</li>
+                <li>Conduct user testing and iteration</li>
+                <li>Prepare data, workflows, and trainings</li>
+            </ul>
+        </div>
+        <div class="phase-card phase-4">
+            <h4>Phase 4: Transition and Impact Assessment</h4>
+            <ul>
+                <li>Deploy and transition ownership</li>
+                <li>Collect evidence of use and impact</li>
+                <li>Plan for scaling, replication, and long-term uptake</li>
+            </ul>
+        </div>
+    </div>
+
+    <p>This tool is used initially during Phase 2: Solution Co-design as a template to create a SIIMP tailored to a specific solution. Once created, the solution SIIMP will be used throughout Phase 3 and during Phase 4: Transition and Impact Reporting to capture project outcomes, impact, and constructive feedback.</p>
+    <p>This template refers to tools developed in other phases of the solution co-development lifecycle including the:</p>
+    <ul class="tools-list">
+        <li>Needs Assessment</li>
+        <li>Stakeholder mapping</li>
+        <li>Designing for Impact 101</li>
+        <li>Economic Impact Assessment (EIA)</li>
+        <li>Indicators Guidance</li>
+        <li>User Centered Design</li>
+        <li>Technical Requirements</li>
+        <li>Data Governance and Storage Plan</li>
+        <li>Solution Adoption and Sustainability Plan</li>
+    </ul>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 86</p>
+</div>
+
+<hr class="section-rule">
+
+<div class="solution-title-bar">Solution Title: Title</div>
+
+<!-- Section 1 -->
+<div class="siimp-section">
+    <h2>1. Solution Summary</h2>
+    <p>Provide a brief description of the solution, including its background, scope, challenge or need it is addressing, and perceived benefit. Include what the expected outputs or deliverables of the solution will be. Review the Needs Assessment tool and Designing for Impact tool as needed.</p>
+</div>
+
+<!-- Section 2 -->
+<div class="siimp-section">
+    <h2>2. Goals and Objectives</h2>
+    <p>Describe the specific goals and objectives of the activity in terms of the desired end-state of the activity/solution (outputs), and the overall planned outcomes and intended impacts including broader benefit to society, decision-makers, or the community. Reference the Designing for Impact tool. Note that while assumptions can be made that reaching objectives improves stakeholder ability to meet the goal. External factors beyond the manageable control of the project may contribute or impede ability to achieve intended impact.</p>
+    <div class="siimp-subsection">
+        <h3>2.1 Results Framework</h3>
+        <p>Finalize development of the results framework as guided by the Designing for Impact tool.</p>
+    </div>
+</div>
+
+<!-- Section 3 -->
+<div class="siimp-section">
+    <h2>3. Stakeholders and Partners</h2>
+    <p>Who will be involved in co-developing the solution? Identify the main customers or beneficiaries, stakeholders, and partners for the solution. List specific co-developers and other users who will help design, develop, and/or maintain the product. Describe the motivation for each identified stakeholder's involvement, their perceived level of engagement, and the stakeholder's capacity (if relevant). Consider linking to the Stakeholder Mapping tool and the Technical Requirements template as needed.</p>
+</div>
+
+<!-- Section 4 -->
+<div class="siimp-section">
+    <h2>4. Key Assumptions, Risks and Mitigation</h2>
+    <p>Describe any internal or external factors that are necessary for progress along your results framework. These may be identified during stakeholder engagement meetings and the needs assessment process, but should not include project inputs and outputs.</p>
+    <p>Include any assumptions related to how the information and data will be shared and used by various stakeholders including any relevant details from an Information Chain Analysis.</p>
+    <p>This section should also include assumptions around ease of data access, availability, and quality for performance monitoring. Some examples of this are: data collection that is time intensive, beyond the life of the project, relies on third or fourth parties, or access to controlled socio-economic data.</p>
+    <p>In addition, note any risks specific to this solution, with notes on mitigating them (i.e. how will you navigate risk consequences if realized?)</p>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 87–88</p>
+</div>
+
+<!-- Section 5 -->
+<div class="siimp-section">
+    <h2>5. Solution Co-Development Approach</h2>
+    <p>How will you achieve the expected outcomes? Provide a bulleted list with short descriptions of major tasks and activities that will be conducted in order to bring this solution to fruition and meet the goals and objectives stated above in Section 2.0. The approach should include:</p>
+    <ul class="content-list">
+        <li>Technical development milestones</li>
+        <li>Major deliverables</li>
+        <li>Key decision points</li>
+        <li>Launch/deployment strategy</li>
+        <li>Training activities</li>
+        <li>Outreach and engagement activities</li>
+    </ul>
+    <p>Indicate which activities require stakeholder involvement and/or input. All tasks and activities listed here should be aligned with what is captured in your results framework.</p>
+</div>
+
+<!-- Section 6 -->
+<div class="siimp-section">
+    <h2>6. Schedule</h2>
+    <p>What is the timeline for solution development and deployment? Document the solution's schedule including all major milestones outlined in Section 5.0, such as planned launches and deployments, co-development activities, stakeholder touch points, key decision points, major deliverables, technology development milestones, and other activities throughout the lifecycle of the solution. Recommend providing the schedule as a Gantt chart. Modify the Gantt chart template as needed.</p>
+</div>
+
+<!-- Section 7 -->
+<div class="siimp-section">
+    <h2>7. Technical Requirements</h2>
+    <p>Refer to the Technical Requirements template.</p>
+</div>
+
+<!-- Section 8 -->
+<div class="siimp-section">
+    <h2>8. Data Governance and Storage</h2>
+    <p>Consider linking to your Data Governance and Storage Plan, or develop one if needed.</p>
+</div>
+
+<!-- Section 9 -->
+<div class="siimp-section">
+    <h2>9. Roles and Responsibilities</h2>
+    <p>What are the team's various roles and responsibilities? Describe the solution management and team structure. Address the respective roles, responsibilities, and relationships between the solution implementation team, its implementing partners, and stakeholders. Consider including an ownership matrix, and reference the Technical Requirements template as needed. Adjust the table below as needed.</p>
+
+    <table class="siimp-table">
+        <caption>Table 1: Roles and Responsibilities</caption>
+        <thead>
+            <tr>
+                <th>Co-Development Partner</th>
+                <th>Role</th>
+                <th>Responsibilities</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+        </tbody>
+    </table>
+
+    <p>Consider also including an organization chart, reporting lines, and points of contact for each partner in this section. The depth of this will depend on the number of partners, size of teams, complexity of solutions being implemented, and the diversity of teams in terms of the roles they play. Adjust the diagram below as needed.</p>
+
+    <div class="org-chart">
+        <div style="display:flex; justify-content:center; margin-bottom:0.4rem;">
+            <div class="org-box root">PRINCIPAL<br>INVESTIGATOR</div>
+        </div>
+        <div style="display:flex; justify-content:center; gap:5rem; margin-bottom:0.3rem;">
+            <div style="width:2px; height:0.5rem; background:#7baad0;"></div>
+        </div>
+        <div style="display:flex; justify-content:center; gap:4rem;">
+            <div style="display:flex; flex-direction:column; align-items:center; gap:0.3rem;">
+                <div class="org-box">PoC,<br>CO-DEVELOPMENT<br>PARTNER 1</div>
+                <div style="width:2px; height:0.4rem; background:#7baad0;"></div>
+                <div style="display:flex; gap:0.6rem;">
+                    <div class="org-box" style="font-size:0.75rem; min-width:85px;">PARTNER 1,<br>TEAM A</div>
+                    <div class="org-box" style="font-size:0.75rem; min-width:85px;">PARTNER 1,<br>TEAM B</div>
+                </div>
+            </div>
+            <div style="display:flex; flex-direction:column; align-items:center; gap:0.3rem;">
+                <div class="org-box">PoC,<br>CO-DEVELOPMENT<br>PARTNER 2</div>
+                <div style="width:2px; height:0.4rem; background:#7baad0;"></div>
+                <div style="display:flex; gap:0.6rem;">
+                    <div class="org-box" style="font-size:0.75rem; min-width:85px;">PARTNER 2,<br>TEAM A</div>
+                    <div class="org-box" style="font-size:0.75rem; min-width:85px;">PARTNER 2,<br>TEAM B</div>
+                </div>
+            </div>
+        </div>
+        <p class="org-caption">Figure 1. Org. Chart</p>
+    </div>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 89</p>
+</div>
+
+<!-- Section 10 -->
+<div class="siimp-section">
+    <h2>10. Sustainability Strategy</h2>
+    <p>Refer to your Solution Adoption and Sustainability Plan.</p>
+</div>
+
+<!-- Section 11 -->
+<div class="siimp-section">
+    <h2>11. Resource Needs and Budget Considerations</h2>
+    <p>What are the resource needs and costs to implement this solution? Document the required personnel, planned stakeholder engagement activities, and necessary equipment and resources to estimate the cost breakdown over the lifecycle of the solution. Add or remove columns in the table as needed, and ensure time periods are appropriate for the solution timeframe.</p>
+
+    <table class="siimp-table">
+        <caption>Table 2: Consolidated Solution Budget</caption>
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Budget Q1</th>
+                <th>Budget Q2</th>
+                <th>Budget Q 3</th>
+                <th>Budget Q 4</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>FTE</td><td>$X</td><td>$X</td><td>$X</td><td>$X</td></tr>
+            <tr><td>Equipment and Resources</td><td>$X</td><td>$X</td><td>$X</td><td>$X</td></tr>
+            <tr><td>Stakeholder Engagement</td><td>$X</td><td>$X</td><td>$X</td><td>$X</td></tr>
+            <tr><td class="subtotal">Sub-Total</td><td class="subtotal">$X</td><td class="subtotal">$X</td><td class="subtotal">$X</td><td class="subtotal">$X</td></tr>
+            <tr><td>Center Tax (X%)**</td><td>$X</td><td>$X</td><td>$X</td><td>$X</td></tr>
+            <tr><td class="subtotal">Annual Total</td><td class="subtotal">$X</td><td class="subtotal">$X</td><td class="subtotal">$X</td><td class="subtotal">$X</td></tr>
+        </tbody>
+    </table>
+
+    <p>The following set of samples can be used to break down the budget into specific lines. They should be consolidated into Table 2 above.</p>
+
+    <table class="siimp-table">
+        <caption>Table 3: Budget Estimate Breakdown (WYE/FTE)</caption>
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>LOS</th>
+                <th>Budget Q1</th>
+                <th>Budget Q2</th>
+                <th>Budget Q3</th>
+                <th>Budget Q4</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>[Position Title] (e.g. Physical Scientist)</td><td>X WYE/FTE*</td><td>$X</td><td>$X</td><td>$X</td><td>$X</td></tr>
+            <tr><td>[Position Title] (e.g. Postdoc)</td><td>X WYE/FTE*</td><td>$X</td><td>$X</td><td>$X</td><td>$X</td></tr>
+            <tr><td>Staff Travel to Meeting/Conference</td><td></td><td>$X</td><td>$X</td><td>$X</td><td>$X</td></tr>
+            <tr><td class="subtotal">Sub-Total</td><td></td><td class="subtotal">$X</td><td class="subtotal">$X</td><td class="subtotal">$X</td><td class="subtotal">$X</td></tr>
+            <tr><td>Center Tax (X%)**</td><td></td><td>$X</td><td>$X</td><td>$X</td><td>$X</td></tr>
+            <tr><td class="subtotal">Annual Total</td><td></td><td class="subtotal">$X</td><td class="subtotal">$X</td><td class="subtotal">$X</td><td class="subtotal">$X</td></tr>
+        </tbody>
+    </table>
+
+    <table class="siimp-table">
+        <caption>Table 4: Budget Estimate Breakdown (Stakeholder Engagement)</caption>
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Budget Q1</th>
+                <th>Budget Q 2</th>
+                <th>Budget Q3</th>
+                <th>Budget Q 4</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Engagement 1</td><td>$X</td><td>$X</td><td>$X</td><td>$X</td></tr>
+            <tr><td>Training 1</td><td>$X</td><td>$X</td><td>$X</td><td>$X</td></tr>
+            <tr><td>Engagement 1</td><td>$X</td><td>$X</td><td>$X</td><td>$X</td></tr>
+            <tr><td>……</td><td>$X</td><td>$X</td><td>$X</td><td>$X</td></tr>
+            <tr><td>Engagement N</td><td>$X</td><td>$X</td><td>$X</td><td>$X</td></tr>
+            <tr><td>Training N</td><td>$X</td><td>$X</td><td>$X</td><td>$X</td></tr>
+            <tr><td class="subtotal">Sub-Total</td><td class="subtotal">$X</td><td class="subtotal">$X</td><td class="subtotal">$X</td><td class="subtotal">$X</td></tr>
+            <tr><td>Center Tax (X%)**</td><td>$X</td><td>$X</td><td>$X</td><td>$X</td></tr>
+            <tr><td class="subtotal">Annual Total</td><td class="subtotal">$X</td><td class="subtotal">$X</td><td class="subtotal">$X</td><td class="subtotal">$X</td></tr>
+        </tbody>
+    </table>
+
+    <table class="siimp-table">
+        <caption>Table 5: Budget Estimate Breakdown (Equipment and Resources)</caption>
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Budget Q1</th>
+                <th>Budget Q2</th>
+                <th>Budget Q3</th>
+                <th>Budget Q 4</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Software</td><td>$X</td><td>$X</td><td>$X</td><td>$X</td></tr>
+            <tr><td>CloudSpace</td><td>$X</td><td>$X</td><td>$X</td><td>$X</td></tr>
+            <tr><td>Licensing</td><td>$X</td><td>$X</td><td>$X</td><td>$X</td></tr>
+            <tr><td>Publications</td><td>$X</td><td>$X</td><td>$X</td><td>$X</td></tr>
+            <tr><td>Equipment</td><td>$X</td><td>$X</td><td>$X</td><td>$X</td></tr>
+            <tr><td>Maintenance</td><td>$X</td><td>$X</td><td>$X</td><td>$X</td></tr>
+            <tr><td>Operations</td><td>$X</td><td>$X</td><td>$X</td><td>$X</td></tr>
+            <tr><td class="subtotal">Sub-Total</td><td class="subtotal">$X</td><td class="subtotal">$X</td><td class="subtotal">$X</td><td class="subtotal">$X</td></tr>
+            <tr><td>Center Tax (X%)**</td><td>$X</td><td>$X</td><td>$X</td><td>$X</td></tr>
+            <tr><td class="subtotal">Annual Total</td><td class="subtotal">$X</td><td class="subtotal">$X</td><td class="subtotal">$X</td><td class="subtotal">$X</td></tr>
+        </tbody>
+    </table>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 90–91</p>
+</div>
+
+<!-- Section 12 -->
+<div class="siimp-section">
+    <h2>12. Monitoring Solution Implementation and Impact</h2>
+    <p>Provide an overview of how the Solution Implementation Team intends to monitor and track progress against the Solution Implementation Plan, including the Technical Requirements Document, Data Management Plan, and Solution Adoption and Sustainability Plan, as appropriate.</p>
+    <p>Outline the ways in which progress will be monitored. These can include tracking milestones, co-development meetings, solution implementation team meetings, user-testing and feedback integration, adopting indicators, and tracking indicator data.</p>
+
+    <div class="siimp-subsection">
+        <h3>12.1 Indicator Monitoring Matrix</h3>
+        <p>Complete the Fillable Indicator Template. The fillable indicator template identifies the type of indicator, how information will be collected during the solution implementation process (source, responsible party, frequency), the baseline metric, and the target. The template includes additional guidance and helpful hints on numbers and types of indicators to consider and how to create strong indicators.</p>
+        <p>Reference the Indicator Development Tool, a guide to designing indicators that monitor solution progress and collect data on outputs and outcomes, as needed. The Indicator Development tool includes best practices for data sources and collection methods.</p>
+        <p>Indicators intended to capture the intended impact of a solution can also be developed at this stage, especially if the solution team intended to capture economic impact at some level. More information on the types of economic impact indicators to consider can be found in Economic Impact Assessment for EO.</p>
+    </div>
+
+    <div class="siimp-subsection">
+        <h3>12.2 Detailed outline of planned monitoring activities</h3>
+        <p>Provide a list of activities and processes that the Solution Implementation Team will use to monitor and verify progress. These should include the activity and how the activity contributes to monitoring needs. Some examples include:</p>
+        <ul class="content-list">
+            <li>Bi-weekly Implementation Team Meeting: Review key successes and milestones reached along Solution Implementation Plan; discuss challenges or obstacles to solution advancement.</li>
+            <li>Stakeholder Meetings: Feedback on solution progress and expectations, regular status updates related to solution adoption and sustainability.</li>
+            <li>Mid-term review: This is a status review in the middle of the project. For instance, if a project is 3 years long, a mid-term review can be conducted in the middle of year 2.</li>
+            <li>Pre/post training tests to inform future designs and guide improvements.</li>
+            <li>Existing reporting requirement(s) or mechanism(s) for efficiency.</li>
+        </ul>
+    </div>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 92</p>
+</div>
+
+<!-- Section 13 -->
+<div class="siimp-section">
+    <h2>13. Capturing Results</h2>
+    <p>Reporting solution results meets multiple needs including necessary program documentation, collection of success stories, highlighting progress to maintain continued programmatic buy-in, and as a resource for capturing and verifying solution impact (both short- and long-term).</p>
+    <p>Outline how the Solution Implementation Team intends to capture the immediate results – focused on the solution outputs and expected outcomes. These include solution delivery, adoption, sustainability, and use as well as key milestones along the way. Your team may already have tried-and-true ways to capture results.</p>
+    <p>If not, spend a few moments listing the required and available mechanisms for capturing and reporting results. This can include regular project reporting requirements such as monthly or quarterly reports, reporting on output and outcome indicator data collected, site visit reports, and other relevant methods. Consider repurposing or refining existing check-ins without creating duplicative reporting requirements.</p>
+</div>
+
+<!-- Section 14 -->
+<div class="siimp-section">
+    <h2>14. Understanding and Capturing Impact</h2>
+    <p>Describe how the Solution Implementation Team expects to collect and verify information related to impact. This can be conducted in a variety of ways: capturing use cases for decision-making, beneficiary case studies, economic impact assessments, user feedback surveys, key informant interviews, or other qualitative data collection methods.</p>
+    <p>Consider both immediate post-activity information collection as well as plans for medium and longer-term impact monitoring and information collection. See resources including Capturing Impact: Use Cases, Case Studies and More, and Economic Impact Assessment Guidance</p>
+</div>
+
+<!-- Section 15 -->
+<div class="siimp-section">
+    <h2>15. Feedback Loop and Knowledge Sharing</h2>
+    <p>Explain the methods, approaches, and means that will be employed during the solution implementation and upon completion to collect qualitative information around feedback objectives. More specifically, consider how the solution team intends to capture and convey best practices, experiences, and lessons learned in the co-design, delivery, and adoption of the solution.</p>
+    <p>Some examples include: stakeholder feedback assessments, post-training surveys, targeted user questionnaires, focus groups, and site-visits. Other methods include through meetings and reporting that capture key challenges and how they have been addressed. Knowledge collection can be general feedback or focused on specific questions around the design and use of a solution that the team may develop at the outset.</p>
+
+    <div class="siimp-subsection">
+        <h3>15.1 Internal Feedback Loop and Knowledge Sharing</h3>
+        <p>List specific questions that the solution team intends or hopes to capture information on. Some example feedback questions are listed below.</p>
+        <ul class="content-list">
+            <li>How do key stakeholders perceive the quality, utility, and timeliness of data, tools, and applications made available via the solution?</li>
+            <li>Were there additional data needs that could not be met by the solution?</li>
+            <li>Does the stakeholder have specific feedback related to the data range, resolution, or accessibility?</li>
+            <li>How did key stakeholders participate in the co-development and design process? What approaches worked well? What worked less well? Did their participation differ from that defined in the beginning?</li>
+            <li>To what extent are solutions and tools being deployed by partners? What are barriers to partners sustainably deploying solutions and EO applications?</li>
+        </ul>
+    </div>
+
+    <div class="siimp-subsection">
+        <h3>15.2 Broader NASA SMD Feedback Loop – Contributing to the Virtuous Cycle</h3>
+        <p>Consider the avenues and means in which knowledge and feedback collected will be shared back with broader NASA ESD. Specifically, which elements of NASA may have a stake in learning from this solution design experience and stakeholder engagement (for example, another Earth Action program, NASA mission or mission application program). What are the potential avenues for this solution to inform the virtuous cycle?</p>
+    </div>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 93–94</p>
+</div>
+
+{% endblock %}

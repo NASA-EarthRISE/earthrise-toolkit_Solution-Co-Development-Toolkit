@@ -1,0 +1,500 @@
+{% extends "base.html" %}
+{% block title %}Solution-Level Stakeholder Mapping and Analysis — Solution Co-Development Toolkit{% endblock %}
+{% block content %}
+<style>
+    .section-intro p { margin-bottom: 1rem; line-height: 1.7; }
+
+    .note-box {
+        background: #fff8e1;
+        border-left: 4px solid #f0a500;
+        padding: 0.8rem 1.1rem;
+        margin: 1rem 0 1.5rem 0;
+        border-radius: 0 4px 4px 0;
+        font-size: 0.93rem;
+        line-height: 1.6;
+    }
+
+    /* Phase grid */
+    .phases-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.75rem;
+        margin: 1.5rem 0;
+    }
+    .phase-card {
+        border-radius: 6px;
+        padding: 1rem;
+        font-size: 0.88rem;
+    }
+    .phase-card h4 { margin: 0 0 0.6rem 0; font-size: 0.9rem; color: #0b3d91; }
+    .phase-card ul { margin: 0; padding-left: 1.1rem; }
+    .phase-card ul li { margin-bottom: 0.3rem; line-height: 1.5; }
+    .phase-1 { background: #cce0f5; outline: 2px solid #c0392b; }
+    .phase-2 { background: #c8dff5; }
+    .phase-3 { background: #d4edda; }
+    .phase-4 { background: #d5eddf; }
+
+    /* Outputs list */
+    .outputs-list { margin: 0.5rem 0 1rem 1.5rem; }
+    .outputs-list li { margin-bottom: 0.4rem; line-height: 1.6; }
+
+    /* Subsection styling */
+    .subsection { margin-top: 2.5rem; }
+    .subsection > h2 { color: #0b3d91; border-bottom: 2px solid #00a0b0; padding-bottom: 0.4rem; margin-bottom: 1rem; }
+
+    /* Step headers */
+    .step-header {
+        background: #0b3d91;
+        color: #fff;
+        padding: 0.7rem 1.1rem;
+        border-radius: 4px 4px 0 0;
+        font-size: 1rem;
+        font-weight: 700;
+        margin-top: 2rem;
+        margin-bottom: 0;
+    }
+    .step-body {
+        border: 1px solid #c0cfe0;
+        border-top: none;
+        border-radius: 0 0 4px 4px;
+        padding: 1.2rem 1.4rem;
+        background: #fff;
+    }
+    .step-body p { margin-bottom: 0.8rem; line-height: 1.7; }
+    .step-body p:last-child { margin-bottom: 0; }
+    .step-body h4 { color: #1a5276; margin: 1rem 0 0.4rem 0; font-size: 0.95rem; }
+    .step-body ul, .step-body ol { margin: 0.3rem 0 0.8rem 1.4rem; }
+    .step-body ul li, .step-body ol li { margin-bottom: 0.35rem; line-height: 1.6; }
+
+    /* Category indicators */
+    .categories-list { margin: 0.5rem 0 0.8rem 1.4rem; }
+    .categories-list li { margin-bottom: 0.3rem; line-height: 1.6; }
+
+    /* Stakeholder types table */
+    .stakeholder-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1.2rem 0;
+        font-size: 0.88rem;
+    }
+    .stakeholder-table th {
+        background: #0b3d91;
+        color: #fff;
+        padding: 0.7rem 0.9rem;
+        text-align: left;
+        font-weight: 600;
+        vertical-align: top;
+    }
+    .stakeholder-table td {
+        padding: 0.8rem 0.9rem;
+        border: 1px solid #c0cfe0;
+        vertical-align: top;
+        line-height: 1.6;
+    }
+    .stakeholder-table tr:nth-child(odd) td { background: #f5f8fc; }
+    .stakeholder-table tr:nth-child(even) td { background: #fff; }
+    .stakeholder-table td:first-child { font-weight: 700; color: #0b3d91; }
+    .stakeholder-table td ul { margin: 0.3rem 0 0 1.1rem; padding: 0; }
+    .stakeholder-table td ul li { margin-bottom: 0.3rem; }
+
+    /* Engagement strategy table */
+    .engagement-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0;
+        font-size: 0.9rem;
+    }
+    .engagement-table th {
+        background: #0b3d91;
+        color: #fff;
+        padding: 0.65rem 1rem;
+        text-align: left;
+        font-weight: 600;
+    }
+    .engagement-table td {
+        padding: 0.7rem 1rem;
+        border: 1px solid #c0cfe0;
+        vertical-align: top;
+        line-height: 1.6;
+    }
+    .engagement-table tr:nth-child(odd) td { background: #f5f8fc; }
+    .engagement-table tr:nth-child(even) td { background: #fff; }
+    .engagement-table td:first-child { font-weight: 700; color: #0b3d91; }
+
+    /* Workflow / timeline table */
+    .workflow-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1.2rem 0;
+        font-size: 0.88rem;
+    }
+    .workflow-table th {
+        background: #0b3d91;
+        color: #fff;
+        padding: 0.65rem 0.9rem;
+        text-align: left;
+        font-weight: 600;
+    }
+    .workflow-table td {
+        padding: 0.75rem 0.9rem;
+        border: 1px solid #c0cfe0;
+        vertical-align: top;
+        line-height: 1.6;
+    }
+    .workflow-table tr:nth-child(odd) td { background: #f5f8fc; }
+    .workflow-table tr:nth-child(even) td { background: #fff; }
+    .workflow-table td:first-child { font-weight: 600; color: #0b3d91; }
+
+    /* Guiding principles box */
+    .principles-box {
+        background: #f0f4f8;
+        border-left: 4px solid #00a0b0;
+        padding: 0.9rem 1.2rem;
+        margin: 0 0 1.2rem 0;
+        border-radius: 0 4px 4px 0;
+        font-size: 0.93rem;
+        line-height: 1.6;
+    }
+    .principles-box strong { color: #0b3d91; }
+    .principles-box ul { margin: 0.4rem 0 0 1.3rem; }
+    .principles-box ul li { margin-bottom: 0.35rem; }
+
+    /* Fillable note */
+    .fillable-note {
+        background: #e8f4fb;
+        border: 1px dashed #00a0b0;
+        border-radius: 4px;
+        padding: 0.6rem 1rem;
+        margin: 0.8rem 0 1rem 0;
+        font-size: 0.9rem;
+        font-style: italic;
+        color: #1a5276;
+    }
+
+    .page-note {
+        font-size: 0.8rem;
+        color: #888;
+        text-align: right;
+        margin-top: 0.5rem;
+        font-style: italic;
+    }
+</style>
+
+<div class="page-header">
+    <div class="section-tag">Section 5</div>
+    <h1>Solution-Level Stakeholder Mapping and Analysis</h1>
+</div>
+
+<div class="section-intro">
+    <h2>Purpose:</h2>
+    <p>This is a rapid-fire tool designed to help NASA teams identify, prioritize, and engage key stakeholders around an emerging Earth observation (EO) solution. It is designed to provide a clear, actionable picture of who is relevant to the solution, their interests, and how best to engage them. It is not exhaustive, and instead aims to generate enough insight to guide co-development, outreach, and planning. This tool helps accomplish the Stakeholder Identification and Mapping step of the Solution Implementation Plan and Designing for Impact tool.</p>
+    <div class="note-box">
+        <strong>Note:</strong> For large-scale, programmatic, or policy-level analysis, use the Stakeholder Landscape Mapping and Ecosystem Analysis Tool (under development).
+    </div>
+</div>
+
+<div class="subsection">
+    <h2>How and When to Use This Tool:</h2>
+    <div class="phases-grid">
+        <div class="phase-card phase-1">
+            <h4>Phase 1: Assessing Needs &amp; Potential Impact</h4>
+            <ul>
+                <li>Identify stakeholders</li>
+                <li>Assess user needs, constraint, and decision context</li>
+                <li>Define problem and opportunity for impact</li>
+            </ul>
+        </div>
+        <div class="phase-card phase-2">
+            <h4>Phase 2: Solution Co-Design</h4>
+            <ul>
+                <li>Co-design solution concepts</li>
+                <li>Define requirements and success metrics</li>
+                <li>Plan implementation and sustainability</li>
+            </ul>
+        </div>
+        <div class="phase-card phase-3">
+            <h4>Phase 3: Prototyping and Co-Development</h4>
+            <ul>
+                <li>Build and test prototypes</li>
+                <li>Conduct user testing and iteration</li>
+                <li>Prepare data, workflows, and trainings</li>
+            </ul>
+        </div>
+        <div class="phase-card phase-4">
+            <h4>Phase 4: Transition and Impact Assessment</h4>
+            <ul>
+                <li>Deploy and transition ownership</li>
+                <li>Collect evidence of use and impact</li>
+                <li>Plan for scaling, replication, and long-term uptake</li>
+            </ul>
+        </div>
+    </div>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 40</p>
+
+    <p>The Stakeholder Mapping Tool should be used after a preliminary real-world need has been identified along with potential opportunities for NASA Earth science to address that need. Use this tool early in the scoping/intake process when all users and/or stakeholders are not fully identified to clarify stakeholder roles, influence, and potential interest in engagement. This tool can and should be used iteratively, updating as relationships, workflows, and priorities evolve.</p>
+
+    <p>Outputs of this tool will include:</p>
+    <ul class="outputs-list">
+        <li>A Stakeholder Map</li>
+        <li>A Stakeholder Analysis Snapshot (interest, influence, relationship readiness)</li>
+        <li>Near-term engagement priorities for Phase 1</li>
+    </ul>
+</div>
+
+<div class="subsection">
+    <h2>Building the Mapping Team:</h2>
+    <p><em>Establish the working group/team that will be responsible for conducting stakeholder mapping.</em> A core team of three to five people is recommended to include: 1) a defined lead, 2) relevant technical EO specialist(s); 3) social science or engagement specialists (as available/needed); and 4) An economist or impact analyst (as needed).</p>
+    <div class="fillable-note">Fillable SPREADSHEET for all the following steps in this activity</div>
+</div>
+
+<div class="subsection">
+    <h2>Steps</h2>
+
+    <!-- Step 1 -->
+    <div class="step-header">Step 1: Identify Key Groups</div>
+    <div class="step-body">
+        <p>Working as a team, list all potential stakeholder types and institutions in column A connected to the EO opportunity. This is about breadth—cast the net wide.</p>
+
+        <h4>A note on overlap in stakeholder types:</h4>
+        <p>If a stakeholder fits into multiple categories, consider what their <strong>primary</strong> and <strong>secondary</strong> role is. Those might be the highest value stakeholders and should be flagged for deeper engagement. For example, a stakeholder who is both a user and a beneficiary would be a great candidate for co-design and user testing.</p>
+        <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 41</p>
+
+        <table class="stakeholder-table">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Definition / Role</th>
+                    <th>Key Characteristics / Responsibilities</th>
+                    <th>Examples <em>(note that example actors could fit into multiple categories depending on the given solution)</em></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Users</td>
+                    <td>Anyone who interacts directly with EO-enabled products, data, services, workflows, or insights to make decisions, perform tasks, enable systems, or deliver value to others. This group is especially useful for providing early demand signals for internal reporting.</td>
+                    <td>
+                        <ul>
+                            <li>Access data directly</li>
+                            <li>Integrate EO insights into tools</li>
+                            <li>Make operational or policy decisions</li>
+                            <li>Serve as intermediaries between NASA data and other beneficiaries</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <ul>
+                            <li>National meteorological offices using models</li>
+                            <li>River basin authorities using dashboards</li>
+                            <li>Agricultural extension officers using crop monitoring tools</li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Beneficiaries</td>
+                    <td>People positively affected by decisions, services, or interventions derived from EO solutions. May not directly interact with the data but are critical for impact-driven design. Quotes from this group drive impactful storytelling.</td>
+                    <td>
+                        <ul>
+                            <li>Experience outcomes of EO-informed decisions</li>
+                            <li>Often live with climate, agricultural, environmental, or economic issues that EO data might address.</li>
+                            <li>Useful for describing real-world issues rather than technical needs.</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <ul>
+                            <li>Farmers using agricultural advisories to plan their planting dates</li>
+                            <li>Communities receiving flood warnings</li>
+                            <li>Fisherfolk referencing water quality alerts to avoid food safety issues</li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Enablers (critical intermediaries)</td>
+                    <td>Institutions or actors that enable, support, or block use, adoption, or impact of EO solutions. There are important intermediaries that are often critical for identifying risks and assumptions in the Solution Planning and Design for Impact stages. Helpful for defining real-world value of solutions and connecting to beneficiaries who can provide quotes for impactful storytelling.</td>
+                    <td>
+                        <ul>
+                            <li><strong>Data Providers / Enablers:</strong> Host, manage, maintain data pipelines</li>
+                            <li><strong>Implementing Partners:</strong> Translate or deliver products to end users</li>
+                            <li><strong>Funders / Financial Partners:</strong> Provide funding or enable scale</li>
+                            <li><strong>Decision-Makers / Policy Actors:</strong> Shape adoption, regulations, and institutional support</li>
+                            <li><strong>Local Actors / Community Orgs:</strong> influential for users and beneficiaries</li>
+                            <li><strong>Prior Collaborators / Internal NASA Connections:</strong> Existing relationships that accelerate trust</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <ul>
+                            <li><strong>Data Providers:</strong> NASA DAACs, NOAA offices, research labs</li>
+                            <li><strong>Implementing Partners:</strong> NGOs, UN agencies, government ministries</li>
+                            <li><strong>Funders:</strong> Donor agencies, philanthropic foundations</li>
+                            <li><strong>Decision-Makers:</strong> Emergency managers, policy units, Tribal nations, regulators</li>
+                            <li><strong>Local Actors:</strong> Local authorities, community-based organizations.</li>
+                            <li><strong>Prior Collaborators:</strong> Mission Application Leads, Earth Action teams, previous PIs</li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 42</p>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="step-header">Step 2: Determine Relationship Readiness</div>
+    <div class="step-body">
+        <p>Understand the <em>current state of connection and credibility</em> between your team and each stakeholder, independent of whether the stakeholder cares about or will benefit from the solution.</p>
+
+        <h4>What "relationship readiness" means:</h4>
+        <p>Relationship readiness describes how prepared your team is to engage a stakeholder based on existing access, trust, and ownership.</p>
+
+        <p>Assess:</p>
+        <ul>
+            <li>Whether a relationship already exists, is emerging, or must be initiated</li>
+            <li>Who on the team is best positioned to engage (based on role, credibility, or prior contact)</li>
+            <li>Review existing NASA relationships (use EAX)</li>
+            <li>Any known constraints or enablers to initiating or deepening engagement</li>
+        </ul>
+
+        <p>Categories:</p>
+        <ul>
+            <li><strong>Established:</strong> ongoing relationship with trust and regular interaction</li>
+            <li><strong>Nascent:</strong> limited or informal contact; relationship is developing</li>
+            <li><strong>To Be Initiated:</strong> no prior relationship; engagement must start from scratch</li>
+        </ul>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="step-header">Step 3: Assess Influence and Interest</div>
+    <div class="step-body">
+        <p>Rate each stakeholder's <strong>influence</strong> (ability to shape or enable a solution/impact) and <strong>interest</strong> (level of anticipated engagement with or benefit from the solution) on a simple 1–4 scale.</p>
+
+        <h4>Influence:</h4>
+        <p>The stakeholder's ability to enable, block, shape, or scale the solution or its impact.</p>
+        <p>Examples:</p>
+        <ul>
+            <li>Decision authority or policy control</li>
+            <li>Control over resources, data, or implementation pathways</li>
+            <li>Ability to legitimize or operationalize outcomes</li>
+        </ul>
+
+        <h4>Interest:</h4>
+        <p>The degree to which the stakeholder's mandate, responsibilities, or outcomes are affected by the solution—<em>not</em> their current awareness, enthusiasm, or engagement level. Interest reflects <strong>structural relevance</strong>, not relationship strength.</p>
+        <p>Examples:</p>
+        <ul>
+            <li>Alignment with a stakeholder's mission or operational goals</li>
+            <li>Direct benefit from the outputs or outcomes</li>
+            <li>Exposure to risks the solution addresses</li>
+        </ul>
+        <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 43</p>
+    </div>
+
+    <!-- Step 4 -->
+    <div class="step-header">Step 4: Agree on Engagement Strategy</div>
+    <div class="step-body">
+        <p>Based on the results of Step 3, decide on the pathways for engagement with each stakeholder based on the influence/interest nexus. Categorize whether to <strong>Collaborate</strong>, <strong>Align</strong>, <strong>Validate</strong>, or <strong>Monitor.</strong> (These will help in the Co-Design step).</p>
+
+        <table class="engagement-table">
+            <thead>
+                <tr>
+                    <th>Engagement Type</th>
+                    <th>Influence / Interest</th>
+                    <th>Engagement Approach</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Collaborate</td>
+                    <td>High Influence, High Interest</td>
+                    <td>Deep, two-way engagement; stakeholders actively shape the solution.</td>
+                </tr>
+                <tr>
+                    <td>Align</td>
+                    <td>High Influence, Low Interest</td>
+                    <td>Keep informed and coordinated; ensure activities and policies remain consistent.</td>
+                </tr>
+                <tr>
+                    <td>Validate</td>
+                    <td>Low Influence, High Interest</td>
+                    <td>Periodic check-ins to confirm assumptions, gather feedback, and test design decisions.</td>
+                </tr>
+                <tr>
+                    <td>Monitor</td>
+                    <td>Low Influence, Low Interest</td>
+                    <td>Light-touch tracking; detect shifts in interest or influence that may affect the solution.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Step 5 -->
+    <div class="step-header">Step 5: Summarize Key Insights</div>
+    <div class="step-body">
+        <p><strong>Capture 3–5 takeaways:</strong></p>
+        <ul>
+            <li>Who are your:
+                <ul>
+                    <li>main users?</li>
+                    <li>beneficiaries?</li>
+                    <li>enablers, including critical allies and potential champions?</li>
+                </ul>
+            </li>
+            <li>Where are major engagement gaps?</li>
+            <li>Which stakeholders can start engaging with immediately?</li>
+        </ul>
+        <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 44</p>
+    </div>
+</div>
+
+<div class="subsection">
+    <h2>Proposed Workflow / Timeline</h2>
+
+    <div class="principles-box">
+        <strong>Guiding principles for the team:</strong>
+        <ul>
+            <li>Include complementary perspectives (technical, engagement, economic) without creating a large committee.</li>
+            <li>Use the mapping outputs to inform planning, not as an end in itself.</li>
+            <li>Iterate as needed; this is meant to be a living document as new stakeholders may emerge during all phases.</li>
+        </ul>
+    </div>
+
+    <table class="workflow-table">
+        <thead>
+            <tr>
+                <th>Activity</th>
+                <th>Led By</th>
+                <th>Output</th>
+                <th>Notes</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Define scope &amp; criteria</td>
+                <td>EO Program Manager + Social Science / Local Engagement Lead</td>
+                <td>Purpose statement + prioritization matrix</td>
+                <td>Keep scope narrow (single service or problem area)</td>
+            </tr>
+            <tr>
+                <td>Draft stakeholder list</td>
+                <td>EO Technical Lead + Team</td>
+                <td>Initial mapping table</td>
+                <td>Use internal network + existing partner lists (ex. EAX)</td>
+            </tr>
+            <tr>
+                <td>Validate &amp; expand</td>
+                <td>Social Science Lead + Economist + Team</td>
+                <td>Updated list with influence, impact, and engagement potential</td>
+                <td>Include policy, and economic dimensions</td>
+            </tr>
+            <tr>
+                <td>Visualize &amp; brief</td>
+                <td>EO Team</td>
+                <td>Map + summary</td>
+                <td>Can be built directly from Excel</td>
+            </tr>
+            <tr>
+                <td>Leadership review</td>
+                <td>EO Program Manager</td>
+                <td>Prioritized stakeholder map + engagement plan</td>
+                <td>Output feeds into planning or proposals</td>
+            </tr>
+        </tbody>
+    </table>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 45</p>
+</div>
+{% endblock %}

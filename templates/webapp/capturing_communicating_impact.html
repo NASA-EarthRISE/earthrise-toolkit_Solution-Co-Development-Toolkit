@@ -1,0 +1,401 @@
+{% extends "base.html" %}
+{% block title %}Capturing and Communicating Impact — Solution Co-Development Toolkit{% endblock %}
+{% block content %}
+<style>
+    .tk-body { font-size: 0.95rem; line-height: 1.75; color: #1a1a2e; }
+    .tk-body h2 { font-size: 1.5rem; font-weight: 700; color: #0b3d91; margin: 2.25rem 0 0.6rem; }
+    .tk-body h3 { font-size: 1.15rem; font-weight: 600; color: #0b3d91; margin: 1.75rem 0 0.5rem; }
+    .tk-body p  { margin-bottom: 1rem; }
+    .tk-body ul { margin: 0.5rem 0 1rem 1.5rem; }
+    .tk-body li { margin-bottom: 0.4rem; }
+    .tk-body hr { border: none; border-top: 1px solid #d0d7e3; margin: 2rem 0; }
+
+    /* Phases diagram */
+    .phases-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.75rem;
+        margin: 1.25rem 0 1rem;
+    }
+    .phase-card {
+        border-radius: 6px;
+        padding: 0.9rem;
+        font-size: 0.8rem;
+        line-height: 1.45;
+        color: #1a1a2e;
+    }
+    .phase-card .phase-title {
+        font-weight: 700;
+        font-size: 0.8rem;
+        text-align: center;
+        margin-bottom: 0.75rem;
+        line-height: 1.3;
+    }
+    .phase-card ul { list-style: none; padding: 0; margin: 0; }
+    .phase-card ul li { padding: 0.2rem 0 0.2rem 1.2rem; position: relative; }
+    .phase-card ul li::before { content: "➤"; position: absolute; left: 0; font-size: 0.65rem; top: 0.3rem; }
+    .phase-1  { background: #cce0f5; outline: 2px solid #c0392b; }
+    .phase-24 { background: #c8dff5; outline: 2px dashed #e74c3c; }
+    .phase-3  { background: #d4edda; outline: 2px dashed #e74c3c; }
+    .fig-caption { font-style: italic; font-size: 0.82rem; color: #4a4a6a; margin-top: 0.5rem; }
+
+    /* Audience table */
+    .audience-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0 1.5rem;
+        font-size: 0.875rem;
+    }
+    .audience-table thead tr {
+        background: #0b3d91;
+        color: #fff;
+    }
+    .audience-table thead th {
+        padding: 0.65rem 1rem;
+        text-align: left;
+        font-weight: 700;
+        font-size: 0.85rem;
+    }
+    .audience-table tbody tr { border-bottom: 1px solid #d0d7e3; }
+    .audience-table tbody tr:nth-child(even) { background: #f5f7fa; }
+    .audience-table td { padding: 0.75rem 1rem; vertical-align: top; }
+    .audience-table td:first-child { font-weight: 700; width: 28%; }
+    .audience-table td:first-child .eg { font-weight: 400; font-style: italic; font-size: 0.82rem; margin-top: 0.3rem; }
+
+    /* Impact pyramid */
+    .impact-pyramid {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0;
+        margin: 1.5rem auto;
+        max-width: 520px;
+        position: relative;
+    }
+    .pyramid-row {
+        text-align: center;
+        padding: 0.6rem 1.25rem;
+        line-height: 1.35;
+    }
+    .pyramid-row .row-title { font-weight: 700; font-size: 0.88rem; }
+    .pyramid-row .row-sub   { font-size: 0.78rem; margin-top: 0.15rem; }
+    .pr-gov    { background: #2b6cb0; color: #fff; width: 40%; border-radius: 4px 4px 0 0; }
+    .pr-high   { background: #3a7dc9; color: #fff; width: 56%; }
+    .pr-front  { background: #5a9fd4; color: #fff; width: 72%; }
+    .pr-indiv  { background: #7ab8e0; color: #1a1a2e; width: 88%; border-radius: 0 0 4px 4px; }
+
+    /* Communications table */
+    .comms-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0 1.5rem;
+        font-size: 0.875rem;
+    }
+    .comms-table thead tr { background: #0b3d91; color: #fff; }
+    .comms-table thead th { padding: 0.65rem 1rem; text-align: left; font-weight: 700; font-size: 0.85rem; }
+    .comms-table tbody tr { border-bottom: 1px solid #d0d7e3; vertical-align: top; }
+    .comms-table tbody tr:nth-child(even) { background: #f5f7fa; }
+    .comms-table td { padding: 0.85rem 1rem; vertical-align: top; }
+    .comms-table td:first-child { font-style: italic; font-weight: 600; width: 22%; color: #0b3d91; }
+    .comms-table .ct-label { font-weight: 700; }
+    .comms-table ul { margin: 0.3rem 0 0.5rem 1.25rem; }
+    .comms-table li { margin-bottom: 0.3rem; }
+    .comms-table .note { font-style: italic; margin-top: 0.5rem; }
+
+    /* Example box */
+    .example-box {
+        background: #f0f5fb;
+        border-left: 3px solid #00a0b0;
+        padding: 0.75rem 1.1rem;
+        margin: 0.75rem 0;
+        font-style: italic;
+        font-size: 0.9rem;
+    }
+
+    @media (max-width: 700px) {
+        .phases-grid { grid-template-columns: 1fr 1fr; }
+        .audience-table, .comms-table { font-size: 0.8rem; }
+        .pr-gov, .pr-high, .pr-front, .pr-indiv { width: 100%; }
+    }
+</style>
+
+<div class="page-header">
+    <div class="section-tag">Section 3</div>
+    <h1>Capturing and Communicating Impact</h1>
+</div>
+
+<div class="tk-body">
+
+    <h2>Purpose:</h2>
+    <p><em>The purpose of this tool is to support solution co-development teams in</em> anticipating potential impact and determining effective ways to capture and strategically communicate outcomes and impact. This tool provides practical guidance for planning how, where, and to whom you will communicate the impact of your work. It can be used by anybody in the Earth Action community who wants to better communicate the value of their work.</p>
+
+    <h3>Why This Tool is Important:</h3>
+    <p>Continued support for and expansion of solutions to broader applications often rely on our ability to communicate the effectiveness and impact of solutions. Capturing and communicating applied science efforts involves more than writing a final report or even publishing a blog or academic paper at the end of a job well done. It involves planning and thoughtful consideration throughout all phases of solution co-design, even beyond the handover or delivery of services.</p>
+    <p>This tool covers three key factors for strategic communication: 1) how our audience informs how we communicate impact; 2) considerations in deciding how impact is most effectively conveyed; and 3) common formats and outlines (with examples) for conveying impact.</p>
+
+    <hr>
+
+    <h2>How and When to Use This Tool:</h2>
+
+    <div class="phases-grid">
+        <div class="phase-card phase-1">
+            <div class="phase-title">Phase 1:<br>Assessing Needs &amp; Potential Impact</div>
+            <ul>
+                <li>Identify stakeholders</li>
+                <li>Assess user needs, constraint, and decision context</li>
+                <li>Define problem and opportunity for impact</li>
+            </ul>
+        </div>
+        <div class="phase-card phase-24">
+            <div class="phase-title">Phase 2:<br>Solution Co-Design</div>
+            <ul>
+                <li>Co-design solution concepts</li>
+                <li>Define requirements and success metrics</li>
+                <li>Plan implementation and sustainability</li>
+            </ul>
+        </div>
+        <div class="phase-card phase-3">
+            <div class="phase-title">Phase 3:<br>Prototyping and Co-Development</div>
+            <ul>
+                <li>Build and test prototypes</li>
+                <li>Conduct user testing and iteration</li>
+                <li>Prepare data, workflows, and trainings</li>
+            </ul>
+        </div>
+        <div class="phase-card phase-24">
+            <div class="phase-title">Phase 4:<br>Transition and Impact Assessment</div>
+            <ul>
+                <li>Deploy and transition ownership</li>
+                <li>Collect evidence of use and impact</li>
+                <li>Plan for scaling, replication, and long-term uptake</li>
+            </ul>
+        </div>
+    </div>
+
+    <p>This tool can be used at any point in the co-development process, but it is most effective when integrated into early phases of solution planning and co-design. After reviewing the Designing for Impact 101 document, use this too to ensure that you are planning to capture and effectively communicate impact in a way that supports your team's strategic goals. This tool should also be used in developing the Solution Implementation, Impact, and Monitoring Plan (SIIMP Plan), to outline the qualitative approaches that will be used to capture impact.</p>
+
+    <hr>
+
+    <h2>Target Audiences: Tailoring your Impact Messaging</h2>
+
+    <p>Identifying and understanding your audience is fundamental to determining the appropriate messages for your work, and how best to share those messages. Different audiences have needs, priorities, and levels of technical understanding that shape what kinds of impacts, messages, and formats are most effective. Key audiences often shift over the course of a project. Throughout the life cycle of any project, teams should regularly ask themselves:</p>
+    <ul>
+        <li>Who <em>needs</em> to know about this? Why is it important for them to know?</li>
+        <li>Who <em>wants</em> to know about this?</li>
+        <li>Who can <em>advocate</em> for this work? Who can be a spokesperson or champion?</li>
+    </ul>
+
+    <p>Each solution and each story will have its own set of key audiences. The following list is a generalized overview of some of Earth Action's most common audiences for impact-based communications and the type of communication most relevant to each. Note that these are generalizations and that these audiences often overlap.</p>
+
+    <table class="audience-table">
+        <thead>
+            <tr>
+                <th>Audience</th>
+                <th>Messaging Considerations</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <strong>Scientists and experts (potential data users)</strong>
+                    <div class="eg">Examples: GIS specialists in the public/private sector, forecasters, agriculture extension agencies, emergency responders, etc.</div>
+                </td>
+                <td>The organizations and individuals who use–or might use–NASA tools and data are the bread and butter of Earth Action impact communications. These are generally audiences who already have significant background in geospatial methods, on top of their particular field of expertise. These audiences want to know how this project will affect their work.</td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>Decision-makers</strong>
+                    <div class="eg">Examples: Mayors, legislators, civil servants, tribal leaders, or private sector executives making decisions about adopting or funding products, tools, or solutions.</div>
+                </td>
+                <td>Decisions about solution uptake and budgeting often fall to decision-makers who may not have in-depth understanding of Earth observations or other relevant areas of science. Conveying social, economic, or environmental impacts to these audiences is valuable, often necessary, for ensuring that our work has partner buy-in and sustained use.</td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>Other scientists</strong>
+                    <div class="eg">Examples: Professional journals, scientific conference panels, NASA R&amp;A staff, etc.</div>
+                </td>
+                <td>Innovation is often the centerpiece when communicating to fellow scientists, but communicating real-world impact is still a valuable part of messaging to other experts, including more research-focused scientists. Conveying impact to other scientists is useful for demonstrating the value of NASA's leadership in applied scientific innovation.</td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>The "science curious" public</strong>
+                    <div class="eg">Examples: Readers of NASA blogs, attendees at conferences and events, students considering careers in Earth science, etc.</div>
+                </td>
+                <td>NASA often thinks in terms of the "science curious" public to be more constructive than the vague concept of "the general public." Impact stories help us to engage with non-experts, and reaching audiences interested in NASA and Earth science increases our reach to decision-makers and potential users.</td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>NASA leadership and USG</strong>
+                    <div class="eg">Examples: Headquarters staff, program leads, MAL/PALs, communications staff</div>
+                </td>
+                <td>Internal communications within NASA Earth are especially dependent on demonstrating impact. As part of the Earth Science to Action strategy, our projects and programs must be able to clearly connect how NASA science, technology, and investments are progressing and paying off. This communication is often vetted and shared with U.S. federal leadership for budget justifications, and therefore must center economic benefits to the American people.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <hr>
+
+    <h2>How to Show Impact</h2>
+
+    <p>Communications and reporting documents need to be able to demonstrate a project's impact in different ways to maximize the reach and efficacy of messaging. This section will walk through different dimensions of impact and ways of showing it.</p>
+
+    <p>Strong impact stories can take time to emerge, but you don't have to wait for impact to start telling a great story. <em>Teams should start articulating the intended impacts of a project from the beginning of the co-design process</em> (refer to the Designing for Impact document) to help engage partners and advocate for the value of a project within NASA. Before the completion of a project, there should already be potential to illustrate the planned impacts of a project through showing the connections between the user needs and the outcomes of that project. A project SIIMP plan will help outline what information to capture when and in what forms, as a solution is co-designed, delivered, adopted, and put into sustained use or practice.</p>
+
+    <p><em>Impact is a matter of both breadth and depth; both should be considered as part of a project MIL plan.</em></p>
+    <ul>
+        <li><strong>Breadth:</strong> The breadth or reach of a project's impact can be illustrated with quantitative indicators like the number of times a tool is downloaded or the population of an area served by a new solution. Showing this dimension of impact is valuable, often required, for internal reporting and progress indicators, but it may give only a surface-level understanding of a project's value.</li>
+        <li><strong>Depth:</strong> The "depth" of impact might be thought of as the specific positive changes experienced by individuals or communities as the result of a project. Demonstrating depth can take more time and can be harder to quantify, but this kind of impact is often more compelling. Economic impact assessment is one way to provide a more quantitative approach to capturing depth, such as return on investment or dollars saved by the adoption of a service or tool.</li>
+    </ul>
+
+    <!-- Fig. 1: Impact scale pyramid -->
+    <div class="impact-pyramid">
+        <div class="pyramid-row pr-gov">
+            <div class="row-title">GOV'T &amp; POLICY</div>
+            <div class="row-sub" style="font-style:italic;">Interacts at a very <strong>broad scale</strong>, often several steps removed from an issue</div>
+        </div>
+        <div class="pyramid-row pr-high">
+            <div class="row-title">HIGH-LEVEL USERS</div>
+            <div class="row-sub"><em>Use services to address issues at a <strong>systems level</strong></em></div>
+        </div>
+        <div class="pyramid-row pr-front">
+            <div class="row-title">FRONT-LINE USERS</div>
+            <div class="row-sub"><em>Use services to address issues at a <strong>local or individual level</strong></em></div>
+        </div>
+        <div class="pyramid-row pr-indiv">
+            <div class="row-title">INDIVIDUALS BEYOND THE USERS</div>
+            <div class="row-sub"><em>People who <strong>benefit from the service</strong></em> &nbsp;|&nbsp; <em>Interacts at a personal scale, experience issues very directly</em></div>
+        </div>
+    </div>
+    <p class="fig-caption">Fig. 1-Different groups and organizations experience impact at very different scales. When we want to show the breadth of impact, focusing on organizations that work on issues at an administrative or systems level will suffice. When it's important to put a human face to impact, it may be necessary to look for users or beneficiaries who experience impact on a local or personal level to illustrate the depth of impact.</p>
+
+    <p><strong>Tailor your approach to the audience:</strong> Effective communications will be personalized to focus on individuals who are most affected by the issues that your solution is designed to address. Gathering testimony from users and community members can take time and effort, but quotes are often more relatable to audiences and provide color and context to numbers. When possible, showing visible changes through photos, satellite imagery, maps, or data visualizations can also be very persuasive, as long as the audience understands what they are looking at.</p>
+
+    <div class="example-box">
+        <p><em>Example:</em></p>
+        <p>A geospatial scientist at the Department of Agriculture might appreciate knowing how much time a NASA science tool could save them in forecasting drought, but a story of how a farmer used that tool to withstand drought is more meaningful and compelling to a broader audience.</p>
+    </div>
+
+    <p>Ultimately, your goals and your audience are going to determine the most appropriate way to capture and convey impact–what dimensions and scales you prioritize and how you show it. Your team should be ready to demonstrate the impact of their work in a variety of ways, maximizing their ability to effectively convince many different audiences of the success and value of the project.</p>
+
+    <hr>
+
+    <h2>How (and Where) Do We Communicate Impact?</h2>
+
+    <table class="comms-table">
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Internal NASA Reporting</td>
+                <td>
+                    <p><span class="ct-label">Audience:</span> Earth Action and ESD Leadership, Earth MAL/PALs</p>
+                    <p><span class="ct-label">Strategic purpose:</span> Summarizing and promoting solution progress to relevant NASA leadership throughout the solution timeline. These are a great way to get internal attention on projects that might not be ready for external communications. It is useful to keep in mind any current administrative priorities as relevant</p>
+                    <p><span class="ct-label">Format:</span> Short summary (150-200 words), with contact information. Images are helpful but not necessary.</p>
+                    <p><span class="ct-label">What content do you need?:</span></p>
+                    <ul>
+                        <li><em>Full impact is ideal, but not necessary</em>: internal highlights on outcomes or even outputs are often still useful when you can articulate the need and the <em>desired</em> impact</li>
+                        <li><em>Articulating the need</em> behind a project gives context to the impact or accomplishment.</li>
+                        <li><em>Clear connections to NASA assets</em> (satellites, technology, people) are critical. Collaborations with other NASA programs are valuable if relevant.</li>
+                    </ul>
+                    <p class="note">Note: these highlights may be selected by program managers for NASA "science nuggets," or one-slide overviews of a scientific achievement for NASA Earth and SMD leadership; identifying clear potential for impact is crucial for these nuggets.</p>
+                </td>
+            </tr>
+            <tr>
+                <td>Use cases</td>
+                <td>
+                    <p><span class="ct-label">Audience:</span> Evaluation and reporting staff, prospective partners or decision-makers, MAL/PALs, broader NASA.</p>
+                    <p><span class="ct-label">Strategic purpose:</span> Summarizing an example of use by a specific decision maker or beneficiary. Use cases provide a qualitative analysis tool for evaluation and reporting staff, and also serve as a way to share results and lessons learned with a broader audience.</p>
+                    <p><span class="ct-label">Format:</span> A 1-2 page narrative, providing a relatively brief synopsis of a solution and its outcomes and short-term impact. As a shorter and less detailed synopsis of a solution, use cases can also be tailored to reach a somewhat broader audience, including broader NASA and prospective partners.</p>
+                    <p><span class="ct-label">What content do you need?:</span></p>
+                    <ul>
+                        <li><em>Some level of sustained use and resulting outcomes and impact is necessary</em>: a use case will capture the codevelopment and transition of the solution to the user, but not necessarily the complete life cycle.</li>
+                        <li>For use as a qualitative resource for monitoring purposes, the use case should provide a good level of detail, including some quantitative indicators related to the specific case.</li>
+                        <li><em>User testimony is a key part of a use case</em>, both for qualitative analysis, and to communicate use in a real-world context.</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Case studies</td>
+                <td>
+                    <p><span class="ct-label">Audience:</span> Evaluation and reporting staff, MAL/PALs, prospective partners or decision-makers</p>
+                    <p><span class="ct-label">Strategic purpose:</span> Providing a more detailed, thorough synopsis of a solution and its impact than is possible through other forms of internal reporting, particularly when addressing audiences who need to better understand the procedure and planning behind a solution. Multiple case studies may be needed to adequately cover the full impact of a long-term project.</p>
+                    <p><span class="ct-label">Format:</span> A 2-4 page narrative providing a detailed synopsis of a solution from inception to its impacts, generally focusing on one particular user. Case studies are often expansions of existing use cases</p>
+                    <p><span class="ct-label">What content do you need?:</span></p>
+                    <ul>
+                        <li><em>Some level of sustained use and impact is necessary</em>: a case study should effectively capture a complete life cycle of a project.</li>
+                        <li>Because case studies are deep dives, <em>documentation of impact needs to be fairly thorough</em>.
+                            <ul>
+                                <li>Because case studies are often intended for impact monitoring purposes, specific decisions and quantitative indicators are a must.</li>
+                                <li><em>Thorough user testimony</em> is especially valuable here, both as feedback for MEL audiences and as communications material</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Economic Impact Assessments (EIA)</td>
+                <td>
+                    <p><span class="ct-label">Audience:</span> Prospective partners and decision-makers, Evaluation and reporting staff, broader NASA</p>
+                    <p><span class="ct-label">Strategic purpose:</span> In 2025-26, U.S. policy heavily emphasized on reducing regulatory burdens. EIAs can help prove EO data makes compliance faster and cheaper (e.g: using satellite data to verify land use instead of expensive manual inspections). It is important in justifying how EO data provided acts as a critical economic engine, transforming public investment into measurable societal wealth (not only in $ but also no. of lives saved, etc.) and operational savings for partners and bridge the gap between physical anomaly and human decisions.</p>
+                    <p><span class="ct-label">Format:</span> Analysis (short 2 to 4 pages) – Detailed Reports (long 20 pages or more) – Academic Papers,</p>
+                    <p><span class="ct-label">What content do you need?:</span><br>
+                    Direct Impacts: Number of data downloads, number of active users, API calls etc.<br>
+                    Indirect impacts: Socio-economic data related to the EO data/purpose the EO data is used for.</p>
+                </td>
+            </tr>
+            <tr>
+                <td>Solution Activity Reports (including synthesis reports from listening sessions, needs assessments, trainings, etc.)</td>
+                <td>
+                    <p><span class="ct-label">Audience:</span> Earth Action Leadership, evaluation and reporting staff, partners / decision-makers.</p>
+                    <p><span class="ct-label">Strategic purpose:</span> Provides a detailed summary of an event or activity, which may include an overview and key agenda items, data and findings from the activity, and recommendations and feedback. This report may also include a summary of pre- and post-event evaluation results. The activity report records key information for leadership, partners and solution team members (including reporting staff) about the activity, including what was achieved and lessons learned. For evaluation staff, generally includes feedback from participants and an evaluation of the activity (such as post-event knowledge assessment), which can be useful for assessing progress and efficacy of the activity toward achieving solution outcomes and sustained use.</p>
+                    <p><span class="ct-label">Format:</span> Report of an activity (for instance field studies/research, training event, hackathon, workshop, community engagement event) that is intended to provide an output that contributes to planned solution outcomes. Relatively short (1-5 pages depending on the activity), including background/executive summary, basic details of the event/activity and objectives, along with highlights of what was accomplished, post-event evaluation and feedback, expected outcomes, and potentially next steps/progress toward solution goals.</p>
+                    <p><span class="ct-label">What content do you need?:</span> Agenda, activity notes and actions, results/findings from analyses conducted as part of the activity, feedback collected from participants/beneficiaries, sample questions and evaluation results, along with photos, figures, and target audience/list of participants/demographics.</p>
+                </td>
+            </tr>
+            <tr>
+                <td>Solution Assessment Reports</td>
+                <td>
+                    <p><span class="ct-label">Audience:</span> Earth Action Leadership, Project and Program Managers. Broader NASA ESD community.</p>
+                    <p><span class="ct-label">Strategic purpose:</span> Comprehensively capture what a solution accomplished. This report is prepared upon completion of a solution, once it has transitioned to stakeholders and users. It serves as a final activity report for the full life cycle of the solution, an outline of what was done, what outcomes and objectives were achieved and how, any immediate impacts captured and compilation of lessons learned, best practices, and data to inform future NASA efforts.</p>
+                    <p><span class="ct-label">Format:</span> This is a written report that will closely follow a final report template. It should be 5-20 pages in length depending on the complexity and depth of the solution. It can include the following components: Executive Summary, Overview of Solution Development, Design and Delivery Process (Outputs), Assessment of Goals and Outcomes Achieved, Best Practices and Lessons Learned, and Impact Captured to Date</p>
+                    <p><span class="ct-label">What content do you need?:</span> Final indicator data, activity reports, stakeholder feedback, economic impact assessment data, as relevant, stakeholder and/or user feedback</p>
+                </td>
+            </tr>
+            <tr>
+                <td>NASA blogs</td>
+                <td>
+                    <p><span class="ct-label">Audience:</span> The "science-curious" public (students, early career Earth scientists, NASA enthusiasts, etc.), fellow scientists within and beyond NASA</p>
+                    <p><span class="ct-label">Strategic purpose:</span> Garnering wider visibility, both within and beyond NASA. Specifics vary from one blog to the next, but blogs capture the impact of our work in a format that is better tailored to a wider reach of audiences.</p>
+                    <p><span class="ct-label">Format:</span> Varies. Most short-form entries cap between 700 and 800 words. Some more narrative-focused pages (like Notes from the Field) accommodate longer pieces (up to ~1,500 words). Quality visuals are often required.</p>
+                    <p><span class="ct-label">What content do you need?:</span></p>
+                    <ul>
+                        <li>Individual pages will have more specific requirements, but <em>impacts (or at least strong outcomes)</em> are generally necessary for connecting for reaching wider non-expert audiences. In most cases, impact will generally be more engaging than scientific novelty.</li>
+                        <li><em>Prioritize impacts that can easily be articulated to non-expert audiences</em>. If the goal is wider visibility, the impact needs to be more accessible. Make sure that quotes and statistics are ones that non-experts will understand</li>
+                        <li><em>Good visuals</em> are much more important in external communications. Many pages will require and set standards for visuals, and in some cases (like Earth Observatory's "Image of the Day"), imagery itself is the centerpiece.</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Press releases</td>
+                <td>
+                    <p><span class="ct-label">Audience:</span> External media, NASA OComm</p>
+                    <p><span class="ct-label">Strategic purpose:</span> Reaching the widest possible audience outside of NASA by providing information to news media. Press releases will generally be reserved for the biggest and most impactful accomplishments and events. Press releases should prioritize plain language descriptions. Earth Action press releases will always be prepared in conjunction with the NASA Office of Communications.</p>
+                    <p><span class="ct-label">Format:</span> One page, 300-500 words of plain language, "just the facts" material</p>
+                    <p><span class="ct-label">What content do you need?:</span></p>
+                    <ul>
+                        <li><em>Just the facts</em>. Press releases are for reporting, not narrative communications. They should focus on the who, what, when, where, why</li>
+                        <li><em>Short "about us" boilerplate.</em> Press releases should always include a short paragraph about the program.</li>
+                        <li><em>Prepared quotes</em>. Aside from the facts, press releases typically include 1-2 short quotes from relevant experts or leaders</li>
+                        <li><em>Contact information</em>. Press releases should provide news media with relevant POCs for follow-up stories</li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}

@@ -1,0 +1,782 @@
+{% extends "base.html" %}
+{% block title %}Needs Assessment — Solution Co-Development Toolkit{% endblock %}
+{% block content %}
+<style>
+    .section-intro p { margin-bottom: 0.9rem; line-height: 1.7; }
+
+    /* Subsection styling */
+    .subsection { margin-top: 2.5rem; }
+    .subsection > h2 { color: #0b3d91; border-bottom: 2px solid #00a0b0; padding-bottom: 0.4rem; margin-bottom: 1rem; }
+    .subsection > h3 { color: #1a5276; margin: 1.5rem 0 0.6rem 0; }
+    .subsection p { margin-bottom: 0.9rem; line-height: 1.7; }
+
+    /* Bullet lists */
+    .content-list { margin: 0.4rem 0 1rem 1.5rem; }
+    .content-list li { margin-bottom: 0.4rem; line-height: 1.6; }
+
+    /* Related tools box */
+    .related-box {
+        background: #f0f4f8;
+        border-left: 4px solid #00a0b0;
+        padding: 0.9rem 1.2rem;
+        margin: 1rem 0 1.5rem 0;
+        border-radius: 0 4px 4px 0;
+        font-size: 0.93rem;
+        line-height: 1.7;
+    }
+    .related-box strong { color: #0b3d91; }
+    .related-box ul { margin: 0.4rem 0 0 1.3rem; }
+    .related-box ul li { margin-bottom: 0.3rem; }
+
+    /* Workflow table */
+    .workflow-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1.2rem 0;
+        font-size: 0.85rem;
+    }
+    .workflow-table th {
+        background: #0b3d91;
+        color: #fff;
+        padding: 0.6rem 0.8rem;
+        text-align: left;
+        font-weight: 600;
+        vertical-align: top;
+    }
+    .workflow-table td {
+        padding: 0.7rem 0.8rem;
+        border: 1px solid #c0cfe0;
+        vertical-align: top;
+        line-height: 1.6;
+    }
+    .workflow-table tr:nth-child(odd) td { background: #f5f8fc; }
+    .workflow-table tr:nth-child(even) td { background: #fff; }
+    .workflow-table td:first-child { font-weight: 700; color: #0b3d91; white-space: nowrap; }
+
+    /* Numbered core methods */
+    .methods-numbered { margin: 0.5rem 0 1rem 0; padding: 0; list-style: none; }
+    .methods-numbered li {
+        display: flex;
+        gap: 0.9rem;
+        margin-bottom: 1rem;
+        line-height: 1.65;
+    }
+    .methods-numbered li .num {
+        flex-shrink: 0;
+        width: 26px;
+        height: 26px;
+        background: #0b3d91;
+        color: #fff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.82rem;
+        margin-top: 2px;
+    }
+
+    /* Optional methods */
+    .optional-methods { margin: 0.5rem 0 1rem 0; }
+    .optional-item {
+        border-left: 3px solid #00a0b0;
+        padding: 0.5rem 0 0.5rem 1rem;
+        margin-bottom: 0.8rem;
+        line-height: 1.65;
+    }
+
+    /* Methods tables (picking rules) */
+    .methods-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0.8rem 0 1.5rem 0;
+        font-size: 0.85rem;
+    }
+    .methods-table th {
+        background: #0b3d91;
+        color: #fff;
+        padding: 0.6rem 0.8rem;
+        text-align: left;
+        font-weight: 600;
+        vertical-align: top;
+    }
+    .methods-table td {
+        padding: 0.65rem 0.8rem;
+        border: 1px solid #c0cfe0;
+        vertical-align: top;
+        line-height: 1.6;
+    }
+    .methods-table tr:nth-child(odd) td { background: #f5f8fc; }
+    .methods-table tr:nth-child(even) td { background: #fff; }
+    .methods-table td:first-child { font-weight: 600; }
+
+    /* Rigor level key */
+    .rigor-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+        margin: 1rem 0 1.5rem 0;
+    }
+    .rigor-card {
+        background: #f5f8fc;
+        border: 1px solid #c0cfe0;
+        border-radius: 4px;
+        padding: 0.75rem 1rem;
+        font-size: 0.88rem;
+        line-height: 1.6;
+    }
+    .rigor-card strong { color: #0b3d91; display: block; margin-bottom: 0.2rem; }
+
+    /* Example scenario box */
+    .example-box {
+        background: #f0f9fb;
+        border: 1px solid #00a0b0;
+        border-left: 5px solid #00a0b0;
+        border-radius: 4px;
+        padding: 1rem 1.2rem;
+        margin: 1rem 0 1.5rem 0;
+        font-size: 0.92rem;
+    }
+    .example-box h5 {
+        margin: 0 0 0.6rem 0;
+        color: #0b3d91;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+    .example-box p { margin-bottom: 0.5rem; line-height: 1.65; }
+    .example-box ul { margin: 0.3rem 0 0.5rem 1.2rem; }
+    .example-box ul li { margin-bottom: 0.35rem; line-height: 1.6; }
+
+    /* Theme mapping table */
+    .theme-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0.8rem 0 1.2rem 0;
+        font-size: 0.9rem;
+    }
+    .theme-table th {
+        background: #0b3d91;
+        color: #fff;
+        padding: 0.6rem 0.9rem;
+        text-align: left;
+        font-weight: 600;
+    }
+    .theme-table td {
+        padding: 0.65rem 0.9rem;
+        border: 1px solid #c0cfe0;
+        vertical-align: top;
+        line-height: 1.6;
+    }
+    .theme-table tr:nth-child(odd) td { background: #f5f8fc; }
+    .theme-table tr:nth-child(even) td { background: #fff; }
+
+    /* Prioritization matrix */
+    .priority-matrix {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0 0.5rem 0;
+        font-size: 0.85rem;
+    }
+    .priority-matrix th {
+        background: #0b3d91;
+        color: #fff;
+        padding: 0.6rem 0.8rem;
+        text-align: center;
+        font-weight: 600;
+        border: 1px solid #8090a8;
+    }
+    .priority-matrix th:first-child { text-align: left; }
+    .priority-matrix td {
+        padding: 0.7rem 0.8rem;
+        border: 1px solid #8090a8;
+        vertical-align: middle;
+        line-height: 1.55;
+        font-size: 0.83rem;
+    }
+    .priority-matrix td:first-child { font-weight: 700; background: #e8eef5; color: #0b3d91; }
+    .cell-dark-green { background: #1a7a3a !important; color: #fff; }
+    .cell-green { background: #2ecc71 !important; color: #fff; }
+    .cell-light-green { background: #a8e6bf !important; color: #1a4a2a; }
+    .cell-yellow-dark { background: #f39c12 !important; color: #fff; }
+    .cell-yellow { background: #f7dc6f !important; color: #555; }
+    .cell-yellow-light { background: #fdeaa0 !important; color: #555; }
+    .cell-red-dark { background: #c0392b !important; color: #fff; }
+    .cell-red { background: #e74c3c !important; color: #fff; }
+    .cell-red-light { background: #f1948a !important; color: #fff; }
+
+    .priority-legend {
+        display: flex;
+        gap: 1.5rem;
+        margin: 0.5rem 0 1.5rem 0;
+        flex-wrap: wrap;
+        font-size: 0.85rem;
+    }
+    .legend-item { display: flex; align-items: center; gap: 0.4rem; }
+    .legend-swatch {
+        width: 16px;
+        height: 16px;
+        border-radius: 3px;
+        flex-shrink: 0;
+    }
+
+    /* Interview guide subsections */
+    .guide-principle {
+        margin-bottom: 1.4rem;
+    }
+    .guide-principle h4 {
+        color: #0b3d91;
+        margin: 0 0 0.5rem 0;
+        font-size: 0.95rem;
+        border-left: 3px solid #00a0b0;
+        padding-left: 0.6rem;
+    }
+    .guide-principle ul { margin: 0.3rem 0 0 1.4rem; }
+    .guide-principle ul li { margin-bottom: 0.45rem; line-height: 1.65; }
+
+    /* Interview prompts table */
+    .prompts-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0 1.5rem 0;
+        font-size: 0.84rem;
+    }
+    .prompts-table th {
+        background: #0b3d91;
+        color: #fff;
+        padding: 0.6rem 0.8rem;
+        text-align: left;
+        font-weight: 600;
+        vertical-align: top;
+    }
+    .prompts-table td {
+        padding: 0.7rem 0.8rem;
+        border: 1px solid #c0cfe0;
+        vertical-align: top;
+        line-height: 1.6;
+    }
+    .prompts-table tr:nth-child(odd) td { background: #f5f8fc; }
+    .prompts-table tr:nth-child(even) td { background: #fff; }
+    .prompts-table td:first-child { font-weight: 600; color: #0b3d91; }
+    .prompts-table ul { margin: 0.3rem 0 0 1.1rem; padding: 0; }
+    .prompts-table ul li { margin-bottom: 0.3rem; }
+    .prompts-table em { color: #555; }
+
+    .page-note {
+        font-size: 0.8rem;
+        color: #888;
+        text-align: right;
+        margin-top: 0.5rem;
+        font-style: italic;
+    }
+</style>
+
+<div class="page-header">
+    <div class="section-tag">Section 6</div>
+    <h1>Needs Assessment</h1>
+</div>
+
+<div class="section-intro">
+    <h2>Purpose:</h2>
+    <p>This is a rapid, activity-level tool that helps NASA teams capture, clarify, and prioritize the needs, challenges, decision contexts, and constraints of key user groups identified in the stakeholder mapping step. The goal is to produce a clear and actionable snapshot of what users need from a potential EO-enabled solution. The tool provides:</p>
+    <ul class="content-list">
+        <li>A structured way to map user tasks and decision points.</li>
+        <li>A lightweight method to identify gaps between current practice and desired outcomes.</li>
+        <li>A rapid synthesis of constraints, including technical, institutional, policy, cultural and social factors.</li>
+        <li>Clear priorities for what the solution must do, should do, and should not attempt to do.</li>
+    </ul>
+    <p>Needs assessment is vital because projects frequently move into solution design before fully understanding user realities and clearly articulated needs. This tool helps NASA teams:</p>
+    <ul class="content-list">
+        <li>Clearly articulate the problem or challenge the solution is intended to address</li>
+        <li>Clarify core user tasks, decisions, and pain points.</li>
+        <li>Identify non-negotiable requirements and practical constraints.</li>
+        <li>Distinguish between expressed wants and actual functional needs.</li>
+        <li>Understand how EO data could integrate, improve, or disrupt existing workflows.</li>
+        <li>Reduce risks of misalignment, over-engineering, or building tools users cannot adopt.</li>
+    </ul>
+</div>
+
+<div class="subsection">
+    <h2>How and When To Use this Tool:</h2>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 46</p>
+    <p>The Needs Assessment Tool is used after completing the Stakeholder Mapping process. Use the Needs Assessment Template for each priority group to capture:</p>
+    <ul class="content-list">
+        <li>A list of priority user needs, gaps, and pain points</li>
+        <li>A summary of workflow constraints and barriers to EO integration</li>
+        <li>A first-pass set of functional EO needs</li>
+        <li>A clear list of design implications and "do/do not" guidance</li>
+        <li>Inputs for problem statements, co-design, and technical scoping</li>
+    </ul>
+
+    <div class="related-box">
+        <strong>How does this relate to other tools in the Toolkit?</strong><br>
+        This tool complements and depends on the Solution Stakeholder Mapping and Analysis Tool.
+        <ul>
+            <li>Stakeholder Mapping → identifies who to talk to and priorities for engagement.</li>
+            <li>Needs Assessment → identifies user needs and decision pathways.</li>
+        </ul>
+        Together, they supply the inputs required for <strong>Phase 2 - Technical Co-Development</strong>.
+    </div>
+</div>
+
+<div class="subsection">
+    <h2>Workflow, Roles &amp; Timeline</h2>
+    <p>Workflow, roles and timeline estimated based on steps and guidance captured in Needs Assessment Template with Step-by-Step Guidance</p>
+
+    <table class="workflow-table">
+        <thead>
+            <tr>
+                <th>Step</th>
+                <th>Activity</th>
+                <th>Led By</th>
+                <th>Duration</th>
+                <th>Output</th>
+                <th>Notes</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Step 1</td>
+                <td>Identify &amp; prioritize user groups</td>
+                <td>Needs Assessment Lead + EO Specialist</td>
+                <td>1–2 days</td>
+                <td>Prioritized user list + decision contexts</td>
+                <td>Use Stakeholder Mapping outp Define role, decision type, ope rhythm, EO literacy.</td>
+            </tr>
+            <tr>
+                <td>Step 2</td>
+                <td>Map tasks &amp; current workflow (interviews + walkthroughs)</td>
+                <td>Engagement Lead + EO Specialist</td>
+                <td>3–10 days</td>
+                <td>Workflow snapshots + pain points log</td>
+                <td>Use semi-structured interview prompts. Capture workflow step → decision → consequence.</td>
+            </tr>
+            <tr>
+                <td>Step 3</td>
+                <td>Identify needs &amp; decision friction</td>
+                <td>Needs Assessment Lead</td>
+                <td>2–3 days</td>
+                <td>Categorized needs (3–7 per user group) + initial priorities</td>
+                <td>Group recurring patterns. Prioritize (High/Med/Low or Do Now/Do Next). Complete Assessment Check before moving forward.</td>
+            </tr>
+            <tr>
+                <td>Step 4</td>
+                <td>Identify institutional &amp; feasibility constraints</td>
+                <td>Technical Lead + Engagement Lead</td>
+                <td>1–2 days</td>
+                <td>Constraints log (technical, institutional, cultural, access, intermediary, team/science)</td>
+                <td>Apply feasibility lens. Distinguish user frustrations from structural realities.</td>
+            </tr>
+            <tr>
+                <td>Step 5</td>
+                <td>Translate needs into draft EO requirements</td>
+                <td>EO Specialist</td>
+                <td>2–3 days</td>
+                <td>Draft EO attributes + delivery requirements</td>
+                <td>Define minimum viable spatial/temporal/latency/format attributes. Link each to a priority need.</td>
+            </tr>
+            <tr>
+                <td>Step 6</td>
+                <td>Validate draft snapshot with user group</td>
+                <td>Needs Assessment Lead</td>
+                <td>2–3 days</td>
+                <td>Reviewed and refined needs + requirements</td>
+                <td>Quick validation call/workshop. Confirm priorities, usability, constraints. Not a full co-design session.</td>
+            </tr>
+            <tr>
+                <td>Step 7</td>
+                <td>Finalize Needs Assessment Snapshot</td>
+                <td>Core Team</td>
+                <td>1–2 days</td>
+                <td>Phase 1 Needs Assessment Summary</td>
+                <td>Capture top needs, workflow implications, feasibility guardrails, EO opportunity areas. Input to Phase 2 planning.</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="subsection">
+    <h2>Assessment Methods and User Data Collection</h2>
+    <p>A needs assessment requires structured data collection and analysis with user groups. To do this effectively, project teams must make deliberate choices about which engagement and analysis methods to prioritize. The guidance below highlights the most common data-collection approaches and provides recommendations for selecting and applying them. As you consider these methods, also determine if your team requires additional expertise.</p>
+
+    <h3>Core Methods</h3>
+    <p>These methods are high-priority for typical user needs assessments (balance of reach, speed, and insight). Depending on the scale and scope of the proposed solution, usually two or more of these methods will be used.</p>
+
+    <ol class="methods-numbered">
+        <li>
+            <span class="num">1</span>
+            <span><strong>Surveys &amp; Questionnaires</strong> — Short structured instruments used to reach many respondents quickly and quantify needs, attitudes, or constraints. Best for reaching many respondents quickly, measuring prevalence of needs/attitudes, and stratifying by user type. <em>Note: shorter surveys (under 2 mins.) receive the most feedback.</em></span>
+        </li>
+        <li>
+            <span class="num">2</span>
+            <span><strong>Focus Groups</strong> — Small facilitated discussions (5–8 people) to explore shared priorities, reactions, and tradeoffs. Excellent for surfacing shared priorities, testing reaction to proposed features, and exploring tradeoffs among user segments.</span>
+        </li>
+        <li>
+            <span class="num">3</span>
+            <span><strong>Discovery Interviews</strong> — Semi-structured one-on-one conversations to understand motivations, pain points, decision contexts, and edge cases. Deep, qualitative understanding of user motivations, decision contexts, and edge cases.</span>
+        </li>
+        <li>
+            <span class="num">4</span>
+            <span><strong>Workflow Walkthroughs</strong> — A step-by-step review of how tasks are performed, what information is used, and where decisions happen. Converts user descriptions into concrete steps, decisions, and data inputs — essential for mapping requirements to operational reality.</span>
+        </li>
+    </ol>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 48</p>
+
+    <h3>Optional</h3>
+    <p>Use when resources, context, or the research questions require additional data collection.</p>
+
+    <div class="optional-methods">
+        <div class="optional-item"><strong>Observation / Shadowing</strong> — Watching users perform real tasks to understand actual behaviors, workarounds, and contextual influences. Adds behavioral validation (what users actually do vs what they say). Use when tasks are observable and context matters.</div>
+        <div class="optional-item"><strong>Document &amp; System Review</strong> — Review of Statements of Purpose, policies, workflows, dashboards, reports, and existing systems. Low-cost triangulation against statements of purpose, reports, and existing dashboards. Good early step to avoid reinventing the wheel.</div>
+        <div class="optional-item"><strong>Usage Analytics (if available)</strong> — Quantitative logs or metrics showing how users interact with digital tools or dashboards (requires logs/dashboards/login, etc).</div>
+        <div class="optional-item"><strong>Participatory Mapping</strong> — User-led mapping of spatial relationships, hazards, resources, or decision environments. Highly valuable when geography or spatial relationships are central to the project (hazard exposure, resource access).</div>
+    </div>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 49</p>
+</div>
+
+<div class="subsection">
+    <h2>Practical Rules for Picking Methods:</h2>
+
+    <h3>Core Methods</h3>
+    <table class="methods-table">
+        <thead>
+            <tr>
+                <th>Method</th>
+                <th>Most Useful in Step(s)</th>
+                <th>Rationale</th>
+                <th>Level of Support &amp; Design Rigor</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Surveys &amp; Questionnaires</td>
+                <td>Step 3, Step 6</td>
+                <td>Good for capturing broad decision context, validating needs and gaps at scale (Step 3), and summarizing/validating findings (Step 6).</td>
+                <td>Level 1–2 depending on scope and analysis depth</td>
+            </tr>
+            <tr>
+                <td>Focus Groups</td>
+                <td>Step 3, Step 6</td>
+                <td>Effective for surfacing tradeoffs, shared challenges, and collective priorities. Requires structured facilitation to avoid dominance bias.</td>
+                <td>Level 2–3 recommended</td>
+            </tr>
+            <tr>
+                <td>Discovery Interviews</td>
+                <td>Step 1, Step 2, Step 3, Step 4</td>
+                <td>Foundational method for understanding decision context, authority, workflow logic, and constraints. Can range from structured stakeholder conversations to coded qualitative interviews.</td>
+                <td>Level 1–3 depending on depth</td>
+            </tr>
+            <tr>
+                <td>Workflow Walkthroughs</td>
+                <td>Step 2, Step 3, Step 4</td>
+                <td>Essential for mapping tasks, identifying friction points, and uncovering indirect needs or feasibility barriers. Can be conducted informally or as structured task analysis.</td>
+                <td>Level 2–3 recommended</td>
+            </tr>
+        </tbody>
+    </table>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 50</p>
+
+    <h3>Optional Methods</h3>
+    <table class="methods-table">
+        <thead>
+            <tr>
+                <th>Method</th>
+                <th>Most Useful Step(s)</th>
+                <th>Rationale</th>
+                <th>Level of Support &amp; Design Rigor*</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Observation / Shadowing</td>
+                <td>Step 2, Step 3, Step 4</td>
+                <td>Captures tacit behaviors, real bottlenecks, and informal adaptations not always surfaced in interviews. Particularly valuable when workflow reliability is critical.</td>
+                <td>Level 3 recommended</td>
+            </tr>
+            <tr>
+                <td>Document &amp; System Review</td>
+                <td>Step 1, Step 2, Step 4</td>
+                <td>Establishes baseline workflows, policies, tools, and technical constraints. Often a low-burden but high-value method.</td>
+                <td>Level 1</td>
+            </tr>
+            <tr>
+                <td>Usage Analytics</td>
+                <td>Step 2, Step 3, Step 4</td>
+                <td>Reveals actual behavior patterns and performance constraints where existing platforms or logs exist. Complements qualitative insights.</td>
+                <td>Level 2</td>
+            </tr>
+            <tr>
+                <td>Participatory Mapping</td>
+                <td>Step 1, Step 3, Step 6</td>
+                <td>Valuable when spatial variation or geographic equity is central. Supports user identification, needs articulation, and synthesis.</td>
+                <td>Level 2–4 depending on scale and sensitivity</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Level of Support &amp; Design Rigor Key:</h3>
+    <div class="rigor-grid">
+        <div class="rigor-card">
+            <strong>Level 1 — Structured Engagement</strong>
+            Can be implemented with clear templates and facilitation guides.<br>
+            Minimal specialized training required.
+        </div>
+        <div class="rigor-card">
+            <strong>Level 2 — Applied Social Research</strong>
+            Requires basic qualitative or survey analysis skills and structured synthesis.
+        </div>
+        <div class="rigor-card">
+            <strong>Level 3 — Advanced Facilitation &amp; Analysis</strong>
+            Benefits from experience in qualitative coding, group facilitation, or mixed-methods design.
+        </div>
+        <div class="rigor-card">
+            <strong>Level 4 — Specialized Expertise</strong>
+            May require trained social scientists or advanced methodological tools.
+        </div>
+    </div>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 51</p>
+</div>
+
+<div class="subsection">
+    <h2>Data Analysis Guidance</h2>
+    <p>This guidance builds on social science methods. However, the goal here is not academic research, but to identify patterns that affect decision performance. Therefore, this guidance has been adjusted accordingly.</p>
+
+    <h3>1. From Notes to Codes</h3>
+    <p>Following interviews or walkthroughs, analysts should review their notes to identify recurring issues, workarounds, constraints, and desired improvements. These observations should be translated into short, descriptive labels ("codes") that capture the essence of the issue.</p>
+    <p>Codes might reflect:</p>
+    <ul class="content-list">
+        <li>A friction point ("data arrives too late")</li>
+        <li>A workaround ("manual spreadsheet tracking")</li>
+        <li>A desired state ("clear trigger thresholds")</li>
+        <li>A constraint ("approval takes 3 days")</li>
+    </ul>
+
+    <div class="example-box">
+        <h5>Example Scenario</h5>
+        <p><strong>Context:</strong> Interviews with regional flood managers</p>
+        <p><strong>Raw Notes → Codes</strong></p>
+        <ul>
+            <li>"We get satellite updates after the leadership briefing." → <em>Data latency</em></li>
+            <li>"We double-check forecasts against three sources." → <em>Verification burden</em></li>
+            <li>"I'm not sure what rainfall amount triggers road closure." → <em>Threshold ambiguity</em></li>
+            <li>"We wait for state confirmation before issuing alerts." → <em>Approval dependency</em></li>
+        </ul>
+    </div>
+
+    <h3>2. Group Codes Into Themes</h3>
+    <p>Codes should then be clustered into broader themes that represent consistent patterns across users or workflows. Each theme should reflect a meaningful condition that affects decision-making.</p>
+    <p>For instance:</p>
+    <ul class="content-list">
+        <li>Timing-related issues → <em>Decision-ready timing</em></li>
+        <li>Threshold uncertainty and verification effort → <em>Clear, defensible thresholds</em></li>
+        <li>Approval delays → <em>Authority clarity</em></li>
+    </ul>
+    <p>Aim to identify 3–7 themes per user group.</p>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 52</p>
+
+    <h3>3. Map Themes to Workflow &amp; Decisions</h3>
+    <p>Each theme should be mapped to where it appears in the workflow and which decision it influences. The analysis should also identify the consequence if the need is unmet.</p>
+    <p>For each theme, ask:</p>
+    <ul class="content-list">
+        <li>Where does this appear in the workflow?</li>
+        <li>What decision does it affect?</li>
+        <li>What happens if unmet?</li>
+    </ul>
+
+    <div class="example-box">
+        <h5>Example</h5>
+        <table class="theme-table">
+            <thead>
+                <tr>
+                    <th>Theme</th>
+                    <th>Decision Affected</th>
+                    <th>Consequence if unmet</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Decision-ready timing</td>
+                    <td>Response activation</td>
+                    <td>Delayed mobilization</td>
+                </tr>
+                <tr>
+                    <td>Clear thresholds</td>
+                    <td>Road closure</td>
+                    <td>Over/under reaction</td>
+                </tr>
+                <tr>
+                    <td>Authority clarity</td>
+                    <td>Public alert issuance</td>
+                    <td>Conflicting messages</td>
+                </tr>
+            </tbody>
+        </table>
+        <p style="margin:0.4rem 0 0 0; font-size:0.88rem; color:#555;">If a theme cannot be mapped to a decision, it may be low priority or insufficiently defined.</p>
+    </div>
+
+    <h3>4. Prioritization (Value vs. Feasibility)</h3>
+    <p>The final step in turning findings into actionable design decisions involves prioritization. To achieve this, use the table below to rate each need according to value (impact on decision, burden reduction) and feasibility (technical, data, partner constraints). The result should help prioritize findings and inform priorities and workflow. <em>Note: validating the findings with stakeholders is always a good idea and can help further clarify where the analysis may have been misleading or inadequate.</em></p>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 53</p>
+    <p>Output: Prioritized list (Do now / Do next / Nice to have / Avoid).</p>
+
+    <table class="priority-matrix">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Low feasibility</th>
+                <th>Medium feasibility</th>
+                <th>High feasibility</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>High value</strong></td>
+                <td class="cell-yellow-dark">High Impact / Low Feasibility<br><em>"Challenging but <strong>Important</strong>"</em><br>(evaluate for more feasible alternatives)</td>
+                <td class="cell-light-green">High Impact / Medium Feasibility<br><em>"Wins worth the extra effort"</em></td>
+                <td class="cell-dark-green">High Impact / High Feasibility<br><em>"Major Wins" and "Quick Wins"</em></td>
+            </tr>
+            <tr>
+                <td><strong>Medium value</strong></td>
+                <td class="cell-red">Medium Impact / Low Feasibility<br><em>"Mostly Avoid"</em></td>
+                <td class="cell-yellow">Medium Impact / Medium Feasibility<br><em>"Nice to Have"</em></td>
+                <td class="cell-green">Medium Impact / High Feasibility<br><em>"Valuable Wins"</em></td>
+            </tr>
+            <tr>
+                <td><strong>Low value</strong></td>
+                <td class="cell-red-dark">Low Impact / Low Feasibility<br><em>"Avoid"</em></td>
+                <td class="cell-red-light">Medium Feasibility Low Impact<br><em>"Mostly Avoid"</em></td>
+                <td class="cell-yellow-light">Low Impact / High Feasibility<br><em>"Optional, Easy Wins if Resources Allow"</em></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="priority-legend">
+        <div class="legend-item"><div class="legend-swatch" style="background:#1a7a3a;"></div> High Priority, "Do Now" (dark green = highest priority)</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#f7dc6f; border:1px solid #ccc;"></div> Medium Priority, "Do Next" or "Nice to Have"</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#c0392b;"></div> Avoid / look for other means of achieving value (darker red = lowest priority)</div>
+    </div>
+</div>
+
+<div class="subsection">
+    <h2>Interview Guide and Sample Prompts</h2>
+    <p>This interview guide is grounded in established social science methods, including semi-structured interviews, critical incident recall, and workflow elicitation. These approaches are shown to surface key information about barriers, needs, and opportunities that structured questionnaires often miss. As with obtaining any personalized data, it is key to establish trust and transparency about how the information will be used so participants know they can speak honestly. The following approach can help to capture accurate, decision-relevant insights that can be translated into actionable requirements.</p>
+
+    <h3>For Interviewers: Creating a Productive Conversation</h3>
+    <p>Approach interviews as open, collaborative conversations. Begin with concrete examples, allow participants to fully finish their thoughts, and follow what feels most important to them rather than rigidly adhering to the guide. When people sense that you are genuinely listening, rather than evaluating their performance or selling a product or service, they are more likely to share uncertainty, workarounds, and real constraints. These moments often yield the most valuable insights, revealing the needs, boundaries, and non-negotiables that should shape any eventual solution.</p>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 54</p>
+
+    <div class="guide-principle">
+        <h4>Set the Tone: Listen Before You Solve</h4>
+        <ul>
+            <li><strong>Anchor the conversation in lived experience.</strong> Invite participants to walk through recent, specific situations rather than asking them to assess needs in the abstract.</li>
+            <li><strong>Hold back on proposing solutions early.</strong> Allow interviewees to describe challenges fully before introducing any tools, datasets, or capabilities—this helps avoid biasing responses toward pre-defined answers.</li>
+            <li><strong>Signal curiosity, not evaluation or judgement.</strong> Make it clear you are there to learn, not to judge performance or validate a proposed approach.</li>
+        </ul>
+    </div>
+
+    <div class="guide-principle">
+        <h4>Let the Conversation Flow (With Purpose)</h4>
+        <ul>
+            <li><strong>Use the guide as a compass, not a script.</strong> Follow meaningful threads and ask follow-up questions when they surface important context or insight.</li>
+            <li><strong>Go deep where it counts.</strong> Spending time unpacking a few concrete examples is often more valuable than trying to cover every topic.</li>
+            <li><strong>Leave space for participants' ideas.</strong> Their suggestions for tools or data may differ from—and improve upon—initial assumptions.</li>
+        </ul>
+    </div>
+
+    <div class="guide-principle">
+        <h4>Pay Attention to What People Do, Not Just What They Say</h4>
+        <ul>
+            <li><strong>Look beyond stated preferences.</strong> Compare what participants' stated wants against how their workflows actually operate and where workarounds appear.</li>
+            <li><strong>Surface constraints explicitly.</strong> Ask about policies, approvals, capacity, timelines, and institutional limits—needs that ignore constraints are rarely actionable.</li>
+            <li><strong>Listen for uncertainty and friction.</strong> Moments of hesitation often reveal the most important design considerations.</li>
+        </ul>
+    </div>
+
+    <div class="guide-principle">
+        <h4>Sense-Check Assumptions as You Learn</h4>
+        <ul>
+            <li><strong>Question whether EO is truly the bottleneck.</strong> Sometimes the key insight is that data access isn't the limiting factor—and that finding is still critical.</li>
+            <li><strong>Triangulate across interviews.</strong> Validate emerging patterns by checking for consistency across roles, organizations, and observed practices.</li>
+            <li><strong>Accept partial coverage.</strong> It's okay if not every question is answered in every interview; coherence across interviews matters more than completeness within</li>
+        </ul>
+    </div>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 55</p>
+
+    <h3>Interview Prompts</h3>
+    <p>This is a menu of prompts — not a script. Use what fits the conversation. The goal is to surface decision context, needs, gaps, constraints, and priorities.</p>
+
+    <table class="prompts-table">
+        <thead>
+            <tr>
+                <th>Section</th>
+                <th>Purpose</th>
+                <th>Core Prompt</th>
+                <th>Optional Follow-Ups / What to Listen For</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1. Ground the Conversation in Real Work</td>
+                <td>Establish role, authority, and decision context (Supports Steps 1–3)</td>
+                <td>"To get us oriented—can you tell me about your role and the kinds of decisions you're involved in? Which of these depend on satellite-based or geospatial data?"</td>
+                <td>Listen for: decision authority, frequency, operational rhythm, data familiarity</td>
+            </tr>
+            <tr>
+                <td>2. Walk Through a Recent Decision</td>
+                <td>Anchor discussion in real workflow (Backbone of needs assessment)</td>
+                <td>"Think back to the last time you had to [insert decision]. Can you walk me through how you made it?"</td>
+                <td>What triggered the decision? • What information came first? • Where did it come from? • Who was involved? • Where did things slow down? <em>Listen for decision points, not perfect timelines.</em></td>
+            </tr>
+            <tr>
+                <td>3. Surface Gaps (Indirectly)</td>
+                <td>Identify needs &amp; pain points (Step 3)</td>
+                <td>"As you worked through that decision, what difficulties did you encounter?"</td>
+                <td>Moments of guessing? • Data arriving too late? • Information hard to interpret or explain? <em>Listen for latency, ambiguity, verification burden, workarounds.</em></td>
+            </tr>
+            <tr>
+                <td>4. Explore EO / Geospatial Use</td>
+                <td>Understand NASA relevance &amp; fit-for-use</td>
+                <td>"What maps, satellite data, or geospatial products did you use?"</td>
+                <td>If used: what was helpful? What steps made it usable? If not used: Why not? <em>Listen for availability vs. usability vs. integration barriers.</em></td>
+            </tr>
+            <tr>
+                <td>5. Surface Workarounds</td>
+                <td>Identify hidden "must-have" requirements</td>
+                <td>"When things don't quite line up, how do you work around it?"</td>
+                <td>If the workaround disappeared, what would happen? <em>Workarounds often reveal high-value needs.</em></td>
+            </tr>
+            <tr>
+                <td>6. Clarify What 'Useful' Means</td>
+                <td>Define scale, timing, and format without technical interrogation</td>
+                <td>"When you're making this decision, what does 'useful' information look like?"</td>
+                <td>Detail level? Timeliness? Format? Delivery method?</td>
+            </tr>
+            <tr>
+                <td>7. Understand Confidence &amp; Comfort</td>
+                <td>Gauge adoption likelihood (trust without saying "trust")</td>
+                <td>"How confident do you feel using this information to justify a decision?"</td>
+                <td>When do you hesitate? Is it easy to explain to others where it came from?</td>
+            </tr>
+            <tr>
+                <td>8. Surface Constraints Naturally</td>
+                <td>Capture feasibility realities (Step 4)</td>
+                <td>"Are there things that make it hard to change how this work is done—even if better tools existed?"</td>
+                <td>Approval processes • Staff capacity • Infrastructure • Policy/legal limits</td>
+            </tr>
+            <tr>
+                <td>9. Shift to Priorities</td>
+                <td>Direct input for must / should / should-not</td>
+                <td>"If we could only improve one part of this process, what would make the biggest difference?"</td>
+                <td>What sounds nice but not worth the effort? • What would you worry about a new solution overdoing?</td>
+            </tr>
+            <tr>
+                <td>10. Close the Loop</td>
+                <td>Validation &amp; stakeholder expansion</td>
+                <td>"Does this reflect your experience?" "Is there anything we missed?" "Who else should we talk to?"</td>
+                <td>Ask if they're willing to review a short summary later.</td>
+            </tr>
+        </tbody>
+    </table>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 56–57</p>
+</div>
+{% endblock %}

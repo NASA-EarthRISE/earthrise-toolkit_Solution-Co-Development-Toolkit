@@ -1,0 +1,340 @@
+{% extends "base.html" %}
+{% block title %}User-Centered Design — Solution Co-Development Toolkit{% endblock %}
+{% block content %}
+<style>
+    .section-intro p { margin-bottom: 0.9rem; line-height: 1.7; }
+
+    /* Subsection styling */
+    .subsection { margin-top: 2.5rem; }
+    .subsection > h2 { color: #0b3d91; border-bottom: 2px solid #00a0b0; padding-bottom: 0.4rem; margin-bottom: 1rem; }
+    .subsection > h3 { color: #1a5276; margin: 1.5rem 0 0.6rem 0; }
+    .subsection p { margin-bottom: 0.9rem; line-height: 1.7; }
+
+    /* Bullet lists */
+    .content-list { margin: 0.4rem 0 1rem 1.5rem; }
+    .content-list li { margin-bottom: 0.4rem; line-height: 1.6; }
+
+    /* Phase grid */
+    .phases-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.75rem;
+        margin: 1.5rem 0;
+    }
+    .phase-card {
+        border-radius: 6px;
+        padding: 1rem;
+        font-size: 0.88rem;
+    }
+    .phase-card h4 { margin: 0 0 0.6rem 0; font-size: 0.9rem; color: #0b3d91; }
+    .phase-card ul { margin: 0; padding-left: 1.1rem; }
+    .phase-card ul li { margin-bottom: 0.3rem; line-height: 1.5; }
+    .phase-1 { background: #cce0f5; outline: 2px solid #c0392b; }
+    .phase-2 { background: #c8dff5; }
+    .phase-3 { background: #d4edda; }
+    .phase-4 { background: #d5eddf; }
+
+    /* Phase usage bullets */
+    .phase-usage {
+        margin: 0.5rem 0 1rem 0;
+        padding: 0;
+        list-style: none;
+    }
+    .phase-usage li {
+        display: flex;
+        gap: 0.7rem;
+        margin-bottom: 0.55rem;
+        line-height: 1.6;
+        font-size: 0.93rem;
+    }
+    .phase-usage li::before {
+        content: "▸";
+        color: #00a0b0;
+        flex-shrink: 0;
+        font-size: 0.85rem;
+        margin-top: 2px;
+    }
+
+    /* "UCD shapes" bullet list */
+    .shapes-list {
+        margin: 0.5rem 0 1rem 1.5rem;
+        columns: 2;
+        column-gap: 2rem;
+    }
+    .shapes-list li { margin-bottom: 0.4rem; line-height: 1.6; break-inside: avoid; }
+
+    /* Callout box */
+    .callout-box {
+        background: #f0f4f8;
+        border-left: 4px solid #00a0b0;
+        padding: 0.9rem 1.2rem;
+        margin: 1rem 0 1.5rem 0;
+        border-radius: 0 4px 4px 0;
+        font-size: 0.95rem;
+        line-height: 1.7;
+        font-style: italic;
+        color: #1a3a5c;
+    }
+
+    /* Persona reference note */
+    .ref-note {
+        background: #e8f4fb;
+        border: 1px dashed #00a0b0;
+        border-radius: 4px;
+        padding: 0.6rem 1rem;
+        margin: 0 0 1.2rem 0;
+        font-size: 0.9rem;
+        font-style: italic;
+        color: #1a5276;
+    }
+
+    /* What they are / are not table */
+    .persona-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1.2rem 0 1rem 0;
+        font-size: 0.9rem;
+    }
+    .persona-table th {
+        background: #0b3d91;
+        color: #fff;
+        padding: 0.65rem 1rem;
+        text-align: left;
+        font-weight: 600;
+    }
+    .persona-table td {
+        padding: 0.7rem 1rem;
+        border: 1px solid #c0cfe0;
+        vertical-align: top;
+        line-height: 1.6;
+    }
+    .persona-table tr:nth-child(odd) td { background: #f5f8fc; }
+    .persona-table tr:nth-child(even) td { background: #fff; }
+    .persona-table td:first-child {
+        border-right: 2px solid #0b3d91;
+    }
+
+    /* Numbered 4-step process */
+    .steps-list {
+        margin: 1rem 0 1.5rem 0;
+        padding: 0;
+        list-style: none;
+        counter-reset: steps;
+    }
+    .steps-list li {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        line-height: 1.65;
+        counter-increment: steps;
+    }
+    .steps-list li .step-num {
+        flex-shrink: 0;
+        width: 30px;
+        height: 30px;
+        background: #0b3d91;
+        color: #fff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.85rem;
+        margin-top: 2px;
+    }
+
+    /* Decision-readiness summary box */
+    .summary-box {
+        background: #e8f0fa;
+        border: 1px solid #b0c8e8;
+        border-left: 5px solid #0b3d91;
+        border-radius: 4px;
+        padding: 1.2rem 1.4rem;
+        margin: 1.5rem 0;
+        font-size: 0.93rem;
+        line-height: 1.7;
+    }
+    .summary-box p { margin-bottom: 0.7rem; }
+    .summary-box p:last-child { margin-bottom: 0; }
+
+    .page-note {
+        font-size: 0.8rem;
+        color: #888;
+        text-align: right;
+        margin-top: 0.5rem;
+        font-style: italic;
+    }
+
+    hr.section-rule {
+        border: none;
+        border-top: 1px solid #d0dae8;
+        margin: 2rem 0;
+    }
+</style>
+
+<div class="page-header">
+    <div class="section-tag">Section 8</div>
+    <h1>User-Centered Design</h1>
+</div>
+
+<div class="section-intro">
+    <h2>Purpose:</h2>
+    <p>User-centered design (UCD) is a structured, evidence-based approach to solution development that <em>ensures systems are designed around the real-world needs, decision contexts, and constraints of the people who use them</em>. Grounded in human–computer interaction research, UCD emphasizes iterative engagement with users to ensure that solutions are usable, useful, and aligned with operational realities.</p>
+    <p>In applied Earth science, UCD bridges scientific capability and decision support. High-quality data or applications generate impact only when they are interpreted, trusted, and used to inform action within defined authority structures and time constraints. UCD therefore translates validated stakeholder and workflow insights into concrete design requirements and testable hypotheses about how improved information delivery can influence decision behavior and contribute to measurable outcomes and impacts. UCD is built upon human-system principles, which pivot on designing tools and technologies to function effectively within the roles of constraints specific to the people who use them.</p>
+</div>
+
+<div class="subsection">
+    <h2>Why is UCD Relevant to NASA?</h2>
+    <p>NASA has long applied related human-systems and usability principles in mission design, flight and ground operations, and safety-critical environments, where threshold clarity (clear conditions that trigger action), interaction flow (how users move through information to act), and decision support directly affect performance. Within applied Earth science, UCD extends this discipline to EO-enabled applications and services, ensuring that solutions are not only technically sound, but decision-ready. Studies of EO-based decision support highlight that credibility, salience, and workflow fit determine whether information is acted upon.</p>
+    <p>UCD operationalizes stakeholder and workflow insights by defining how a solution must function to influence real-world decisions. It ensures that technical development remains aligned with decision timing, authority structures, usability constraints, and intended behavioral change across all phases of co-development.</p>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 68</p>
+</div>
+
+<div class="subsection">
+    <h2>How and When to Use This Tool:</h2>
+
+    <div class="phases-grid">
+        <div class="phase-card phase-1">
+            <h4>Phase 1: Assessing Needs &amp; Potential Impact</h4>
+            <ul>
+                <li>Identify stakeholders</li>
+                <li>Assess user needs, constraint, and decision context</li>
+                <li>Define problem and opportunity for impact</li>
+            </ul>
+        </div>
+        <div class="phase-card phase-2">
+            <h4>Phase 2: Solution Co-Design</h4>
+            <ul>
+                <li>Co-design solution concepts</li>
+                <li>Define requirements and success metrics</li>
+                <li>Plan implementation and sustainability</li>
+            </ul>
+        </div>
+        <div class="phase-card phase-3">
+            <h4>Phase 3: Prototyping and Co-Development</h4>
+            <ul>
+                <li>Build and test prototypes</li>
+                <li>Conduct user testing and iteration</li>
+                <li>Prepare data, workflows, and trainings</li>
+            </ul>
+        </div>
+        <div class="phase-card phase-4">
+            <h4>Phase 4: Transition and Impact Assessment</h4>
+            <ul>
+                <li>Deploy and transition ownership</li>
+                <li>Collect evidence of use and impact</li>
+                <li>Plan for scaling, replication, and long-term uptake</li>
+            </ul>
+        </div>
+    </div>
+
+    <p>UCD considerations begin at the start of a project, but remain relevant across all phases of co-development:</p>
+    <ul class="phase-usage">
+        <li>In early phases, it clarifies what must change in decision behavior.</li>
+        <li>During prototyping, it structures interaction and <em>threshold logic</em>, or the level to which a solution makes clear when the user should take a specific action (like when to trigger a disaster alert).</li>
+        <li>During validation, it tests whether predicted behavioral change occurs.</li>
+        <li>During scaling, it ensures that decision support provided by the solution is unambiguous and easy to understand.</li>
+    </ul>
+
+    <p>UCD does not replace Stakeholder Mapping, Needs Assessment, Information Flow Analysis, Designing for Impact, or Information Chain Analysis. UCD builds on those validated insights and translates them into design structure by answering a distinct question:</p>
+    <div class="callout-box">
+        Given what we now understand about users, authority structures, and information pathways, how must the solution be designed to enable correct and timely action?
+    </div>
+    <p>UCD therefore pays attention to the tangible, measurable benefits of prioritizing better design–like increased user satisfaction, reduced costs, enhanced accessibility, and higher retention. It shapes:</p>
+    <ul class="shapes-list">
+        <li>Information hierarchy</li>
+        <li>Clear logic and thresholds for when to make certain decisions</li>
+        <li>The flow of how the user interacts with the system</li>
+        <li>Feature prioritization</li>
+        <li>Accessibility and usability</li>
+        <li>Behavioral assumptions embedded in technical development</li>
+    </ul>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 69</p>
+
+    <p>By focusing on performance at the point of use, UCD ensures that solutions do not merely deliver information, but enable correct interpretation and action under real operational conditions.</p>
+</div>
+
+<hr class="section-rule">
+
+<div class="subsection">
+    <h2>UCD in Practice: Building Decision-Anchored User Personas</h2>
+
+    <div class="ref-note">For step-by-step guidance on creating decision-anchored user personas, refer to the User Personas Exercise.</div>
+
+    <p>UCD begins with decisions. Solutions are effective only when aligned to a specific action that someone must take within defined authority structures, constraints, and consequences. To identify these conditions, UCD relies on <strong>decision-anchored user personas</strong> informed by Phase 1 tools. Personas synthesize validated stakeholder and workflow findings into a structured, decision-ready representation that guides design.</p>
+
+    <h3>Decision-Anchored User Personas: What They Are and Are Not</h3>
+
+    <table class="persona-table">
+        <thead>
+            <tr>
+                <th>What They Are</th>
+                <th>What They Are Not</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>A structured summary of decision conditions</td>
+                <td>A job description</td>
+            </tr>
+            <tr>
+                <td>An analytic representation of a role accountable for a specific action</td>
+                <td>A broad stakeholder category</td>
+            </tr>
+            <tr>
+                <td>Explicit about the decision, timing, authority, and consequence</td>
+                <td>A demographic or personality profile</td>
+            </tr>
+            <tr>
+                <td>Grounded in operational and interpretive constraints</td>
+                <td>A fictional narrative or backstory</td>
+            </tr>
+            <tr>
+                <td>Designed to anchor solution features to real workflows and accountability</td>
+                <td>An undefined "end user" without decision responsibility</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>Limiting personas to the minimum necessary preserves analytic clarity and prevents feature sprawl.</p>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 70</p>
+</div>
+
+<div class="subsection">
+    <h2>UCD In Practice: Applying User Personas for Decision-Focused Design</h2>
+
+    <p>Once user personas are defined, UCD proceeds through <strong>four operational steps</strong> reflected in the spreadsheet. <em>The spreadsheet contains specific instructions for each of the following steps</em>:</p>
+
+    <ol class="steps-list">
+        <li>
+            <span class="step-num">1</span>
+            <span>The <strong>decision context</strong> is clarified, defining the specific action, timing, authority structure, and consequences that shape real-world use.</span>
+        </li>
+        <li>
+            <span class="step-num">2</span>
+            <span>The <strong>existing workflow</strong> is mapped to identify how the decision currently unfolds, including information sources, bottlenecks, interpretation burdens, and friction points.</span>
+        </li>
+        <li>
+            <span class="step-num">3</span>
+            <span>The above insights are translated into <strong>explicit design requirements</strong> and <strong>behavioral hypotheses</strong> that specify how the solution must function to enable timely, correct action.</span>
+        </li>
+        <li>
+            <span class="step-num">4</span>
+            <span>The proposed design is <strong>tested and refined</strong> under realistic conditions to ensure it performs within operational constraints. This four-step sequence is repeated for each persona to ensure that design logic reflects the distinct decision environments the solution must support.</span>
+        </li>
+    </ol>
+</div>
+
+<div class="subsection">
+    <h2>UCD for Decision Readiness of EO-Solutions</h2>
+
+    <p>UCD ensures that EO-enabled solutions are not merely scientifically sound, but decision-ready.</p>
+
+    <div class="summary-box">
+        <p>It translates validated stakeholder insights into structured design requirements tied to a specific decision, authority structure, and time constraint. It includes explicit hypotheses about how improved information delivery should influence behavior. And it tests those hypotheses under realistic conditions to determine whether the solution enables correct and timely action.</p>
+        <p>UCD is successful when design choices can be traced directly to a defined decision use case, when features support measurable improvements in decision performance, and when validation demonstrates reduced ambiguity, fewer interpretation errors, and faster time to appropriate action.</p>
+        <p>Without UCD, solutions risk providing data without ensuring it can be interpreted, trusted, or acted upon. With UCD, solutions are built to enable decisions.</p>
+    </div>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 71</p>
+</div>
+{% endblock %}

@@ -1,0 +1,525 @@
+{% extends "base.html" %}
+{% block title %}Designing for Impact — Solution Co-Development Toolkit{% endblock %}
+{% block content %}
+<style>
+    .tk-body { font-size: 0.95rem; line-height: 1.75; color: #1a1a2e; }
+    .tk-body h2 { font-size: 1.5rem; font-weight: 700; color: #0b3d91; margin: 2.25rem 0 0.6rem; }
+    .tk-body h3 { font-size: 1.15rem; font-weight: 600; color: #0b3d91; margin: 1.75rem 0 0.5rem; }
+    .tk-body h4 { font-size: 1rem; font-style: italic; font-weight: 600; color: #1a1a2e; margin: 1.4rem 0 0.4rem; }
+    .tk-body p { margin-bottom: 1rem; }
+    .tk-body ul, .tk-body ol { margin: 0.5rem 0 1rem 1.5rem; }
+    .tk-body li { margin-bottom: 0.4rem; }
+    .tk-body hr { border: none; border-top: 1px solid #d0d7e3; margin: 2rem 0; }
+
+    /* Phases diagram */
+    .phases-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.75rem;
+        margin: 1.25rem 0 0.5rem;
+    }
+    .phase-card {
+        border-radius: 6px;
+        padding: 0.9rem;
+        font-size: 0.8rem;
+        line-height: 1.45;
+    }
+    .phase-card .phase-title {
+        font-weight: 700;
+        font-size: 0.8rem;
+        text-align: center;
+        margin-bottom: 0.75rem;
+        line-height: 1.3;
+    }
+    .phase-card ul { list-style: none; padding: 0; margin: 0; }
+    .phase-card ul li { padding: 0.2rem 0 0.2rem 1.2rem; position: relative; }
+    .phase-card ul li::before { content: "➤"; position: absolute; left: 0; font-size: 0.65rem; top: 0.3rem; }
+    .phase-1 { background: #cce0f5; color: #1a1a2e; outline: 2px solid #c0392b; }
+    .phase-2 { background: #c8dff5; color: #1a1a2e; }
+    .phase-3 { background: #d4edda; color: #1a1a2e; }
+    .phase-4 { background: #d5eddf; color: #1a1a2e; }
+    .fig-caption { font-style: italic; font-size: 0.82rem; color: #4a4a6a; margin-top: 0.4rem; }
+
+    /* Results pyramid diagram */
+    .results-pyramid {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        margin: 1.5rem auto;
+        max-width: 480px;
+    }
+    .pyramid-level {
+        width: 100%;
+        border-radius: 6px;
+        padding: 0.65rem 1rem;
+        text-align: center;
+        position: relative;
+    }
+    .pyramid-level .level-title { font-weight: 700; font-size: 0.9rem; }
+    .pyramid-level .level-desc { font-size: 0.78rem; margin-top: 0.15rem; }
+    .pyramid-level .arrow-up {
+        display: block;
+        text-align: center;
+        font-size: 1.3rem;
+        color: #0b3d91;
+        line-height: 1;
+        margin-bottom: 2px;
+    }
+    .lvl-impacts  { background: #a8cce8; width: 60%; }
+    .lvl-outcomes { background: #b3d4ed; width: 75%; }
+    .lvl-outputs  { background: #bedaef; width: 88%; }
+    .lvl-inputs   { background: #2b6cb0; color: #fff; width: 100%; }
+
+    /* Logic chain / results framework diagram (Fig 2) */
+    .logic-chain {
+        border: 1px solid #d0d7e3;
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 1.5rem 0;
+        font-size: 0.82rem;
+    }
+    .logic-chain .lc-impact {
+        background: #a8cce8;
+        text-align: center;
+        padding: 0.65rem 1rem;
+        font-weight: 700;
+    }
+    .logic-chain .lc-impact .lc-sub { font-weight: 400; font-size: 0.78rem; margin-top: 0.2rem; }
+    .logic-chain .lc-outcomes-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        border-top: 1px solid #c0d8ec;
+    }
+    .logic-chain .lc-outcome {
+        background: #b8d8f0;
+        padding: 0.6rem 0.75rem;
+        text-align: center;
+        font-weight: 700;
+        border-right: 1px solid #c0d8ec;
+    }
+    .logic-chain .lc-outcome:last-child { border-right: none; }
+    .logic-chain .lc-outcome .lc-sub { font-weight: 400; font-size: 0.75rem; margin-top: 0.2rem; }
+    .logic-chain .lc-outputs-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        border-top: 1px solid #c0d8ec;
+    }
+    .logic-chain .lc-output {
+        background: #c8e3f5;
+        padding: 0.6rem 0.75rem;
+        text-align: center;
+        font-weight: 700;
+        border-right: 1px solid #c0d8ec;
+    }
+    .logic-chain .lc-output:last-child { border-right: none; }
+    .logic-chain .lc-output .lc-sub { font-weight: 400; font-size: 0.75rem; margin-top: 0.2rem; }
+    .logic-chain .lc-inputs {
+        background: #2b6cb0;
+        color: #fff;
+        text-align: center;
+        padding: 0.65rem 1rem;
+        font-weight: 700;
+        border-top: 1px solid #1a5499;
+    }
+    .lc-arrow-row {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        background: #e8f2fb;
+        padding: 0.2rem;
+        font-size: 1rem;
+        color: #0b3d91;
+        border-top: 1px solid #d0dce8;
+    }
+
+    /* Step boxes */
+    .step-box {
+        border: 1px solid #d0d7e3;
+        border-radius: 8px;
+        margin: 1.5rem 0;
+        overflow: hidden;
+    }
+    .step-box .step-header {
+        background: #0b3d91;
+        color: #fff;
+        padding: 0.65rem 1.25rem;
+        font-weight: 700;
+        font-size: 0.95rem;
+    }
+    .step-box .step-body {
+        padding: 1rem 1.25rem;
+        background: #fff;
+    }
+    .step-box .step-body p { margin-bottom: 0.75rem; }
+    .step-box .step-body p:last-child { margin-bottom: 0; }
+    .step-box .step-body ul { margin: 0.4rem 0 0.75rem 1.5rem; }
+    .step-box .step-example {
+        background: #f0f5fb;
+        border-left: 3px solid #00a0b0;
+        padding: 0.75rem 1rem;
+        margin-top: 0.75rem;
+        font-size: 0.88rem;
+    }
+    .step-box .step-example p { margin-bottom: 0.4rem; }
+
+    /* If/then template box */
+    .ifthen-box {
+        background: #f5f7fa;
+        border: 1px dashed #00a0b0;
+        border-radius: 6px;
+        padding: 0.9rem 1.25rem;
+        margin: 1rem 0;
+        font-style: italic;
+        font-size: 0.92rem;
+    }
+
+    /* Resource links box */
+    .resource-box {
+        background: #f0f5fb;
+        border: 1px solid #b3cde8;
+        border-radius: 6px;
+        padding: 1rem 1.25rem;
+        text-align: center;
+        margin: 1.25rem 0;
+        font-size: 0.92rem;
+    }
+    .resource-box a { color: #0b3d91; font-weight: 600; }
+
+    @media (max-width: 700px) {
+        .phases-grid { grid-template-columns: 1fr 1fr; }
+        .logic-chain .lc-outcomes-row { grid-template-columns: 1fr; }
+        .logic-chain .lc-outputs-row  { grid-template-columns: 1fr; }
+    }
+</style>
+
+<div class="page-header">
+    <div class="section-tag">Section 2</div>
+    <h1>Designing for Impact: <span style="font-weight:400;color:#4a4a6a;">An Overview for Earth Science to Action</span></h1>
+</div>
+
+<div class="tk-body">
+
+    <h2>Purpose:</h2>
+    <p>This tool provides an overview of impact-driven project design for applied Earth scientists. It is designed to help teams articulate the real-world change they aim to support by connecting scientific outputs to meaningful outcomes. Carefully considering and outlining the intended impact of a solution early in the process is foundational to the success of the other tools in this Toolkit, and to the entire co-development process.</p>
+
+    <h2>How and When to Use This Tool:</h2>
+
+    <div class="phases-grid">
+        <div class="phase-card phase-1">
+            <div class="phase-title">Phase 1:<br>Assessing Needs &amp; Potential Impact</div>
+            <ul>
+                <li>Identify stakeholders</li>
+                <li>Assess user needs, constraint, and decision context</li>
+                <li>Define problem and opportunity for impact</li>
+            </ul>
+        </div>
+        <div class="phase-card phase-2">
+            <div class="phase-title">Phase 2:<br>Solution Co-Design</div>
+            <ul>
+                <li>Co-design solution concepts</li>
+                <li>Define requirements and success metrics</li>
+                <li>Plan implementation and sustainability</li>
+            </ul>
+        </div>
+        <div class="phase-card phase-3">
+            <div class="phase-title">Phase 3:<br>Prototyping and Co-Development</div>
+            <ul>
+                <li>Build and test prototypes</li>
+                <li>Conduct user testing and iteration</li>
+                <li>Prepare data, workflows, and trainings</li>
+            </ul>
+        </div>
+        <div class="phase-card phase-4">
+            <div class="phase-title">Phase 4:<br>Transition and Impact Assessment</div>
+            <ul>
+                <li>Deploy and transition ownership</li>
+                <li>Collect evidence of use and impact</li>
+                <li>Plan for scaling, replication, and long-term uptake</li>
+            </ul>
+        </div>
+    </div>
+
+    <p>This tool is used throughout an applied Earth science project, especially when the goal is to inform decisions, take action, or generate societal benefit. It is first used during Phase 1 of the Solution Co-Development Toolkit when planning to co-develop solutions with users, partners, or stakeholders, but it can and should also be used during project implementation to strengthen or redirect ongoing solution development toward clearer, more achievable pathways to impact. It can be referenced throughout the process to ensure all parts of the co-development process align around the same goals.</p>
+
+    <h3>How Does This Connect to Other Tools in the Toolkit?</h3>
+    <ul>
+        <li><strong>Stakeholder Mapping</strong> + <strong>Needs Assessment</strong> → shape your solution purpose, objectives, inputs, and outputs</li>
+        <li><strong>User-Centered Design</strong> → strengthens the pathway to impact</li>
+        <li><strong>Indicator Guidance</strong> + <strong>Solution Implementation Impact and Monitoring Plan Templates</strong> → show how to measure progress and adjust</li>
+    </ul>
+
+    <hr>
+
+    <h2>Why Designing Solutions for Impact is Important</h2>
+
+    <p><em>Impact is the positive change your work aims to generate beyond producing project deliverables.</em> It involves more than creating a solution (like a dashboard, tool, or model). It identifies the effect that solution and the information generated has on actions, decisions, livelihoods, or other societal outcomes.</p>
+
+    <p>For example, <em>in Texas and Oklahoma, severe storms with large hail can cause early-season damage to corn, soybeans, cotton, or other crops, resulting in financial losses for farmers. Insurers require accurate data to confirm hail damage and assess hailstorm risks to help support financial resilience against these risks for farmers. Using satellite data from NASA's GOES-16, GPM and MERRA-2 to detect hailstorms and hail damage can greatly reduce the time and effort needed for the insurance companies to confirm damage, increasing the speed and reliability of payout to farmers for crop loss. This can be key in cases of early-season damage, as it allows the farmers to potentially replant their crops and avoid financial catastrophe.</em></p>
+
+    <p><em>Impact answers why this work matters.</em> It goes beyond technical performance, such as more accurate long-range forecasts, to capture how those improvements make processes more efficient, improve decisions, and ultimately influence lives, livelihoods, and economies. For example, if forecasts become more accurate, then trusted evacuation warnings can be issued to the correct locations, leading to saved lives and resources.</p>
+
+    <p>In Earth science, impact is not automatically achieved when an application becomes operational, as measured by NASA's Application Readiness Level (ARL) 8 or even ARL 9 when the solution is integrated into the user's decision-making. <em>Impact occurs only when the solution is used and actions are taken that lead to positive, real-world change.</em></p>
+
+    <p>Returning to our example, <strong>IF</strong> insurance companies have access to satellite data and models indicating conditions likely to produce large hail, and high resolution imaging of hail damage, <strong>THEN</strong> farmers will be able to submit claims to the insurance companies knowing that the process to review these claims will be more reliable and timely, payouts will be received more quickly than previously, and <strong>THEN</strong> the farmers will be able to replant a crop early enough to see a good harvest and returns on investment.</p>
+
+    <p><em>Think about a recent project you contributed to. Did the project intend to contribute to change in existing processes, approaches, or behaviors? If successful, what impact would those changes have on individuals, institutions, or economies?</em></p>
+
+    <h2>Why Designing for Impact Matters</h2>
+
+    <p>Designing for impact increases the likelihood that NASA tools, data, and solutions, are adopted, used effectively, and sustained over time. The most scientifically accurate product will not be actionable if it does not address real user needs, align with decision workflows, or account for practical constraints. Impact-driven design helps teams envision the pathway from adoption to outcomes to real-world benefits, clarifying how their work can create value.</p>
+
+    <p>NASA Earth Action projects are expected to achieve impact. Though the projects or activities may only be held accountable for deliverables, designing for impact by identifying needs that a solution intends to address increases the likelihood of the project having the desired impact.</p>
+
+    <p>Taking the example above, a solution that is co-designed with both farmers and insurance companies' needs considered at the onset, with a focus on ensuring trusted and verifiable information leading to timely payouts, is more likely to achieve its goal and result in desired impact. Engaging directly with farmers on planting schedules and timing needs of payouts after hail, and with insurance companies on data needed for verification and packaging and delivery of the information (data viewer, forecast and historical models, mobile apps) directly inform solution design to increase likelihood of adoption and use by insurance providers in a manner that meets farmers needs.</p>
+
+    <h2>What Is Impact-Driven Design?</h2>
+
+    <p><em>Impact-driven design</em> is a structured, collaborative approach grounded in stakeholder engagement, needs assessment, and co-design. It treats impact as a testable hypothesis about how a desired change is to occur in a scientific context. This hypothesis can be expressed through a <em>results framework</em>, a simple and transparent logic chain that lays out the causal pathway from activities (or inputs), to outputs, to outcomes, to desired impact. Establishing this structure up front makes it easier to monitor progress, validate assumptions, capture stories of change, and assess whether solutions are truly moving the needle for the people and systems they aim to serve.</p>
+
+    <h3>Advantages of Impact-Driven Design:</h3>
+    <ul>
+        <li>Clarifies and defines the pathway from science to impact</li>
+        <li>Supports monitoring of solution progress and ability to capture outcomes and impact</li>
+        <li>Prepares for the ability to assess economic impact of a solution</li>
+        <li>Fosters stakeholder ownership and sustainability</li>
+        <li>Helps identify risks and assumptions early, enabling mitigation and adaptation</li>
+        <li>Enhances strategic communications by articulating clear, credible pathways to impact</li>
+    </ul>
+
+    <h3>Five Key Principles of Impact-Driven Design</h3>
+    <ol>
+        <li><strong>Start with a NEED or PROBLEM articulated by a user or decision-maker.</strong> Identify the specific challenges the solution will address. Clarify not only <em>what</em> is needed, but <em>why</em> it matters, <em>who</em> is affected, and <em>what decision</em> will change when that need is met.</li>
+        <li><strong>Envision the potential impact before defining activities.</strong> Effective solutions begin with a clear understanding of the real-world change you aim to influence—not with a predefined product. This prevents premature technical design and anchors all decisions in meaningful user outcomes.</li>
+        <li><strong>Co-develop solutions with stakeholders.</strong> Applying a co-development approach is critical to designing for impact. It allows the solution team and stakeholders to have a shared vision of impact, maintaining that focus while addressing real operational constraints throughout the solution development lifecycle.</li>
+        <li><strong>Make assumptions explicit.</strong> Every link in the pathway to impact rests on conditions that must hold true. Surfacing these assumptions early helps teams identify risks and build contingencies.</li>
+        <li><strong>Iterate and adapt.</strong> An impact-driven design structure is a living process. As context shifts or new feedback emerges, revisit the pathway and update actions, assumptions, or indicators accordingly.</li>
+    </ol>
+
+    <p>For example, a drought forecasting tool designed with inputs from local farmers and extension agents is more likely to be used in planting decisions, ultimately resulting in improved yields and/or reduced losses. By understanding assumptions (such as timeliness of information needed, internet access or dissemination methods in practice) the team can design for these realities and adapt as needed.</p>
+
+    <hr>
+
+    <h2>The Results Framework for Impact-Driven Design</h2>
+
+    <p>Impact-driven design uses a <em>results framework</em>, also called a <em>logic chain</em> or an <em>if-then results pathway</em>, to make your impact hypothesis visible and testable. A results framework can be more or less detailed depending on the complexity of the solution.</p>
+
+    <p>A results framework is a structured way to articulate:</p>
+    <ul>
+        <li>IF we carry out certain activities (inputs)</li>
+        <li>THEN we will produce specific deliverables (outputs)….</li>
+        <li>Which will enable users to take new or improved actions (OUTCOMES)...</li>
+        <li>Which contributes to the broader desired IMPACT.</li>
+    </ul>
+
+    <p>Developing an initial "if/then" statement is the fastest way to start defining your intended impact. Once the logic is clear, it can be translated into the structured results framework outlined below.</p>
+
+    <p>Sample if/then statements:</p>
+    <ul>
+        <li>If we train municipal staff on using drought dashboards, then users will integrate drought alerts into water-allocation planning, then seasonal water shortages may be reduced.</li>
+        <li>If we co-design a fuel moisture and weather condition bulletin, then users will share timely advice with foresters, then runaway prescribed fires may decrease, then life and livelihoods are protected.</li>
+    </ul>
+
+    <p><em>Try building your "if/then" logic</em></p>
+    <div class="ifthen-box">If we ________, then users will ________, then ________ will improve.</div>
+
+    <h3>The Four Elements of a Results Framework</h3>
+
+    <ol>
+        <li>
+            <strong>Inputs (Activities and Resources)</strong>
+            <p>What do you invest? This can include data and data processing, research, modeling, training, co-design sessions.</p>
+        </li>
+        <li>
+            <strong>Outputs (Science Products and Materials)</strong>
+            <p>What do you produce? This can include models, value-added data products, dashboards, advisories, workflows, reports.</p>
+        </li>
+        <li>
+            <strong>Outcomes (User Behavior and Decision Change)</strong>
+            <p>What changes as a result? What users do differently after engaging with the outputs? Examples of outcomes include:</p>
+            <ul>
+                <li>agencies incorporating forecasts into planning.</li>
+                <li>extension officers using crop maps to advise farmers.</li>
+                <li>improved ability to anticipate impacts from hazards.</li>
+                <li>short-term outcomes reflect initial adoption; longer-term outcomes reflect sustained or institutionalized use.</li>
+            </ul>
+        </li>
+        <li>
+            <strong>Impact (Broader Societal or Environmental Change)</strong>
+            <p>What positive societal or environmental changes do you aim to contribute to? This could include reduced flood losses, improved food security, more efficient resource allocation, healthier people and ecosystems. Impact can be immediate, but may only be able to be understood and captured in the medium to long-term after a solution is put into practice.</p>
+        </li>
+    </ol>
+
+    <!-- Fig. 1: Results framework pyramid diagram -->
+    <div class="results-pyramid">
+        <div class="pyramid-level lvl-impacts">
+            <div class="level-title">IMPACTS</div>
+            <div class="level-desc">Real-world improvements (e.g., reduced flood risk)</div>
+        </div>
+        <span style="font-size:1.4rem;color:#0b3d91;line-height:1;">↑</span>
+        <div class="pyramid-level lvl-outcomes">
+            <div class="level-title">OUTCOMES</div>
+            <div class="level-desc">User decisions &amp; actions, data use, increased capacity</div>
+        </div>
+        <span style="font-size:1.4rem;color:#0b3d91;line-height:1;">↑</span>
+        <div class="pyramid-level lvl-outputs">
+            <div class="level-title">OUTPUTS</div>
+            <div class="level-desc">Tools, models, dashboards, reports</div>
+        </div>
+        <span style="font-size:1.4rem;color:#0b3d91;line-height:1;">↑</span>
+        <div class="pyramid-level lvl-inputs">
+            <div class="level-title">INPUTS</div>
+            <div class="level-desc">Resources, activities, co-designs, data wrangling</div>
+        </div>
+    </div>
+    <p class="fig-caption" style="text-align:center;">Fig. 1: Results framework diagram.</p>
+
+    <h3>Apply the Framework to Your Project</h3>
+
+    <p>Organize your current project into the four levels:</p>
+    <ul>
+        <li><strong>Inputs:</strong> What you do and how you invest your project's resources</li>
+        <li><strong>Outputs:</strong> What you produce</li>
+        <li><strong>Outcomes:</strong> What users do differently (short-term + longer-term)</li>
+        <li><strong>Impact:</strong> What ultimately improves in society or the environment</li>
+    </ul>
+
+    <h4>NASA-Friendly Language:</h4>
+    <ul>
+        <li><em>"Science products"</em> → Outputs</li>
+        <li><em>"Influence decisions and actions"</em> → Outcomes</li>
+    </ul>
+
+    <h4>Example from a NASA program:</h4>
+    <ul>
+        <li>If we develop a land surface modeling system for the U.S., then we produce soil-moisture estimates at multiple depths across the country.</li>
+        <li>If users adopt these products, then their analysis becomes more efficient and drought assessments more accurate.</li>
+        <li>If these improvements persist or scale, then severe-drought anticipation and classification improve, enabling more appropriate resource allocation, insurance claims, and disaster-relief support.</li>
+    </ul>
+
+    <!-- Fig. 2: Logic chain diagram -->
+    <div class="logic-chain">
+        <div class="lc-impact">
+            <div style="font-weight:700;">IMPACT</div>
+            <div class="lc-sub">More effective disaster relief efforts, reduced economic losses, and greater overall drought resilience</div>
+        </div>
+        <div class="lc-arrow-row">↑ &nbsp; ↑ &nbsp; ↑</div>
+        <div class="lc-outcomes-row">
+            <div class="lc-outcome">
+                OUTCOME
+                <div class="lc-sub">Improved prediction and classification of severe drought</div>
+            </div>
+            <div class="lc-outcome">
+                OUTCOME
+                <div class="lc-sub">More efficient and accurate process for drought assessment</div>
+            </div>
+            <div class="lc-outcome">
+                OUTCOME
+                <div class="lc-sub">Users adopt land surface modeling system</div>
+            </div>
+        </div>
+        <div class="lc-arrow-row">↑ &nbsp; ↑</div>
+        <div class="lc-outputs-row">
+            <div class="lc-output">
+                OUTPUT
+                <div class="lc-sub">Produce soil moisture estimates at multiple depths across the country</div>
+            </div>
+            <div class="lc-output">
+                OUTPUT
+                <div class="lc-sub">Develop a land surface modeling system for the US</div>
+            </div>
+        </div>
+        <div class="lc-arrow-row">↑</div>
+        <div class="lc-inputs">INPUTS</div>
+    </div>
+    <p class="fig-caption" style="text-align:center;">Fig. 2: Examples of a results framework depiction of logic chain:</p>
+
+    <h4>Bringing It All Together</h4>
+    <p>Impact-driven design is a living process, not a static plan. Revisit your results framework regularly with users and partners to check assumptions, refine pathways, and document change. A flexible, evidence-driven logic chain helps ensure that scientific work leads to solutions that are adopted, useful, and ultimately transformative.</p>
+
+    <hr>
+
+    <h2>The Six Step Process for Designing for Impact Using a Results Framework</h2>
+
+    <p>This section turns the concepts introduced in above into a clear, actionable method for building the pathway from a user's need that informs a <em>science-driven solution that addresses the need and outlines the steps to best ensure impact.</em> The six steps guide solution teams through defining the real-world challenge to monitoring progress and adapting the design over time. These steps are as follows:</p>
+
+    <ol>
+        <li>Understand the Challenge – Define Impact of Meeting the Need</li>
+        <li>Identify Stakeholders</li>
+        <li>Articulate the If/Then Logic</li>
+        <li>Build the Results Framework</li>
+        <li>Identify Assumptions &amp; Risks</li>
+        <li>Monitor, Learn, and Adapt</li>
+    </ol>
+
+    <p>Each step draws directly on tools throughout this Toolkit: Stakeholder Mapping, Needs Assessment, Solution Implementation Plan, Information Chain Analysis, Solution Implementation and Impact Monitoring Plan, etc).</p>
+
+    <div class="resource-box">
+        <p>Fillable Results Narrative and Sample Results Narrative</p>
+        <p>Fillable Results Framework and Sample Results Framework</p>
+    </div>
+
+    <div class="step-box">
+        <div class="step-header">Step 1. Define the Challenge:</div>
+        <div class="step-body">
+            <p>Using the Needs Assessment Tool, clarify the real world problem and why it matters. Confirm with stakeholders to understand context, root causes, and consequences.</p>
+            <div class="step-example">
+                <p>Example:</p>
+                <p><strong>Need:</strong> There is a lack of accurate crop yield estimates for remote areas</p>
+                <p><strong>Why it matters:</strong> The government cannot plan for shortages; farmers cannot secure insurance.</p>
+                <p><strong>Problem statement:</strong> Insufficient crop-yield information increases food-security risks and financial losses</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="step-box">
+        <div class="step-header">Step 2. Identify Stakeholders:</div>
+        <div class="step-body">
+            <p>Referencing the Stakeholder Engagement and Mapping tools, identify who else is affected, who influences outcomes, and who needs to be involved in co-design. Include users, implementers, and decision-makers.</p>
+        </div>
+    </div>
+
+    <div class="step-box">
+        <div class="step-header">Step 3. Articulate the "If/Then" Logic:</div>
+        <div class="step-body">
+            <p>Use causal statements to express the core logic in narrative form. For example, "<em>If</em> stakeholders are trained to use flood forecasting tools, <em>then</em> they will issue timely alerts, <em>then</em> communities will be better prepared, <em>then</em> flood-related losses will decrease."</p>
+            <ul>
+                <li><em>If we carry out key inputs →</em></li>
+                <li><em>then we produce solution outputs →</em></li>
+                <li><em>which enable user outcomes →</em></li>
+                <li><em>which contributes to the intended impact.</em></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="step-box">
+        <div class="step-header">Step 4. Build the Results Framework:</div>
+        <div class="step-body">
+            <p>Translate your if/then logic into the structured pathway from <strong>inputs → outputs → outcomes → impact</strong>. Create a clear, monitorable structure linking what you produce to the change you hope to influence. Use the Fillable Results Framework above as a template.</p>
+        </div>
+    </div>
+
+    <div class="step-box">
+        <div class="step-header">Step 5. Identify Assumptions and Risks:</div>
+        <div class="step-body">
+            <p>Each link in the framework relies on conditions that must hold true. Make these explicit early. See the Needs Assessment tool, Workflow Analysis tool, and Information Flow Analysis for reference on identified risks and assumptions. List assumptions at each link of the chain, such as:</p>
+            <ul>
+                <li>"Users have technical capacity."</li>
+                <li>"Data-sharing agreements stay in place."</li>
+                <li>"Institutional mandates allow uptake."</li>
+                <li>"Internet connectivity is sufficient."</li>
+                <li>"Data / information latency is sufficient"</li>
+            </ul>
+            <p>For each of these assumptions, you should be able to list why it matters, how to monitor it, and what action to take if the assumption fails.</p>
+        </div>
+    </div>
+
+    <div class="step-box">
+        <div class="step-header">Step 6. Monitor, Adapt and Assess:</div>
+        <div class="step-body">
+            <p>Connect your results framework to monitoring and impact assessment tools. Track progress at each level—outputs, outcomes, and emerging signs of impact. Adjust the pathway as you learn from user feedback and real-world conditions.</p>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

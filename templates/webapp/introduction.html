@@ -1,0 +1,307 @@
+{% extends "base.html" %}
+{% block title %}Introduction — Solution Co-Development Toolkit{% endblock %}
+{% block content %}
+<style>
+    .tk-body { font-size: 0.95rem; line-height: 1.75; color: #1a1a2e; }
+    .tk-body h2 { font-size: 1.5rem; font-weight: 700; color: #0b3d91; margin: 2.25rem 0 0.6rem; }
+    .tk-body h3 { font-size: 1.15rem; font-weight: 600; color: #0b3d91; margin: 1.75rem 0 0.5rem; }
+    .tk-body h4 { font-size: 0.95rem; font-style: italic; font-weight: 600; color: #1a1a2e; margin: 1.4rem 0 0.4rem; }
+    .tk-body p { margin-bottom: 1rem; }
+    .tk-body ul, .tk-body ol { margin: 0.5rem 0 1rem 1.5rem; }
+    .tk-body li { margin-bottom: 0.4rem; }
+    .tk-body hr { border: none; border-top: 1px solid #d0d7e3; margin: 2rem 0; }
+
+    .workflow-box {
+        background: #dce8f5;
+        border-left: 4px solid #0b3d91;
+        border-radius: 4px;
+        padding: 1rem 1.25rem;
+        margin: 1rem 0 1.5rem;
+    }
+    .workflow-box .wf-label {
+        font-weight: 700;
+        font-size: 0.85rem;
+        color: #0b3d91;
+        margin-bottom: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    .workflow-box ol { margin-left: 0; list-style: none; padding: 0; }
+    .workflow-box ol li { padding: 0.2rem 0 0.2rem 1.5rem; position: relative; }
+    .workflow-box ol li::before { content: "➔"; position: absolute; left: 0; color: #0b3d91; }
+
+    .phases-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.75rem;
+        margin: 1.25rem 0 0.5rem;
+    }
+    .phase-card {
+        border-radius: 6px;
+        padding: 0.9rem;
+        font-size: 0.8rem;
+        line-height: 1.45;
+    }
+    .phase-card .phase-title {
+        font-weight: 700;
+        font-size: 0.8rem;
+        text-align: center;
+        margin-bottom: 0.75rem;
+        line-height: 1.3;
+    }
+    .phase-card ul { list-style: none; padding: 0; margin: 0; }
+    .phase-card ul li { padding: 0.2rem 0 0.2rem 1.2rem; position: relative; }
+    .phase-card ul li::before { content: "➤"; position: absolute; left: 0; font-size: 0.65rem; top: 0.3rem; }
+    .phase-1 { background: #cce0f5; color: #1a1a2e; }
+    .phase-2 { background: #c8dff5; color: #1a1a2e; }
+    .phase-3 { background: #d4edda; color: #1a1a2e; }
+    .phase-4 { background: #d5eddf; color: #1a1a2e; }
+    .phase-card.highlighted { outline: 2px solid #c0392b; }
+
+    .fig-caption { font-style: italic; font-size: 0.82rem; color: #4a4a6a; margin-top: 0.4rem; }
+
+    @media (max-width: 700px) {
+        .phases-grid { grid-template-columns: 1fr 1fr; }
+    }
+</style>
+
+<div class="page-header">
+    <div class="section-tag">Section 1</div>
+    <h1>Introduction: Solution Co-Development in Practice</h1>
+</div>
+
+<div class="tk-body">
+
+    <p>The <strong>Solution Co-Development Toolkit</strong> is a step-by-step framework that guides applied Earth scientists in collaboratively designing actionable, user-centered Earth Action solutions with their stakeholders. It draws on best practices from decades of NASA Earth Action experience, as well as social science methodologies. The Toolkit provides concrete methods, templates, and tools to support every stage of the process—from assessing user needs to designing, testing, and refining solutions that deliver measurable and lasting impact.</p>
+
+    <p>A <strong>solution</strong> is any application of Earth science capabilities designed to address a user-specified need. It encompasses not only technical components (e.g., data, models, platforms, or services), but also social and institutional elements—like capacity, trust, incentives, and governance—required for sustained use and impact.</p>
+
+    <p>This Toolkit is grounded in <strong>co-development</strong> as the overarching approach to solution design. At its core, co-development emphasizes collaboration, iteration, and shared ownership among scientists, practitioners, and end users throughout the development of a solution. This approach engages stakeholders as active partners whose knowledge and needs directly inform design choices, not merely as recipients of finished products. The framework below and tools that follow are organized around this approach and reflect its emphasis on working together to define problems, shape objectives, and develop solutions that are responsive to real-world contexts.</p>
+
+    <p>Throughout, the Toolkit maintains a clear orientation toward measurable and lasting impact. Solutions are designed not simply to produce outputs, but to improve decision-making in ways that are trackable, scalable, and sustainable. By aligning collaborative engagement, trusted science, and impact-driven design, the Toolkit supports solutions that endure beyond initial deployment and ultimately benefit communities and citizens.</p>
+
+    <p>The Solution Co-Development Toolkit is built upon three core principles:</p>
+    <ol>
+        <li><strong>Collaborative and iterative engagement with solution stakeholders within and outside NASA</strong> – emphasizing co-ownership, trust, and continuous learning throughout the process.</li>
+        <li><strong>Trusted and innovative science</strong> – grounding EO solutions in transparent, rigorous and replicable methods that are both relevant and scientifically sound.</li>
+        <li><strong>Measurable and sustained impact</strong> – designing solutions to improve decision-making in ways that are trackable, scalable, and sustainable, and which ultimately benefit citizens.</li>
+    </ol>
+
+    <hr>
+
+    <h2>Purpose</h2>
+    <p>The Toolkit supports scientists and practitioners in translating NASA Earth observation (EO) data and capabilities into solutions that respond directly to user needs and decision contexts. It complements NASA's <em>Earth Science Applications Guidebook</em> by providing a deeper, practical approach to implementing co-development in the context of Earth science solutions. The Toolkit is best suited for activities at NASA's <strong>Application Readiness Levels (ARL) 3 or higher and can maximize impact and sustainability as they reach ARL 9.</strong></p>
+
+    <h2>Audience</h2>
+    <p>The Toolkit is designed for Earth scientists and practitioners of all career levels seeking to strengthen stakeholder engagement, expand the impact of applied research, and adopt participatory approaches, strengthen stakeholder alignment, and ensure that EO applications translate into measurable outcomes.</p>
+
+    <h2>How to Use This Toolkit</h2>
+    <p>The Solution Co-Development Toolkit is organized around <strong>four interconnected phases of co-development</strong>, each with clear objectives, activities, and outputs. Together, these phases provide a coherent logic for moving from an initial understanding of user needs to the delivery of sustained, real-world impact (see Fig. 1). Each phase builds on the insights and outcomes of the previous one, while allowing for iteration as understanding deepens and conditions evolve. At the same time, the Toolkit is intentionally flexible: teams may follow the phases sequentially or selectively apply individual tools based on their goals, timelines, capacities, and resource constraints.</p>
+
+    <p>Co-development unfolds across the full lifecycle of solution development:</p>
+
+    <p><strong>Phase 1—Assessment of Stakeholder Needs</strong> focuses on identifying who the users are, how decisions are made, and where EO data can add value. Through stakeholder mapping, needs assessments, and information flow analysis, this phase establishes clear, user-centered problem statements and opportunities for impact. During this phase the solution moves from an initial concept of a need or opportunity to a clearly defined, stakeholder-validated problem statement.</p>
+
+    <p><strong>Phase 2—Solution Co-Design</strong> brings scientists and stakeholders together to collaboratively design solutions, translating identified needs into technical requirements, implementation pathways, success metrics, and sustainability strategies, while explicitly foregrounding ethical and responsible use. During this phase, the solution team translates validated needs and opportunities into well-defined, user-centered solution concepts.</p>
+
+    <p><strong>Phase 3—Technical Prototyping and Co-Development</strong> transforms designs into needs-driven solutions through iterative development, user testing, training, and refinement, ensuring solutions are usable, trustworthy, and aligned with real-world workflows. In Phase 3, solution teams build, pilot, and iteratively test solutions to ensure they function as intended and meet user needs.</p>
+
+    <p><strong>Phase 4—Transition and Impact Assessment</strong> supports adoption and handoff, documents evidence of use and impact, and identifies opportunities for scaling, adaptation, or replication. Phase 4 is when solution teams ensure sustainability, capture lessons learned, and plan for scalability, informing future modifications to a project.</p>
+
+    <div class="phases-grid">
+        <div class="phase-card phase-1">
+            <div class="phase-title">Phase 1:<br>Assessing Needs &amp; Potential Impact</div>
+            <ul>
+                <li>Identify stakeholders</li>
+                <li>Assess user needs, constraint, and decision context</li>
+                <li>Define problem and opportunity for impact</li>
+            </ul>
+        </div>
+        <div class="phase-card phase-2">
+            <div class="phase-title">Phase 2:<br>Solution Co-Design</div>
+            <ul>
+                <li>Co-design solution concepts</li>
+                <li>Define requirements and success metrics</li>
+                <li>Plan implementation and sustainability</li>
+            </ul>
+        </div>
+        <div class="phase-card phase-3">
+            <div class="phase-title">Phase 3:<br>Prototyping and Co-Development</div>
+            <ul>
+                <li>Build and test prototypes</li>
+                <li>Conduct user testing and iteration</li>
+                <li>Prepare data, workflows, and trainings</li>
+            </ul>
+        </div>
+        <div class="phase-card phase-4">
+            <div class="phase-title">Phase 4:<br>Transition and Impact Assessment</div>
+            <ul>
+                <li>Deploy and transition ownership</li>
+                <li>Collect evidence of use and impact</li>
+                <li>Plan for scaling, replication, and long-term uptake</li>
+            </ul>
+        </div>
+    </div>
+    <p class="fig-caption">Fig. 1. Phases of Co-Development and key activities for each phase</p>
+
+    <h2>Foundational Tools</h2>
+    <p>Across all four phases, the Toolkit is supported by a <strong>set of foundational guidance tools</strong>. These tools apply throughout the lifecycle, informing key decisions at multiple points rather than belonging to any single phase.</p>
+    <p>The foundational guidance tools include:</p>
+    <ul>
+        <li><strong>Designing &amp; Monitoring for Impact</strong>, which introduces core concepts for defining goals, usability, effectiveness, and value, ensuring teams design for outcomes and impact—not just outputs—from the outset.</li>
+        <li><strong>Economic Impact Assessment Guidance</strong>, which supports the scoping, estimation, and monitoring of economic impacts across the solution lifecycle, from early projections to endline evaluation.</li>
+    </ul>
+    <p>Teams are encouraged to engage these foundational tools early and return to them at key decision points across all phases.</p>
+
+    <hr>
+
+    <h2>Co-Development Phases and the Associated Tools</h2>
+
+    <h3>Phase 1: Assessment of Stakeholder Needs and Potential Impact</h3>
+    <p>During Phase 1, solution teams identify relevant stakeholders, assess decision needs and constraints, and trace how information currently flows from data to decisions. These insights are used to define the problem and opportunities for impact—including anticipated economic impacts–which is then validated with stakeholders.</p>
+
+    <h4>Core Phase 1 Tools</h4>
+    <ul>
+        <li><em>Stakeholder Mapping Tool</em> — Identifies users, decision-makers, and intermediaries; clarifies roles, influence, and relationships.</li>
+        <li><em>Needs Assessment Tool</em> — Captures user priorities, challenges, and decision contexts to define actionable needs.</li>
+        <li><em>Information Flow Analysis</em> — Maps how information moves from data to decisions to identify gaps, bottlenecks, and opportunities for EO use.</li>
+    </ul>
+
+    <h4>Foundational Tools Referenced</h4>
+    <ul>
+        <li><em>Designing &amp; Monitoring for Impact</em></li>
+        <li><em>User-Centered Design Guidance</em></li>
+        <li><em>Economic Impact Assessment Guidance</em></li>
+    </ul>
+
+    <p><strong>Note:</strong> During Phase 1, teams should also be proactive in considering information security and (if applicable) best practices for responsible use of artificial intelligence (AI). Further information and links to NASA resources are included at the end of this document.</p>
+
+    <div class="workflow-box">
+        <div class="wf-label">Phase 1 Workflow Steps</div>
+        <ol>
+            <li>Initial concept of need or opportunity</li>
+            <li>Map stakeholders</li>
+            <li>Assess stakeholder needs, constraints, and priorities</li>
+            <li>Trace current data → decision pathways</li>
+            <li>Define the problem and opportunity for impact, including relevant economic impacts</li>
+            <li>Validate findings with stakeholders</li>
+            <li>Consider best practices for information security and responsible use of AI</li>
+        </ol>
+    </div>
+
+    <h3>Phase 2: Solution Co-Design</h3>
+    <p>In Phase 2, solution teams work collaboratively with stakeholders to explore solution options, define functional requirements, and align proposed approaches with decision contexts and constraints. Co-design activities focus on feasibility, usability, and value, ensuring that proposed solutions are grounded in real decision environments and informed by earlier assessments of economic and ethical considerations.</p>
+
+    <h4>Core Phase 2 Tools</h4>
+    <ul>
+        <li><em>User-Centered Design Tool</em> — Translates stakeholder-validated decision contexts and constraints into workflows, interaction logic, and system architecture, ensuring solutions perform effectively at the point of decision.</li>
+        <li><em>Technical Requirements Template</em> — Converts validated needs into system specification.</li>
+        <li><em>Solution Implementation and Impact Monitoring Plan</em> — Defines activities, timelines, roles, risks, and partnerships and establishes how performance and outcomes will be tracked.</li>
+        <li><em>Data Governance and Storage Plan</em> — Specifies data acquisition, processing, governance, storage, and sharing.</li>
+        <li><em>Solutions Adoption &amp; Sustainability Plan</em> — Identifies long-term ownership, resourcing, and institutional arrangements.</li>
+        <li><em>Meaningful Metrics Development</em> — Supports how to develop and use different types of metrics to monitor and measure impact-driven Earth Science solutions, identifying key progress and success metrics.</li>
+    </ul>
+
+    <h4>Secondary Tools (updated as needed)</h4>
+    <ul>
+        <li><em>Stakeholder Mapping Tool</em></li>
+        <li><em>Needs Assessment Tool</em></li>
+        <li><em>Information Flow Analysis</em></li>
+    </ul>
+
+    <h4>Foundational Tools Referenced</h4>
+    <ul>
+        <li><em>Economic Impact Assessment Guidance</em></li>
+    </ul>
+
+    <div class="workflow-box">
+        <div class="wf-label">Phase 2 Workflow Steps</div>
+        <ol>
+            <li>Run co-design meetings and/or workshops with stakeholders</li>
+            <li>Apply user-centered design principles</li>
+            <li>Define solution concept and system interactions</li>
+            <li>Draft technical requirements and architecture</li>
+            <li>Develop implementation plan and partnership model, including impact monitoring metrics and approaches</li>
+        </ol>
+    </div>
+
+    <h3>Phase 3: Technical Prototyping and Co-Development</h3>
+    <p>In Phase 3, teams develop prototypes or pilot implementations, test them with users, refine workflows and interfaces, finalize data governance, and prepare training and documentation. Monitoring approaches established in Phase 2 begin capturing early signals of progress, performance, and impact. Phase 3 ends with a solution ready for transfer to and adoption by user(s).</p>
+
+    <h4>Core Phase 3 Tools</h4>
+    <ul>
+        <li><em>User-Centered Design Tool</em> — Ensures prototypes remain intuitive and responsive to user feedback.</li>
+        <li><em>Data Governance and Storage Plan</em> — Finalized to support secure and interoperable development.</li>
+        <li><em>Solutions Adoption &amp; Sustainability Plan</em> — Refined to assess capacity, skills transfer, and long-term viability.</li>
+    </ul>
+
+    <h4>Secondary Tools (updated as needed)</h4>
+    <ul>
+        <li><em>Technical Requirements Template</em></li>
+        <li><em>Solution Implementation Impact and Monitoring Plan</em></li>
+        <li><em>Information Flow Analysis</em></li>
+        <li><em>Capturing and Communicating Impact</em> (use cases, case studies)</li>
+    </ul>
+
+    <h4>Foundational Tools Referenced</h4>
+    <ul>
+        <li><em>Designing &amp; Monitoring for Impact</em></li>
+        <li><em>Economic Impact Assessment Guidance</em></li>
+        <li><em>Consult resources on Information Security and Responsible Use of AI</em></li>
+    </ul>
+
+    <div class="workflow-box">
+        <div class="wf-label">Phase 3 Workflow Steps</div>
+        <ol>
+            <li>Build initial prototypes or adapt existing tools (as required)</li>
+            <li>Conduct user testing and iterate design</li>
+            <li>Validate user interface, workflows, data inputs/outputs</li>
+            <li>Develop data governance and storage plan</li>
+            <li>Produce training materials and technical documentation</li>
+            <li>Carefully examine information security and AI use risks in prototypes</li>
+            <li>Operationalize the solution</li>
+        </ol>
+    </div>
+
+    <h3>Phase 4: Transition and Impact Assessment</h3>
+    <p>In Phase 4, solutions are deployed and transitioned to institutional partners. Impact evidence is collected, evaluated, and communicated. Teams identify opportunities for replication, scaling, or integration into broader systems.</p>
+
+    <h4>Core Phase 4 Tools</h4>
+    <ul>
+        <li><em>Capturing and Communicating Impact</em> — documents results, lessons, and value for diverse audiences.</li>
+    </ul>
+
+    <h4>Foundational Guidance Applied</h4>
+    <ul>
+        <li><em>Designing &amp; Monitoring for Impact</em></li>
+        <li><em>Economic Impact Assessment Guidance</em></li>
+        <li><em>Consult resources on Information Security and Responsible Use of AI</em></li>
+    </ul>
+
+    <div class="workflow-box">
+        <div class="wf-label">Phase 4 Workflow Steps</div>
+        <ol>
+            <li>Implement sustainability plan and resourcing pathways</li>
+            <li>Carry out adoption of solution by and/or transfer to users</li>
+            <li>Collect and evaluate impact evidence and plan additional efforts to collect impact evidence as determined by the Solution Implementation Impact and Monitoring Plan (SIIMP)</li>
+            <li>Produce impact reports, case studies, and identify knowledge sharing opportunities</li>
+            <li>Identify opportunities for scaling or replicating</li>
+        </ol>
+    </div>
+
+    <hr>
+
+    <h2>A Note on Information Security and Responsible Use of Artificial Intelligence</h2>
+
+    <p>In the application of the tools within the Co-Development Toolkit approach, collection of personal identifiable information (PII) from stakeholders, end users, organizations, etc., is likely. It is mandatory to comply with NASA guidance NPR 1382.1B<sup>1</sup> for the safeguarding of security and individual privacy. Further guidance should be followed from the Office of the Chief Information Officer (OCIO).</p>
+
+    <p>Additionally, policies on the use of artificial intelligence (AI) are informed by the OCIO, and more specifically the NASA Chief Data Officer/Chief AI Officer (OCAIO) and Chief Science Data Officer. NASA has established a governing board within the Agency to serve as a forum for senior leaders to drive AI adoption and governance for NASA. The Artificial Intelligence Strategy Board (AISB) is responsible for defining the vision and strategy for AI, promoting AI adoption and innovation, establishing AI policy and procedural guardrails, identifying AI risk mitigation practices across the Agency, and monitoring NASA compliance with federal guidelines<sup>2</sup>. More specifically, the AISB reviews and approves NASA AI Strategy to harness the mission value of AI while assuring responsible and ethical use. The Board reviews safety and rights impacting AI-use case assessments and waiver procedures and monitors overall AI risk mitigation procedures. For the use and implementation of AI tools including large language models (LLMs) especially in proximity/conjunction with potential PII refer to OCAIO and AISB agency guidance.</p>
+
+    <p>Resources for more information:</p>
+    <ol>
+        <li>National Aeronautics and Space Administration. <em>NPR 1382.1B: NASA Privacy Procedural Requirements — Appendix A: Definitions</em>. 2022. NASA Online Directives Information System, https://nodis3.gsfc.nasa.gov/displayDir.cfm?Internal_ID=N_PR_1382_001B_&amp;page_name=AppendixA&amp;search_term=PII</li>
+        <li>National Aeronautics and Space Administration. (2024, September 23). NASA Compliance Plan for OMB Memorandum M-24-10. Retrieved from https://www.nasa.gov/wp-content/uploads/2024/09/nasa-omb-compliance-plan-20240923.pdf</li>
+    </ol>
+
+</div>
+{% endblock %}

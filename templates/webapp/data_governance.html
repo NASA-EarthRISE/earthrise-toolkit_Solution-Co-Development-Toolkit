@@ -1,0 +1,590 @@
+{% extends "base.html" %}
+{% block title %}Data Governance and Storage Plan — Solution Co-Development Toolkit{% endblock %}
+{% block content %}
+<style>
+    .section-intro p { margin-bottom: 0.9rem; line-height: 1.7; }
+
+    /* Phase grid */
+    .phases-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.75rem;
+        margin: 1.5rem 0;
+    }
+    .phase-card {
+        border-radius: 6px;
+        padding: 1rem;
+        font-size: 0.88rem;
+    }
+    .phase-card h4 { margin: 0 0 0.6rem 0; font-size: 0.9rem; color: #0b3d91; }
+    .phase-card ul { margin: 0; padding-left: 1.1rem; }
+    .phase-card ul li { margin-bottom: 0.3rem; line-height: 1.5; }
+    .phase-1 { background: #cce0f5; }
+    .phase-2 { background: #c8dff5; outline: 2px solid #c0392b; }
+    .phase-3 { background: #d4edda; }
+    .phase-4 { background: #d5eddf; }
+
+    /* Subsection headers */
+    .subsection > h2 { color: #0b3d91; border-bottom: 2px solid #00a0b0; padding-bottom: 0.4rem; margin-bottom: 1rem; margin-top: 2.5rem; }
+
+    /* Numbered top-level sections (1–10) */
+    .gov-section {
+        margin-top: 2.5rem;
+    }
+    .gov-section > h2 {
+        color: #0b3d91;
+        font-size: 1.2rem;
+        border-bottom: 2px solid #00a0b0;
+        padding-bottom: 0.4rem;
+        margin-bottom: 1rem;
+    }
+    .gov-section p { margin-bottom: 0.9rem; line-height: 1.7; }
+
+    /* Sub-sections (1.1, 1.2, 2.1, etc.) */
+    .gov-subsection {
+        margin-top: 1.4rem;
+    }
+    .gov-subsection > h3 {
+        color: #1a5276;
+        font-style: italic;
+        font-size: 1rem;
+        margin: 0 0 0.6rem 0;
+    }
+    .gov-subsection p { margin-bottom: 0.8rem; line-height: 1.7; }
+
+    /* Data entries (1.1.1, 1.1.2, etc.) */
+    .data-item {
+        margin: 1.1rem 0 0.8rem 0;
+        padding-left: 1rem;
+        border-left: 3px solid #c8dff5;
+    }
+    .data-item > h4 {
+        color: #1a5276;
+        font-style: italic;
+        font-size: 0.93rem;
+        margin: 0 0 0.5rem 0;
+    }
+    .data-item p { margin-bottom: 0.5rem; line-height: 1.65; font-size: 0.93rem; }
+
+    /* Source / Access inline labels */
+    .source-line {
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-bottom: 0.3rem;
+    }
+    .source-line strong { color: #0b3d91; }
+
+    /* Standard bullet lists */
+    .content-list { margin: 0.4rem 0 1rem 1.5rem; }
+    .content-list li { margin-bottom: 0.4rem; line-height: 1.6; font-size: 0.93rem; }
+
+    /* Bold-item bullet lists (format key) */
+    .bold-list { margin: 0.4rem 0 1rem 1.5rem; }
+    .bold-list li { margin-bottom: 0.4rem; line-height: 1.6; font-size: 0.93rem; }
+
+    /* Nested sub-list (o items) */
+    .sub-list { margin: 0.3rem 0 0.3rem 1.2rem; list-style: circle; }
+    .sub-list li { margin-bottom: 0.3rem; line-height: 1.55; font-size: 0.9rem; }
+
+    /* Open Science callout */
+    .open-science-note {
+        background: #e8f4fb;
+        border-left: 4px solid #0b3d91;
+        padding: 0.7rem 1.1rem;
+        margin: 0.8rem 0 1rem 0;
+        border-radius: 0 4px 4px 0;
+        font-size: 0.93rem;
+        line-height: 1.65;
+    }
+
+    /* Compliance closing box */
+    .compliance-box {
+        background: #f0f4f8;
+        border: 1px solid #b0c8e8;
+        border-left: 5px solid #0b3d91;
+        border-radius: 4px;
+        padding: 1rem 1.2rem;
+        margin: 1rem 0 1.2rem 0;
+        font-size: 0.93rem;
+        line-height: 1.7;
+    }
+
+    /* Section divider */
+    hr.section-rule {
+        border: none;
+        border-top: 1px solid #d0dae8;
+        margin: 2.5rem 0;
+    }
+
+    /* Section 2 checklist table */
+    .checklist-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1.2rem 0 1rem 0;
+        font-size: 0.88rem;
+    }
+    .checklist-table th {
+        background: #0b3d91;
+        color: #fff;
+        padding: 0.65rem 1rem;
+        text-align: left;
+        font-weight: 600;
+    }
+    .checklist-table td {
+        padding: 0.65rem 1rem;
+        border: 1px solid #c0cfe0;
+        vertical-align: top;
+        line-height: 1.6;
+    }
+    .checklist-table tr:nth-child(odd) td { background: #f5f8fc; }
+    .checklist-table tr:nth-child(even) td { background: #fff; }
+    .checklist-table td:first-child { font-weight: 600; color: #1a3a5c; }
+
+    .page-note {
+        font-size: 0.8rem;
+        color: #888;
+        text-align: right;
+        margin-top: 0.5rem;
+        font-style: italic;
+    }
+</style>
+
+<div class="page-header">
+    <div class="section-tag">Section 10</div>
+    <h1>Data Governance and Storage Plan</h1>
+</div>
+
+<div class="section-intro">
+    <h2>Purpose:</h2>
+    <p>In applied science, efficiently managing data in the long-term is critical for ensuring solutions are effective and sustainable. If the necessary data is difficult to find, inaccessible, or disorganized, users will be less likely to continue using a solution, so thoughtful data governance and storage should be prioritized early in the co-development process.</p>
+    <p>The Data Governance and Storage Plan provides guidance on data: formations, use, sharing, version control, storage, and publication. It leverages "Findable", "Accessible", "Interoperable", and "Reuseable" (FAIR) principles on data use, storage, and sharing, as well as NASA's guidance on data management plans. It provides guides on intake data, output data (internal and external), and intermediary datasets.</p>
+</div>
+
+<div class="subsection">
+    <h2>How and When to Use This Tool:</h2>
+
+    <div class="phases-grid">
+        <div class="phase-card phase-1">
+            <h4>Phase 1: Assessing Needs &amp; Potential Impact</h4>
+            <ul>
+                <li>Identify stakeholders</li>
+                <li>Assess user needs, constraint, and decision context</li>
+                <li>Define problem and opportunity for impact</li>
+            </ul>
+        </div>
+        <div class="phase-card phase-2">
+            <h4>Phase 2: Solution Co-Design</h4>
+            <ul>
+                <li>Co-design solution concepts</li>
+                <li>Define requirements and success metrics</li>
+                <li>Plan implementation and sustainability</li>
+            </ul>
+        </div>
+        <div class="phase-card phase-3">
+            <h4>Phase 3: Prototyping and Co-Development</h4>
+            <ul>
+                <li>Build and test prototypes</li>
+                <li>Conduct user testing and iteration</li>
+                <li>Prepare data, workflows, and trainings</li>
+            </ul>
+        </div>
+        <div class="phase-card phase-4">
+            <h4>Phase 4: Transition and Impact Assessment</h4>
+            <ul>
+                <li>Deploy and transition ownership</li>
+                <li>Collect evidence of use and impact</li>
+                <li>Plan for scaling, replication, and long-term uptake</li>
+            </ul>
+        </div>
+    </div>
+
+    <p>The Data Governance and Storage Plan is used in the beginning of Phase 2, as soon as stakeholders begin making decisions on co-development and approaches to be used in solution design. This plan is used alongside the Technical Requirements Plan and the Solution Implementation and Impact Monitoring Plan</p>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 77</p>
+</div>
+
+<hr class="section-rule">
+
+<h2 style="color:#0b3d91; font-size:1.35rem; margin-bottom:0.5rem;">Section 1: Guidance on Data Governance and Storage</h2>
+
+<!-- 1. Data Inputs -->
+<div class="gov-section">
+    <h2>1. Data Inputs</h2>
+    <p>The solution is likely to use and generate Earth science datasets derived from NASA's existing satellite, airborne, and modeling products. Primary data categories include:</p>
+
+    <div class="gov-subsection">
+        <h3>1.1 NASA Satellite Remote Sensing Data (Input)</h3>
+
+        <div class="data-item">
+            <h4>1.1.1 Examples include (but are not limited to):</h4>
+            <ul class="content-list">
+                <li>MODIS, VIIRS, Landsat, MISR, CERES, OCO-2/3, GEDI, ECOSTRESS</li>
+                <li>Level-1 (radiances), Level-2 (geophysical retrievals), and Level-3 (gridded products)</li>
+            </ul>
+            <p class="source-line"><strong>Source:</strong> NASA Earthdata/DAACs (LAADS DAAC, LP DAAC, NSIDC DAAC, OB.DAAC, GHRC, PO.DAAC, etc.)</p>
+            <p class="source-line"><strong>Access:</strong> Open and publicly available without restriction.</p>
+        </div>
+
+        <div class="data-item">
+            <h4>1.1.2 NASA Modeling and Analysis Data (Input)</h4>
+            <ul class="content-list">
+                <li>NASA GEOS (GMAO) atmospheric reanalyses</li>
+                <li>NASA land surface modeling products (e.g., NLDAS, GLDAS)</li>
+                <li>NASA carbon cycle and flux modeling outputs</li>
+            </ul>
+            <p class="source-line"><strong>Source:</strong> GMAO, GES DISC, and related DAACs</p>
+            <p class="source-line"><strong>Access:</strong> Publicly available.</p>
+        </div>
+
+        <div class="data-item">
+            <h4>1.1.3 NASA Airborne Science Data (Input)</h4>
+            <ul class="content-list">
+                <li>Data from past airborne campaigns (e.g., AVIRIS, AirMOSS, CARVE, ACT-America)</li>
+                <li>Level-0 to Level-3 instrument data, including radiance, reflectance, atmospheric observations, lidar, or hyperspectral imaging.</li>
+            </ul>
+            <p class="source-line"><strong>Source:</strong> DAACs (e.g., ORNL DAAC, GHRC)</p>
+            <p class="source-line"><strong>Access:</strong> Public Accessible.</p>
+        </div>
+
+        <div class="data-item">
+            <h4>1.1.4 Personally Identifiable Information (PII) &amp; Sensitive Data</h4>
+            <p>Refer to the PII guidance, including data security and redacting PII information, provided in the Solution Co-Developments in Practice document. Everyone has the responsibility to protect PII in any form (physical or electronic) from unauthorized disclosure, modification, or destruction in order to ensure its confidentiality, integrity, and availability. PII data should only be destroyed in accordance with NASA Records Retention Schedules. PII that is no longer needed should be destroyed in order to reduce risk to NASA. NASA CUI Destruction requirements can be found in NPR 2810.7. Additional guidance is provided through NASA Records Management.</p>
+            <p>Sensitive data, such as data on location on sensitive assets such as Wildlife, Military Assets, Refuge locations, should be treated with data security levels provided by International Traffic in Arms Regulations (ITAR) and the Export Administration Regulations (EAR).</p>
+        </div>
+
+        <div class="data-item">
+            <h4>1.1.5 Commercial data such as high-resolution images provided by CSDA</h4>
+            <p>Any commercial data, including data from CSDA, comes with guidance on use and sharing of the data. Since different providers give different guidance based on the license agreements, follow the guidance provided by CSDA or the commercial data provider for use and distribution.</p>
+        </div>
+    </div>
+
+    <div class="gov-subsection">
+        <h3>1.2 New Data Products Created (Output)</h3>
+        <p>Generated outputs may include:</p>
+        <ul class="content-list">
+            <li>Derived geophysical parameters</li>
+            <li>Calibrated/quality-checked subsets of NASA data</li>
+            <li>Gridded model–observation fusion products</li>
+            <li>Machine learning outputs, uncertainty quantification, or statistical summaries</li>
+            <li>Analysis scripts, workflows, visualization tools, or Jupyter notebooks</li>
+        </ul>
+        <p>All derived data and software will be made public in accordance with <strong>NASA's Open-Source Science policy.</strong></p>
+    </div>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 78–79</p>
+</div>
+
+<!-- 2. Standards -->
+<div class="gov-section">
+    <h2>2. Standards to Be Used for Data and Metadata</h2>
+
+    <div class="gov-subsection">
+        <h3>2.1 File Formats</h3>
+        <p>Project data will use <strong>community-standard, interoperable formats</strong>, including:</p>
+        <ul class="bold-list">
+            <li><strong>NetCDF4</strong> (CF-compliant) for gridded data</li>
+            <li><strong>HDF5</strong> for hierarchical scientific data</li>
+            <li><strong>GeoTIFF</strong> for spatial raster products</li>
+            <li><strong>CSV</strong> for tabular summaries</li>
+            <li><strong>JSON/YAML</strong> for configuration files</li>
+            <li><strong>PNG/JPEG</strong> for static images</li>
+        </ul>
+    </div>
+
+    <div class="gov-subsection">
+        <h3>2.2 Metadata Standards</h3>
+        <p>Metadata will follow NASA and community norms:</p>
+        <ul class="bold-list">
+            <li><strong>CF Conventions</strong> (Version ≥ 1.7) for NetCDF</li>
+            <li><strong>NASA's Directory Interchange Format (DIF)</strong> or <strong>ISO 19115/19139</strong> as required by DAACs</li>
+            <li><strong>DOI assignment metadata</strong> for all publicly released datasets</li>
+            <li><strong>OGC standards</strong> for spatial reference and geolocation metadata</li>
+        </ul>
+    </div>
+
+    <div class="gov-subsection">
+        <h3>2.3 File Naming Conventions</h3>
+        <p>File naming conventions can be based on partner consensus; the name has to reflect the contents for ease of data management. Addition of version counts helps in identifying the latest version of the document. The document has to be openly accessible to all partners with "Need to Know" privileges, therefore storing this in a location that enables this is recommended. Any files that are high level security should only be accessible to those with a "Need to Know."</p>
+        <p>All data and metadata will be validated prior to archiving.</p>
+    </div>
+</div>
+
+<!-- 3. Data Sharing -->
+<div class="gov-section">
+    <h2>3. Data Sharing and Access</h2>
+
+    <div class="gov-subsection">
+        <h3>3.1 Compliance With NASA Open Science</h3>
+        <p>All project outcomes—including <strong>data, software, workflows, documentation, and publications</strong>—will be openly shared without restriction.<br>No proprietary periods are requested.</p>
+    </div>
+
+    <div class="gov-subsection">
+        <h3>3.2 Release Timeline</h3>
+        <ul class="bold-list">
+            <li><strong>Input data</strong>: Already public.</li>
+            <li><strong>Derived datasets</strong>: Public release <strong>within XX days of validation</strong> and no later than <strong>the end of the project period</strong>.</li>
+            <li><strong>Software, code, and workflows</strong>: Released publicly <strong>at or before the first publication or public presentation</strong>.</li>
+            <li><strong>Documentation, READMEs, metadata</strong>: Provided at time of data release.</li>
+        </ul>
+    </div>
+
+    <div class="gov-subsection">
+        <h3>3.3 Data Repositories</h3>
+        <p>All data will be deposited in <strong>NASA-approved, discipline-appropriate archives</strong>, such as:</p>
+        <ul class="bold-list">
+            <li><strong>GES DISC</strong> (Atmospheric &amp; modeling data)</li>
+            <li><strong>LP DAAC or LAADS DAAC</strong> (Land &amp; atmosphere satellite data)</li>
+            <li><strong>PO.DAAC</strong> (Ocean &amp; geophysical data)</li>
+            <li><strong>ORNL DAAC</strong> (Terrestrial ecology, airborne science)</li>
+        </ul>
+        <p>If DAAC acceptance is outside the proposal scope, data will be hosted on:</p>
+        <ul class="bold-list">
+            <li><strong>NASA-sponsored data portals</strong> (per program guidance)</li>
+            <li><strong>University/organization servers</strong></li>
+        </ul>
+        <p>No paywalls, login requirements, or embargoes will be applied.</p>
+    </div>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 80</p>
+</div>
+
+<!-- 4. Data Preservation -->
+<div class="gov-section">
+    <h2>4. Data Preservation and Archiving</h2>
+
+    <div class="gov-subsection">
+        <h3>4.1 Long-Term Preservation</h3>
+        <p>NASA DAACs will serve as the long-term repository for final products. DAACs ensure:</p>
+        <ul class="content-list">
+            <li>Redundant storage</li>
+            <li>Integrity checking</li>
+            <li>Long-term maintenance</li>
+            <li>DOI assignment</li>
+            <li>Continued open access</li>
+        </ul>
+    </div>
+
+    <div class="gov-subsection">
+        <h3>4.2 Backup and Versioning</h3>
+        <p>During the project:</p>
+        <ul class="bold-list">
+            <li>Primary storage: institutional secure servers</li>
+            <li>Version control: <strong>GitHub</strong> or <strong>NASA-approved version-control platform</strong></li>
+            <li>Redundancy: institutional cloud and local replicated storage</li>
+            <li>Preservation: datasets prepared in immutable tagged releases</li>
+        </ul>
+    </div>
+</div>
+
+<!-- 5. Software -->
+<div class="gov-section">
+    <h2>5. Software, Tools, and Workflows</h2>
+
+    <div class="gov-subsection">
+        <h3>5.1 Open-Source Software</h3>
+        <p>All custom code will be released under an <strong>open-source license</strong> such as MIT, BSD-3, or Apache 2.0. This includes:</p>
+        <ul class="content-list">
+            <li>Data processing pipelines</li>
+            <li>Modeling workflows</li>
+            <li>Analysis scripts</li>
+            <li>Jupyter notebooks</li>
+            <li>QA/QC utilities</li>
+            <li>Visualization scripts</li>
+        </ul>
+    </div>
+
+    <div class="gov-subsection">
+        <h3>5.2 Repositories</h3>
+        <p>Project software will be shared through:</p>
+        <ul class="bold-list">
+            <li><strong>GitHub</strong> or <strong>GitLab</strong> public repositories</li>
+            <li>Accompanied by:
+                <ul class="sub-list">
+                    <li>README</li>
+                    <li>Installation instructions</li>
+                    <li>Example datasets</li>
+                    <li>Containerization (Docker/Singularity) when appropriate</li>
+                    <li>CI testing setup when appropriate</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div class="gov-subsection">
+        <h3>5.3 Reproducibility</h3>
+        <p>Workflows will include:</p>
+        <ul class="content-list">
+            <li>Fully documented provenance</li>
+            <li>Environment specifications (Conda, Dockerfile, requirements.txt)</li>
+            <li>Reproducible notebook workflows</li>
+            <li>Data access scripts using Earthdata APIs</li>
+        </ul>
+    </div>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 81</p>
+</div>
+
+<!-- 6. Responsibilities -->
+<div class="gov-section">
+    <h2>6. Data Management Responsibilities</h2>
+    <p>The PI will oversee:</p>
+    <ul class="content-list">
+        <li>Data quality control</li>
+        <li>Compliance with NASA Open Science policies</li>
+        <li>Metadata creation and validation</li>
+        <li>Repository submission</li>
+        <li>DOI assignment</li>
+        <li>Maintaining communication with NASA DAAC representatives</li>
+    </ul>
+    <p>A designated Data Manager or Co-I will handle:</p>
+    <ul class="content-list">
+        <li>Version control</li>
+        <li>Code review</li>
+        <li>Data packaging</li>
+        <li>Archival submission preparation</li>
+        <li>Documentation creation</li>
+    </ul>
+</div>
+
+<!-- 7. Policies -->
+<div class="gov-section">
+    <h2>7. Policies for Re-Use, Redistribution, and Citation</h2>
+    <p>All datasets, code, and documents will be released under <strong>open, unrestricted licenses</strong> consistent with NASA terms, typically:</p>
+    <ul class="bold-list">
+        <li><strong>Creative Commons Attribution (CC-BY-4.0)</strong> for data</li>
+        <li><strong>MIT, BSD, Apache, etc.</strong> for software</li>
+    </ul>
+    <p>Users will be encouraged to cite:</p>
+    <ul class="content-list">
+        <li>The dataset DOI</li>
+        <li>Relevant software repositories</li>
+        <li>Relevant data repositories: Github, Zenodo</li>
+        <li>Associated publications</li>
+        <li>NASA DAAC source datasets</li>
+    </ul>
+</div>
+
+<!-- 8. Data Volume -->
+<div class="gov-section">
+    <h2>8. Expected Data Volume</h2>
+    <p>Estimated ranges (adjustable to project specifics):</p>
+    <ul class="bold-list">
+        <li><strong>Satellite subsets &amp; model data</strong>: 1–5 TB</li>
+        <li><strong>Airborne data usage</strong>: 0.1–3 TB</li>
+        <li><strong>Derived products</strong>: 50–500 GB</li>
+        <li><strong>Software + documentation</strong>: &lt; 5 GB</li>
+    </ul>
+    <p>Storage and transfer strategies will be scaled accordingly.</p>
+</div>
+
+<!-- 9. Restrictions -->
+<div class="gov-section">
+    <h2>9. Restrictions, Ethics, and Security</h2>
+    <ul class="content-list">
+        <li>No restrictions on public release.</li>
+        <li>No personally identifiable information or controlled data involved.</li>
+        <li>All datasets comply with NASA and federal open-data requirements.</li>
+        <li>Sensitive flight information (if applicable to airborne data) will be handled per NASA DAAC rules, but will not limit derived data release.</li>
+    </ul>
+    <div class="compliance-box">
+        This Data Management Plan complies with all NASA ROSES requirements, including <strong>Open Science</strong>, <strong>SPD-41a</strong>, and DAAC archival policies. It ensures that <strong>all data, code, metadata, and documentation are openly accessible, well-documented, reproducible, FAIR (Findable, Accessible, Interoperable, Reusable)</strong>, and preserved in NASA-approved repositories.
+    </div>
+</div>
+
+<!-- 10. Branding -->
+<div class="gov-section">
+    <h2>10. Branding/acknowledgements</h2>
+    <p>NASA has an open data policy for all data created using their resources, but requires acknowledgement for their contribution in enabling, supporting technically or providing in all data created, software developed. OCOMM provides guidance on the specific acknowledgement statement and should be referred to as necessary.</p>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 83</p>
+</div>
+
+<hr class="section-rule">
+
+<!-- Section 2: Checklist -->
+<h2 style="color:#0b3d91; font-size:1.35rem; margin-bottom:1rem;">Section 2: Data Governance and Plan Checklist</h2>
+
+<table class="checklist-table">
+    <thead>
+        <tr>
+            <th>Category</th>
+            <th>Requirement / Best Practice</th>
+            <th>Checklist Items</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Solution Name</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Data Types &amp; Sources</td>
+            <td>Identify NASA input and derived data</td>
+            <td>List satellite datasets; list model data; list airborne data; describe derived outputs; confirm DAAC sources are public</td>
+        </tr>
+        <tr>
+            <td>Data &amp; Metadata Standards</td>
+            <td>Use standard formats and metadata</td>
+            <td>NetCDF4/CF; HDF5; GeoTIFF; CSV; ISO 19115/19139; DIF; OGC spatial metadata; W3C PROV</td>
+        </tr>
+        <tr>
+            <td>Open Science Compliance</td>
+            <td>Meet SPD-41a requirements</td>
+            <td>No embargo; public release; open access; no login required</td>
+        </tr>
+        <tr>
+            <td>Data Sharing</td>
+            <td>Provide access pathways and documentation</td>
+            <td>Identify DAAC; provide DOI; include README; release notebooks and workflows</td>
+        </tr>
+        <tr>
+            <td>Repositories</td>
+            <td>Use NASA DAACs and open repositories</td>
+            <td>Submit to GES DISC / LP DAAC / ORNL DAAC / PO.DAAC; use Zenodo/GitHub for prereleases</td>
+        </tr>
+        <tr>
+            <td>Preservation</td>
+            <td>Ensure long-term data integrity</td>
+            <td>Integrity checks; backed-up servers; immutable version tagging</td>
+        </tr>
+        <tr>
+            <td>Documentation</td>
+            <td>Provide complete documentation</td>
+            <td>READMEs; processing steps; uncertainties; QA/QC; workflow diagrams</td>
+        </tr>
+        <tr>
+            <td>Software &amp; Tools</td>
+            <td>Release all code as open-source</td>
+            <td>Public GitHub; MIT/BSD/Apache license; examples; notebooks; containers</td>
+        </tr>
+        <tr>
+            <td>Reproducibility</td>
+            <td>Ensure workflows are replicable</td>
+            <td>Document workflows; data retrieval scripts; versioned code; automated tests</td>
+        </tr>
+        <tr>
+            <td>Data Volume</td>
+            <td>Estimate and manage storage</td>
+            <td>Estimate raw/intermediate/final sizes; confirm storage resources</td>
+        </tr>
+        <tr>
+            <td>Roles</td>
+            <td>Assign team responsibilities</td>
+            <td>PI oversight; Data Manager for metadata and QA/QC</td>
+        </tr>
+        <tr>
+            <td>Licensing &amp; Reuse</td>
+            <td>Enable broad reuse</td>
+            <td>CC-BY 4.0 for data; MIT/BSD/Apache for code; citation instructions</td>
+        </tr>
+        <tr>
+            <td>Ethics &amp; Security</td>
+            <td>Ensure compliance</td>
+            <td>No PII; no restricted data; policy-compliant.</td>
+        </tr>
+        <tr>
+            <td>QA/QC &amp; Validation</td>
+            <td>Provide validation processes</td>
+            <td>QA/QC steps; validation; uncertainty estimates</td>
+        </tr>
+    </tbody>
+</table>
+<p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 84</p>
+
+{% endblock %}

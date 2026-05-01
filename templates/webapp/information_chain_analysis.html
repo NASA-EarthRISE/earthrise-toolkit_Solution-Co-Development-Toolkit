@@ -1,0 +1,812 @@
+{% extends "base.html" %}
+{% block title %}Information Chain Analysis — Solution Co-Development Toolkit{% endblock %}
+{% block content %}
+<style>
+    .section-intro p { margin-bottom: 0.9rem; line-height: 1.7; }
+
+    /* Subsection styling */
+    .subsection { margin-top: 2.5rem; }
+    .subsection > h2 { color: #0b3d91; border-bottom: 2px solid #00a0b0; padding-bottom: 0.4rem; margin-bottom: 1rem; }
+    .subsection > h3 { color: #1a5276; margin: 1.5rem 0 0.6rem 0; }
+    .subsection p { margin-bottom: 0.9rem; line-height: 1.7; }
+
+    /* Bullet lists */
+    .content-list { margin: 0.4rem 0 1rem 1.5rem; }
+    .content-list li { margin-bottom: 0.4rem; line-height: 1.6; }
+
+    /* Primary outputs callout */
+    .outputs-box {
+        background: #e8f0fa;
+        border-left: 4px solid #0b3d91;
+        padding: 0.8rem 1.1rem;
+        margin: 1rem 0 0.5rem 0;
+        border-radius: 0 4px 4px 0;
+        font-size: 0.95rem;
+        line-height: 1.7;
+    }
+
+    /* Phase grid */
+    .phases-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.75rem;
+        margin: 1.5rem 0;
+    }
+    .phase-card {
+        border-radius: 6px;
+        padding: 1rem;
+        font-size: 0.88rem;
+    }
+    .phase-card h4 { margin: 0 0 0.6rem 0; font-size: 0.9rem; color: #0b3d91; }
+    .phase-card ul { margin: 0; padding-left: 1.1rem; }
+    .phase-card ul li { margin-bottom: 0.3rem; line-height: 1.5; }
+    .phase-1 { background: #cce0f5; outline: 2px solid #c0392b; }
+    .phase-2 { background: #c8dff5; }
+    .phase-3 { background: #d4edda; }
+    .phase-4 { background: #d5eddf; }
+
+    /* Lifecycle table */
+    .lifecycle-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1.2rem 0;
+        font-size: 0.88rem;
+    }
+    .lifecycle-table th {
+        background: #0b3d91;
+        color: #fff;
+        padding: 0.65rem 0.9rem;
+        text-align: left;
+        font-weight: 600;
+        vertical-align: top;
+    }
+    .lifecycle-table td {
+        padding: 0.8rem 0.9rem;
+        border: 1px solid #c0cfe0;
+        vertical-align: top;
+        line-height: 1.6;
+    }
+    .lifecycle-table tr:nth-child(odd) td { background: #f5f8fc; }
+    .lifecycle-table tr:nth-child(even) td { background: #fff; }
+    .lifecycle-table td:first-child { font-weight: 700; color: #0b3d91; }
+    .lifecycle-table td ul { margin: 0.3rem 0 0 1.1rem; padding: 0; }
+    .lifecycle-table td ul li { margin-bottom: 0.3rem; }
+
+    /* Decision pathway chain diagram */
+    .chain-diagram {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        margin: 1.5rem 0;
+        flex-wrap: wrap;
+    }
+    .chain-link {
+        background: #0b3d91;
+        color: #fff;
+        padding: 0.8rem 1rem;
+        border-radius: 4px;
+        text-align: center;
+        font-size: 0.82rem;
+        font-weight: 600;
+        flex: 1;
+        min-width: 100px;
+        line-height: 1.4;
+    }
+    .chain-arrow {
+        color: #0b3d91;
+        font-size: 1.4rem;
+        font-weight: 700;
+        padding: 0 0.3rem;
+        flex-shrink: 0;
+    }
+    .chain-label {
+        font-size: 0.75rem;
+        color: #555;
+        text-align: center;
+        margin-top: 0.4rem;
+    }
+    .chain-wrapper {
+        text-align: center;
+        flex: 1;
+        min-width: 100px;
+    }
+
+    /* Fig caption */
+    .fig-caption {
+        font-size: 0.83rem;
+        color: #555;
+        font-style: italic;
+        text-align: center;
+        margin: 0.4rem 0 1.5rem 0;
+    }
+
+    /* Multi-ICA diagram */
+    .ica-system {
+        background: #f5f8fc;
+        border: 1px solid #c0cfe0;
+        border-radius: 6px;
+        padding: 1.2rem 1.4rem;
+        margin: 1.2rem 0 0.5rem 0;
+    }
+    .ica-system h5 {
+        color: #0b3d91;
+        margin: 0 0 1rem 0;
+        font-size: 0.9rem;
+        text-align: center;
+        letter-spacing: 0.03em;
+    }
+    .ica-rows { display: flex; flex-direction: column; gap: 0.6rem; }
+    .ica-row {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.84rem;
+    }
+    .ica-label {
+        background: #0b3d91;
+        color: #fff;
+        border-radius: 4px;
+        padding: 0.3rem 0.7rem;
+        font-weight: 700;
+        font-size: 0.8rem;
+        white-space: nowrap;
+    }
+    .ica-arrow { color: #0b3d91; font-weight: 700; }
+    .ica-decision {
+        background: #dce8f5;
+        border-radius: 4px;
+        padding: 0.3rem 0.7rem;
+        font-size: 0.82rem;
+        white-space: nowrap;
+    }
+    .ica-pathway {
+        background: #e8f4fb;
+        border: 1px dashed #00a0b0;
+        border-radius: 4px;
+        padding: 0.3rem 0.7rem;
+        font-size: 0.8rem;
+        flex: 1;
+        color: #1a5276;
+    }
+    .ica-note {
+        font-size: 0.82rem;
+        color: #555;
+        font-style: italic;
+        margin-top: 0.8rem;
+        border-top: 1px solid #c0cfe0;
+        padding-top: 0.6rem;
+    }
+
+    /* Channels sections */
+    .channels-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.8rem;
+        margin: 1rem 0 1.5rem 0;
+    }
+    .channel-card {
+        background: #f5f8fc;
+        border: 1px solid #c0cfe0;
+        border-radius: 4px;
+        padding: 0.8rem 1rem;
+        font-size: 0.88rem;
+    }
+    .channel-card h4 {
+        color: #0b3d91;
+        margin: 0 0 0.5rem 0;
+        font-size: 0.88rem;
+        font-weight: 700;
+    }
+    .channel-card ul { margin: 0; padding-left: 1.1rem; }
+    .channel-card ul li { margin-bottom: 0.25rem; line-height: 1.5; }
+
+    /* Considerations box */
+    .considerations-box {
+        background: #f0f4f8;
+        border-left: 4px solid #00a0b0;
+        padding: 0.9rem 1.2rem;
+        margin: 1rem 0 1.5rem 0;
+        border-radius: 0 4px 4px 0;
+        font-size: 0.93rem;
+    }
+    .considerations-box strong { color: #0b3d91; display: block; margin-bottom: 0.4rem; }
+    .considerations-box ul { margin: 0; padding-left: 1.3rem; }
+    .considerations-box ul li { margin-bottom: 0.35rem; line-height: 1.6; }
+
+    /* Step boxes */
+    .step-header {
+        background: #0b3d91;
+        color: #fff;
+        padding: 0.7rem 1.1rem;
+        border-radius: 4px 4px 0 0;
+        font-size: 1rem;
+        font-weight: 700;
+        margin-top: 2rem;
+        margin-bottom: 0;
+    }
+    .step-body {
+        border: 1px solid #c0cfe0;
+        border-top: none;
+        border-radius: 0 0 4px 4px;
+        padding: 1.2rem 1.4rem;
+        background: #fff;
+    }
+    .step-body p { margin-bottom: 0.8rem; line-height: 1.7; }
+    .step-body p:last-child { margin-bottom: 0; }
+    .step-body h4 { color: #1a5276; margin: 1rem 0 0.4rem 0; font-size: 0.95rem; }
+    .step-body ul, .step-body ol { margin: 0.3rem 0 0.8rem 1.4rem; }
+    .step-body ul li, .step-body ol li { margin-bottom: 0.35rem; line-height: 1.6; }
+
+    /* Purpose sub-label in step */
+    .step-purpose {
+        font-size: 0.82rem;
+        color: #555;
+        font-style: italic;
+        margin: 0 0 0.8rem 0;
+        border-left: 3px solid #00a0b0;
+        padding-left: 0.7rem;
+    }
+
+    /* Rule box */
+    .rule-box {
+        background: #fff8e1;
+        border-left: 4px solid #f0a500;
+        padding: 0.6rem 1rem;
+        margin: 0.8rem 0;
+        border-radius: 0 4px 4px 0;
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+
+    /* Example box */
+    .example-box {
+        background: #f0f9fb;
+        border: 1px solid #00a0b0;
+        border-left: 5px solid #00a0b0;
+        border-radius: 4px;
+        padding: 1rem 1.2rem;
+        margin: 1rem 0 0.5rem 0;
+        font-size: 0.9rem;
+    }
+    .example-box h5 {
+        margin: 0 0 0.6rem 0;
+        color: #0b3d91;
+        font-size: 0.88rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+    .example-box p { margin-bottom: 0.5rem; line-height: 1.65; }
+    .example-box ul { margin: 0.3rem 0 0.5rem 1.2rem; padding: 0; }
+    .example-box ul li { margin-bottom: 0.45rem; line-height: 1.6; }
+
+    /* Chain link example (flood) */
+    .chain-example { margin: 0.8rem 0; }
+    .chain-example-item {
+        display: flex;
+        gap: 0.8rem;
+        margin-bottom: 0.7rem;
+        align-items: flex-start;
+        font-size: 0.88rem;
+        line-height: 1.6;
+    }
+    .chain-tag {
+        flex-shrink: 0;
+        background: #0b3d91;
+        color: #fff;
+        border-radius: 4px;
+        padding: 0.2rem 0.6rem;
+        font-weight: 700;
+        font-size: 0.8rem;
+        margin-top: 2px;
+    }
+    .chain-content {}
+    .chain-content strong { display: block; color: #1a5276; margin-bottom: 0.1rem; }
+    .chain-content em { color: #555; font-size: 0.85rem; }
+
+    .page-note {
+        font-size: 0.8rem;
+        color: #888;
+        text-align: right;
+        margin-top: 0.5rem;
+        font-style: italic;
+    }
+</style>
+
+<div class="page-header">
+    <div class="section-tag">Section 7</div>
+    <h1>Information Chain Analysis</h1>
+</div>
+
+<div class="section-intro">
+    <h2>Purpose:</h2>
+    <p>Even where the science is perfect, many solutions do not have the desired impact because:</p>
+    <ul class="content-list">
+        <li>Information arrives too late, or not at all</li>
+        <li>Messages are misinterpreted</li>
+        <li>Channels exclude key groups or intermediaries</li>
+        <li>Responsibilities at handoffs are unclear</li>
+        <li>Assumptions about use go untested</li>
+    </ul>
+    <p>An information chain analysis (ICA) makes these challenges visible, specific, and fixable by tying information flow directly to decisions, behaviors, and outcomes.</p>
+    <p>An ICA is a tool used to examine how information and data from a solution moves through a system to support specific decisions. It is intended to capture where that flow can break down in ways that matter for solution design, outcomes, access, and impact. It is informed by stakeholder mapping and needs assessment and is integrated in solution design, testing, and validation.</p>
+    <p>An ICA breaks down a broad decision into decision-specific pathways, to trace how information is generated, transformed, packaged, transmitted, interpreted, and ultimately used. In aggregate, these pathways create a full picture for how information flows to inform decisions.</p>
+    <p>The goal is actionable insight. The ICA helps with identifying potential gaps where breakdowns in information flow prevent informed decisions, and what must change in design, packaging, dissemination, or engagement to fix them. This has the added benefit of increasing opportunities for impact.</p>
+    <div class="outputs-box">
+        The primary outputs of an ICA are 1.) a <strong>prioritized list of information-flow risks</strong> and 2.) <strong>design actions</strong> that must be addressed during co-design, delivery, and monitoring.
+    </div>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 58</p>
+</div>
+
+<div class="subsection">
+    <h2>How and When to Use This Tool:</h2>
+    <p>An ICA can be started during Phase 1 after stakeholder mapping and needs assessment are completed. During this phase, the ICA helps to sharpen understanding of stakeholder needs and constraints to help teams better understand practical limitations and opportunities for impact. However, consulting an ICA is useful throughout the lifecycle of a project, as outlined in the following table.</p>
+
+    <div class="phases-grid">
+        <div class="phase-card phase-1">
+            <h4>Phase 1: Assessing Needs &amp; Potential Impact</h4>
+            <ul>
+                <li>Identify stakeholders</li>
+                <li>Assess user needs, constraint, and decision context</li>
+                <li>Define problem and opportunity for impact</li>
+            </ul>
+        </div>
+        <div class="phase-card phase-2">
+            <h4>Phase 2: Solution Co-Design</h4>
+            <ul>
+                <li>Co-design solution concepts</li>
+                <li>Define requirements and success metrics</li>
+                <li>Plan implementation and sustainability</li>
+            </ul>
+        </div>
+        <div class="phase-card phase-3">
+            <h4>Phase 3: Prototyping and Co-Development</h4>
+            <ul>
+                <li>Build and test prototypes</li>
+                <li>Conduct user testing and iteration</li>
+                <li>Prepare data, workflows, and trainings</li>
+            </ul>
+        </div>
+        <div class="phase-card phase-4">
+            <h4>Phase 4: Transition and Impact Assessment</h4>
+            <ul>
+                <li>Deploy and transition ownership</li>
+                <li>Collect evidence of use and impact</li>
+                <li>Plan for scaling, replication, and long-term uptake</li>
+            </ul>
+        </div>
+    </div>
+
+    <table class="lifecycle-table">
+        <thead>
+            <tr>
+                <th>Lifecycle Moment</th>
+                <th>What ICA Clarifies</th>
+                <th>What It Informs</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Stakeholder Mapping and Needs Assessment<br><em style="font-weight:400; font-size:0.83rem;">Use once stakeholder insights and needs are available</em></td>
+                <td>
+                    <ul>
+                        <li>How information currently moves from data to decisions</li>
+                        <li>Where interpretation, timing, or access break down</li>
+                        <li>Early risks, bottlenecks, and access gaps</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul>
+                        <li>Problem framing</li>
+                        <li>Impact hypotheses</li>
+                        <li>Early risk identification</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Solution co-design<br><em style="font-weight:400; font-size:0.83rem;">Use in translating needs into solution concepts</em></td>
+                <td>
+                    <ul>
+                        <li>How EO products fit real decision workflows</li>
+                        <li>Roles and responsibilities across information handoffs</li>
+                        <li>Viable channels for dissemination and feedback</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul>
+                        <li>Technical design choices</li>
+                        <li>Workflow and architecture decisions</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Co-design &amp; integration<br><em style="font-weight:400; font-size:0.83rem;">Use for aligning technical, institutional, and partner inputs</em></td>
+                <td>
+                    <ul>
+                        <li>Where information flow assumptions affect feasibility</li>
+                        <li>Which failures matter most for decisions and outcomes</li>
+                        <li>What trade-offs are required</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul>
+                        <li>Co-design priorities</li>
+                        <li>Partnership and delivery planning</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Development &amp; early use<br><em style="font-weight:400; font-size:0.83rem;">Use for building, piloting, or refining solutions</em></td>
+                <td>
+                    <ul>
+                        <li>Whether information is usable in practice</li>
+                        <li>Where design intent diverges from real use</li>
+                        <li>Where additional support or adaptation is needed</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul>
+                        <li>System refinements</li>
+                        <li>Adoption and sustainability strategies</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Monitoring and Impact Assessment<br><em style="font-weight:400; font-size:0.83rem;">Use for defining metrics or impact monitoring questions</em></td>
+                <td>
+                    <ul>
+                        <li>Whether information reaches and is used by intended audiences</li>
+                        <li>Which assumptions hold or fail in practice</li>
+                        <li>How access and outcomes differ across groups</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul>
+                        <li>Results Framework assumptions</li>
+                        <li>Solution implementation and impact metrics</li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="subsection">
+    <h2>Understanding Decision Pathways</h2>
+    <p>An ICA focuses on <em>decision-specific pathways</em> rather than mapping entire information systems at once. Each ICA traces how information supports one decision, even if multiple sources or channels converge at that point. Over time, multiple ICAs can be layered to reveal the broader information system and recurring bottlenecks. If an analysis spans multiple decisions, it should be split to preserve clarity and actionability.</p>
+    <p>For each decision pathway, an ICA traces only the information that is necessary for one specific decision, following it step by step from source to action. At each step, the analysis asks:</p>
+    <ul class="content-list">
+        <li><strong>Where does the information needed for this decision originate?</strong><br>
+            <span style="color:#555; font-size:0.93em;">(e.g., which EO datasets, models, reports, or observations are relied upon)</span></li>
+        <li><strong>Who interprets or translates it—and how?</strong><br>
+            <span style="color:#555; font-size:0.93em;">(e.g., analysis, aggregation, contextualization, or judgment applied before it becomes decision-relevant)</span></li>
+        <li><strong>How is it delivered to the decision-maker, and when?</strong><br>
+            <span style="color:#555; font-size:0.93em;">(e.g., format, channel, frequency, and timing relative to the decision window)</span></li>
+        <li><strong>Who is expected to act on it, and under what constraints?</strong><br>
+            <span style="color:#555; font-size:0.93em;">(e.g., authority, incentives, capacity, institutional rules)</span></li>
+    </ul>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 60</p>
+
+    <p>In an ICA, a decision pathway defines <em>what</em> is being analyzed: the sequence of information flows required to support one specific decision. Chain links define <em>where</em> analysis occurs within that pathway.</p>
+    <p>Each chain link represents a moment of transition along a decision pathway—a point at which information changes form, moves between actors, or crosses an institutional or technical boundary. An information chain often follows a sequence such as: EO product generation → analyst interpretation → advisory or alert formulation → channel transmission → decision-maker uptake.</p>
+    <p>Mapping a pathway as a series of chain links allows ICA to pinpoint exactly where information may be delayed, distorted, or lost as it moves toward a decision. By breaking the pathway into discrete links, the analysis clarifies who is responsible at each step and under what conditions information is handed off or transformed. This, in turn, makes it possible to distinguish whether failures arise from solution design, institutional capacity, incentives, timing constraints, or barriers to access, enabling targeted, corrective or preventative action.</p>
+    <p>Importantly, ICA does not assume that all links function equally well. A decision pathway may be technically sound overall but still fail because of one or two critical weak links. By making chain links explicit, ICA enables targeted design and delivery actions focused on the points where intervention will have the greatest impact.</p>
+
+    <!-- Fig 1 -->
+    <p><strong>PATHWAY TO DECISION A</strong></p>
+    <div class="chain-diagram">
+        <div class="chain-wrapper">
+            <div class="chain-link">Chain Link 1<br>Data &amp; Inputs</div>
+        </div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-wrapper">
+            <div class="chain-link">Chain Link 2<br>Analysis &amp; Translation</div>
+        </div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-wrapper">
+            <div class="chain-link">Chain Link 3<br>Packaging &amp; Channel</div>
+        </div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-wrapper">
+            <div class="chain-link">Chain Link 4<br>Decision &amp; Action</div>
+        </div>
+    </div>
+    <p class="fig-caption">Each box is a chain link in the decision-making process—a specific hand-off or transformation of the data that leads to the decision.<br><em>Fig. 1 Illustration of chain links constituting a decision pathway</em></p>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 61</p>
+
+    <!-- Fig 2 -->
+    <div class="ica-system">
+        <h5>Comprehensive Information System (emerges over time)</h5>
+        <div class="ica-rows">
+            <div class="ica-row">
+                <span class="ica-label">ICA 1</span>
+                <span class="ica-arrow">→</span>
+                <span class="ica-decision">Decision A</span>
+                <span class="ica-arrow">→</span>
+                <span class="ica-pathway">Decision Pathway (chain links)</span>
+            </div>
+            <div class="ica-row">
+                <span class="ica-label">ICA 2</span>
+                <span class="ica-arrow">→</span>
+                <span class="ica-decision">Decision B</span>
+                <span class="ica-arrow">→</span>
+                <span class="ica-pathway">Decision Pathway (chain links)</span>
+            </div>
+            <div class="ica-row">
+                <span class="ica-label">ICA 3</span>
+                <span class="ica-arrow">→</span>
+                <span class="ica-decision">Decision C</span>
+                <span class="ica-arrow">→</span>
+                <span class="ica-pathway">Decision Pathway (chain links)</span>
+            </div>
+        </div>
+        <div class="ica-note">Shared actors, channels, bottlenecks identified across ICAs over time<br>
+        If an analysis spans multiple decisions, it should be split into multiple ICAs</div>
+    </div>
+    <p class="fig-caption"><em>Fig. 2 Visualization of how decisions based on decision pathways lead to a comprehensive information system</em></p>
+</div>
+
+<div class="subsection">
+    <h2>Information Channels and Target Audiences</h2>
+    <p>Because ICA traces how information moves from data to decisions, it is essential to consider both who participates in information flows and how information is communicated along the decision pathway.</p>
+    <p>EO-derived information often changes form multiple times—from data to analysis, from analysis to alerts, and from alerts to action. Many failures occur not because EO data are inaccurate, but because information is misinterpreted, delayed, or transmitted through channels that users cannot access or do not trust.</p>
+    <p>Actors who produce, translate, transmit, or act on information include:</p>
+    <ul class="content-list">
+        <li>Technical and communications staff (science, data, IT, communications)</li>
+        <li>National, regional, and local government departments</li>
+        <li>Disaster management agencies and Emergency Operations Centers (EOCs)</li>
+        <li>NGOs, CSOs, and implementing partners</li>
+        <li>Extension services and field officers</li>
+        <li>Community leaders and representatives</li>
+        <li>End users and affected community members</li>
+        <li>Donors and coordinating bodies (where relevant)</li>
+    </ul>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 62</p>
+    <p>Note that different actors may appear multiple times in the chain with different roles.</p>
+
+    <h3>Common Channels for Sharing EO-Enabled Information</h3>
+    <div class="channels-grid">
+        <div class="channel-card">
+            <h4>Broadcast and print</h4>
+            <ul>
+                <li>Radio, television, newspapers, public service announcements</li>
+            </ul>
+        </div>
+        <div class="channel-card">
+            <h4>Digital and mobile</h4>
+            <ul>
+                <li>Websites and dashboards</li>
+                <li>Email and data portals</li>
+                <li>Mobile apps</li>
+                <li>SMS, WhatsApp, and other messaging platforms</li>
+            </ul>
+        </div>
+        <div class="channel-card">
+            <h4>Institutional and operational</h4>
+            <ul>
+                <li>Briefings, situation reports, internal memos</li>
+                <li>Coordination meetings and command centers</li>
+            </ul>
+        </div>
+        <div class="channel-card">
+            <h4>Community-based and informal</h4>
+            <ul>
+                <li>Community boards and local announcements</li>
+                <li>Town meetings, markets, roadside signs</li>
+                <li>Trusted intermediaries (local leaders, extension workers)</li>
+            </ul>
+        </div>
+        <div class="channel-card">
+            <h4>Feedback and response channels</h4>
+            <ul>
+                <li>Hotlines, reporting apps, community meetings, forums</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="considerations-box">
+        <strong>Key Considerations When Assessing Channels</strong>
+        <ul>
+            <li>Which stakeholders rely on which channels—and at what stage?</li>
+            <li>Where are bottlenecks, delays, or points of distortion?</li>
+            <li>Are channels one-way (broadcast) or two-way (interactive)?</li>
+            <li>Do accessibility, literacy, language, or connectivity constraints limit use?</li>
+            <li>Do users understand and trust the information?</li>
+            <li>Are informal channels complementing or substituting for formal ones?</li>
+        </ul>
+    </div>
+</div>
+
+<div class="subsection">
+    <h2>ICA in Practice: Conducting an Information Chain Analysis</h2>
+    <p><em>To conduct an ICA, follow the steps outlined in the instructions on this Excel ICA Worksheet</em></p>
+    <p>If you prefer to follow the written steps only, you can reference the step-by-step document.</p>
+
+    <!-- Step 1 -->
+    <div class="step-header">STEP 1: Define and Anchor the ICA to a Decision</div>
+    <div class="step-body">
+        <p class="step-purpose">Purpose: Define a single, decision-anchored information pathway to prevent scope creep and analytic drift.</p>
+        <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 63</p>
+        <h4>Define (before mapping):</h4>
+        <ul>
+            <li>Decision to be supported</li>
+            <li>Decision-maker (individual or body)</li>
+            <li>Decision timing</li>
+            <li>Intended beneficiary / end user</li>
+            <li>Information product(s) informing the decision</li>
+            <li>Consequence of failure if information is delayed, distorted, or missing</li>
+        </ul>
+        <div class="rule-box"><strong>Rule:</strong> If more than one decision or endpoint is identified, split the analysis into multiple ICAs.</div>
+        <div class="example-box">
+            <h5>Example</h5>
+            <ul>
+                <li><strong>Chain 1 Decision:</strong> Activate district flood preparedness measures
+                    <ul style="margin-top:0.3rem;">
+                        <li>Decision-maker: District Disaster Management Committee</li>
+                        <li>Timing: 24–72 hours before peak flooding</li>
+                        <li>Information product: Flood forecast and alert bulletin</li>
+                        <li>Consequence of failure: Delayed evacuation increases risk to life</li>
+                    </ul>
+                </li>
+                <li style="margin-top:0.6rem;"><strong>Chain 2 Decision:</strong> Inform resilience planning efforts
+                    <ul style="margin-top:0.3rem;">
+                        <li>Decision-maker: State Climate Resilience Office</li>
+                        <li>Timing: Post-event</li>
+                        <li>Information product: Flood expansive maps and socio-economic data layer</li>
+                        <li>Consequence of failure: Repeated flood events</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="step-header">STEP 2: Map the Information Chain</div>
+    <div class="step-body">
+        <p class="step-purpose">Purpose: Create a shared, chronological map of how information moves and is interpreted from production to use.</p>
+        <h4>Method</h4>
+        <ul>
+            <li>Break the pathway into <strong>chain links</strong> (C1, C2, C3…)</li>
+            <li>Each link represents a <strong>handoff</strong>, where information:
+                <ul>
+                    <li>Moves to a new actor or authority, <strong>and/or</strong></li>
+                    <li>Is <strong>interpreted, translated, or acted upon</strong>, changing its meaning, level of instruction, or decision implication</li>
+                </ul>
+            </li>
+            <li>Capture both:
+                <ul>
+                    <li><strong>The information received</strong>, and</li>
+                    <li><strong>The decision or interpretation applied</strong> at that step</li>
+                </ul>
+            </li>
+            <li>Stop when information reaches the <strong>intended user</strong> with a clear, actionable instruction.</li>
+        </ul>
+        <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 64</p>
+        <h4>Clarification</h4>
+        <p>Information chains do not only transmit data; they progressively convert signals (e.g., forecasts or alerts) into decisions and directives (e.g., prepare, evacuate, shelter). These interpretation points are often where failure or confusion occurs and must be explicitly mapped.</p>
+
+        <div class="example-box">
+            <h5>Example (Flood Evacuation Decision)</h5>
+            <div class="chain-example">
+                <div class="chain-example-item">
+                    <span class="chain-tag">C1</span>
+                    <div class="chain-content">
+                        <strong>National Meteorological Org → National DRM</strong>
+                        <em>Input: Flood forecast data<br>Interpretation: Determine national alert level</em>
+                    </div>
+                </div>
+                <div class="chain-example-item">
+                    <span class="chain-tag">C2</span>
+                    <div class="chain-content">
+                        <strong>National DRM → District DRM</strong>
+                        <em>Input: Alert level<br>Interpretation: Decide whether evacuation thresholds are met</em>
+                    </div>
+                </div>
+                <div class="chain-example-item">
+                    <span class="chain-tag">C3</span>
+                    <div class="chain-content">
+                        <strong>District DRM → Local NGO</strong>
+                        <em>Input: Evacuation decision and guidance<br>Interpretation: Translate decision into local instructions and channels</em>
+                    </div>
+                </div>
+                <div class="chain-example-item">
+                    <span class="chain-tag">C4</span>
+                    <div class="chain-content">
+                        <strong>Local NGO → Households</strong>
+                        <em>Input: Evacuation instruction<br>Interpretation: Households understand what action to take (evacuate vs. prepare)</em>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="step-header">STEP 3: Stress-Test Each Handoff</div>
+    <div class="step-body">
+        <p class="step-purpose">Purpose: Identify where the chain could potentially fail in practice.</p>
+        <p>For each step, examine:</p>
+        <ul>
+            <li>What must go right</li>
+            <li>What actually happens</li>
+            <li>The type of breakdown (delay, capacity, access issue, lack of trust, distortion)</li>
+        </ul>
+        <div class="rule-box">Issues must be tied to a <strong>specific handoff</strong>, not described generically.</div>
+        <div class="example-box">
+            <h5>Building on the flood evacuation example above:</h5>
+            <ul>
+                <li>C2: Alerts translated too slowly on weekends → <strong>Delay</strong></li>
+                <li>C4: WhatsApp excludes elderly → <strong>Access barrier</strong></li>
+            </ul>
+        </div>
+        <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 65</p>
+    </div>
+
+    <!-- Step 4 -->
+    <div class="step-header">STEP 4: Prioritize by Decision and Outcome Impact</div>
+    <div class="step-body">
+        <p class="step-purpose">Purpose: Filter issues to those that materially affect decisions and outcomes.</p>
+        <h4>Prioritization criteria:</h4>
+        <ul>
+            <li>Impact on <strong>decision quality or timing</strong></li>
+            <li>Impact on <strong>outcomes</strong></li>
+            <li>Impact on <strong>equity or access</strong></li>
+        </ul>
+        <h4>Output</h4>
+        <p>A short list of <strong>high-impact issues</strong> that move forward.</p>
+        <div class="example-box">
+            <h5>Example</h5>
+            <ul>
+                <li>C4 access barrier affecting elderly households → <strong>High priority</strong> (prevents evacuation)</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Step 5 -->
+    <div class="step-header">STEP 5: Identify Design, Delivery, and Engagement Actions</div>
+    <div class="step-body">
+        <p class="step-purpose">Purpose: Translate prioritized issues into actionable interventions.</p>
+        <p>For each priority issue, specify:</p>
+        <ul>
+            <li><strong>Intervention type</strong> (design, delivery, engagement)</li>
+            <li><strong>Concrete action</strong></li>
+            <li><strong>Responsible actor</strong></li>
+            <li><strong>Implementation phase</strong> (co-design, pilot, deployment)</li>
+        </ul>
+        <div class="rule-box">
+            <strong>Rule:</strong> Every action must link to:
+            <ul style="margin: 0.3rem 0 0 1.2rem;">
+                <li>One chain link</li>
+                <li>One prioritized issue</li>
+            </ul>
+        </div>
+        <div class="example-box">
+            <h5>Example</h5>
+            <ul>
+                <li>C2 delay → <strong>Delivery</strong> → Automate SMS alerts to district leads (National DRM)</li>
+                <li>C4 access barrier → <strong>Delivery</strong> → Add radio announcements targeting elderly households</li>
+                <li>C4 trust issue → <strong>Engagement</strong> → Train community leaders on key messages</li>
+            </ul>
+        </div>
+        <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 66</p>
+    </div>
+
+    <!-- Step 6 -->
+    <div class="step-header">STEP 6: Surface Assumptions and Risks</div>
+    <div class="step-body">
+        <p class="step-purpose">Purpose: Make implicit assumptions explicit and testable.</p>
+        <p>Assumptions should be extracted from earlier steps—not brainstormed from scratch—and paired with:</p>
+        <ul>
+            <li>The risk (if false)</li>
+            <li>How the assumption will be monitored or tested</li>
+        </ul>
+        <p>These assumptions inform results framework indicators and MEL questions.</p>
+        <div class="example-box">
+            <h5>Example</h5>
+            <ul>
+                <li>C3: Assumes district staff act on alerts immediately → Risk if false = no evacuation → Monitor via post-event staff meetings</li>
+                <li>C4: Assumes NGOs disseminate messages promptly → Risk if false = late info → Monitor via periodic, randomized checks</li>
+            </ul>
+        </div>
+        <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 67</p>
+    </div>
+</div>
+{% endblock %}

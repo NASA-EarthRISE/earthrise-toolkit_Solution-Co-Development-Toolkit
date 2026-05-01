@@ -1,0 +1,443 @@
+{% extends "base.html" %}
+{% block title %}Economic Impact Assessments — Solution Co-Development Toolkit{% endblock %}
+{% block content %}
+<style>
+    .section-intro { margin-bottom: 2rem; }
+    .section-intro p { margin-bottom: 1rem; line-height: 1.7; }
+
+    /* Phase grid */
+    .phases-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.75rem;
+        margin: 1.5rem 0;
+    }
+    .phase-card {
+        border-radius: 6px;
+        padding: 1rem;
+        font-size: 0.88rem;
+    }
+    .phase-card h4 { margin: 0 0 0.6rem 0; font-size: 0.9rem; color: #0b3d91; }
+    .phase-card ul { margin: 0; padding-left: 1.1rem; }
+    .phase-card ul li { margin-bottom: 0.3rem; line-height: 1.5; }
+    .phase-1 { background: #cce0f5; outline: 2px solid #c0392b; }
+    .phase-2 { background: #c8dff5; }
+    .phase-3 { background: #d4edda; }
+    .phase-4 { background: #d5eddf; }
+
+    /* Related tools note */
+    .related-box {
+        background: #f0f4f8;
+        border-left: 4px solid #00a0b0;
+        padding: 1rem 1.2rem;
+        margin: 1.5rem 0;
+        border-radius: 0 4px 4px 0;
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+    .related-box strong { color: #0b3d91; }
+
+    /* Phase implementation table */
+    .phase-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1.5rem 0;
+        font-size: 0.9rem;
+    }
+    .phase-table th {
+        background: #0b3d91;
+        color: #fff;
+        padding: 0.75rem 1rem;
+        text-align: left;
+        font-weight: 600;
+    }
+    .phase-table td {
+        padding: 0.85rem 1rem;
+        border: 1px solid #d0d8e4;
+        vertical-align: top;
+        line-height: 1.6;
+    }
+    .phase-table tr:nth-child(odd) td { background: #f5f8fc; }
+    .phase-table tr:nth-child(even) td { background: #fff; }
+    .phase-table td:first-child { font-weight: 600; color: #0b3d91; white-space: nowrap; }
+    .phase-table ol { margin: 0; padding-left: 1.2rem; }
+    .phase-table ol li { margin-bottom: 0.4rem; }
+
+    /* Numbered purposes */
+    .purposes-list { margin: 1rem 0 1.5rem 0; padding: 0; list-style: none; }
+    .purposes-list li {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.2rem;
+        line-height: 1.65;
+    }
+    .purposes-list li .num {
+        flex-shrink: 0;
+        width: 28px;
+        height: 28px;
+        background: #0b3d91;
+        color: #fff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.85rem;
+        margin-top: 2px;
+    }
+
+    /* Info required bullets */
+    .info-list { margin: 0.5rem 0 1rem 1.5rem; padding: 0; }
+    .info-list li { margin-bottom: 0.35rem; line-height: 1.6; }
+
+    /* Methods table */
+    .methods-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0 1.5rem 0;
+        font-size: 0.9rem;
+    }
+    .methods-table th {
+        background: #0b3d91;
+        color: #fff;
+        padding: 0.65rem 1rem;
+        text-align: left;
+        font-weight: 600;
+    }
+    .methods-table td {
+        padding: 0.7rem 1rem;
+        border: 1px solid #d0d8e4;
+        vertical-align: top;
+        line-height: 1.6;
+    }
+    .methods-table tr:nth-child(odd) td { background: #f5f8fc; }
+    .methods-table tr:nth-child(even) td { background: #fff; }
+    .methods-table td:first-child { font-weight: 600; }
+
+    /* Example box */
+    .example-box {
+        background: #f0f9fb;
+        border: 1px solid #00a0b0;
+        border-left: 5px solid #00a0b0;
+        border-radius: 4px;
+        padding: 1.2rem 1.4rem;
+        margin: 1.2rem 0 1.5rem 0;
+        font-size: 0.93rem;
+    }
+    .example-box h4 {
+        margin: 0 0 0.75rem 0;
+        color: #0b3d91;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+    .example-box p { margin-bottom: 0.6rem; line-height: 1.65; }
+    .example-box ul { margin: 0.4rem 0 0.6rem 1.3rem; }
+    .example-box ul li { margin-bottom: 0.3rem; line-height: 1.6; }
+    .example-box .formula {
+        background: #fff;
+        border: 1px solid #b0d8e0;
+        border-radius: 4px;
+        padding: 0.6rem 1rem;
+        margin: 0.5rem 0;
+        font-family: monospace;
+        font-size: 0.9rem;
+    }
+    .example-box .result {
+        background: #e6f4f7;
+        border-radius: 4px;
+        padding: 0.5rem 0.9rem;
+        margin-top: 0.5rem;
+        font-weight: 600;
+        color: #0b3d91;
+    }
+
+    /* Italic baseline items */
+    .baseline-list { margin: 0.5rem 0 1rem 1.5rem; padding: 0; }
+    .baseline-list li { margin-bottom: 0.45rem; line-height: 1.6; }
+
+    /* References */
+    .references-list { margin: 0.5rem 0 1rem 1.5rem; padding: 0; }
+    .references-list li { margin-bottom: 0.6rem; line-height: 1.6; font-size: 0.9rem; }
+
+    /* Sub-section dividers */
+    .subsection { margin-top: 2.5rem; }
+    .subsection h3 { color: #0b3d91; border-bottom: 2px solid #00a0b0; padding-bottom: 0.4rem; margin-bottom: 1rem; }
+    .subsection h4 { color: #1a5276; margin: 1.2rem 0 0.5rem 0; }
+
+    .page-note {
+        font-size: 0.8rem;
+        color: #888;
+        text-align: right;
+        margin-top: 0.5rem;
+        font-style: italic;
+    }
+</style>
+
+<div class="page-header">
+    <div class="section-tag">Section 4</div>
+    <h1>Economic Impact Assessments</h1>
+</div>
+
+<div class="section-intro">
+    <h2>Purpose:</h2>
+    <p>This is a resource for Earth Observation (EO) Solution teams that want to better understand economic impact assessments (EIA) and consider how to apply EIA within their solutions.</p>
+    <p>An EIA is a methodological framework for evaluating the real-world effects of a project, tool, policy, or technology. This includes EO solutions, which encompass information collected about Earth's physical, chemical, and biological systems through remote sensing and related technologies. An EIA translates scientific data into social and economic metrics to demonstrate its benefits for society and the economy. It can identify the value added by information at different stages, including before project initiation (predictive), during implementation, and after completion.</p>
+</div>
+
+<div class="subsection">
+    <h2>How and When to Use This Tool:</h2>
+    <div class="phases-grid">
+        <div class="phase-card phase-1">
+            <h4>Phase 1: Assessing Needs &amp; Potential Impact</h4>
+            <ul>
+                <li>Identify stakeholders</li>
+                <li>Assess user needs, constraint, and decision context</li>
+                <li>Define problem and opportunity for impact</li>
+            </ul>
+        </div>
+        <div class="phase-card phase-2">
+            <h4>Phase 2: Solution Co-Design</h4>
+            <ul>
+                <li>Co-design solution concepts</li>
+                <li>Define requirements and success metrics</li>
+                <li>Plan implementation and sustainability</li>
+            </ul>
+        </div>
+        <div class="phase-card phase-3">
+            <h4>Phase 3: Prototyping and Co-Development</h4>
+            <ul>
+                <li>Build and test prototypes</li>
+                <li>Conduct user testing and iteration</li>
+                <li>Prepare data, workflows, and trainings</li>
+            </ul>
+        </div>
+        <div class="phase-card phase-4">
+            <h4>Phase 4: Transition and Impact Assessment</h4>
+            <ul>
+                <li>Deploy and transition ownership</li>
+                <li>Collect evidence of use and impact</li>
+                <li>Plan for scaling, replication, and long-term uptake</li>
+            </ul>
+        </div>
+    </div>
+
+    <p>This tool is first used during Phase 1, to ensure necessary aspects are incorporated in needs assessment. It can be considered alongside Designing for Impact. It can continue to be consulted in Phase 2 to ensure approaches for EIA are included in the Solution Implementation Impact and Monitoring Plan (SIIMP), as appropriate. This tool is most useful when consulted early in the solution co-development process, in order to gather baseline information and set expectations with stakeholders regarding future information collection needs. Experience and a difficult lesson already learned by EO scientists and practitioners is that it is nearly impossible to measure economic impacts and value of information if you only think to do so halfway through a project or near a project's end. While the tool can be reviewed, revisited and aspects incorporated into the solution design and delivery during Phase 3 and Phase 4 as appropriate, it can only be truly accurate and effective when integrated at the start of a project or solution.</p>
+
+    <div class="related-box">
+        <strong>How this tool relates to other tools in the Toolkit:</strong><br>
+        EIA guidance for EO solutions is informed by Designing for Impact. Aspects of EIA design and implementation should be incorporated into the stakeholder engagement and needs assessment analysis, solution implementation, impact and monitoring plan, as appropriate.
+    </div>
+</div>
+
+<div class="subsection">
+    <h2>EIA Implementation in Co-Development Phases:</h2>
+    <table class="phase-table">
+        <thead>
+            <tr>
+                <th>Phase</th>
+                <th>Steps for EIA Implementation</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Phase 1: Assessment of Stakeholder Needs and Potential Impacts</td>
+                <td>
+                    <ol>
+                        <li>Engage with stakeholders to discuss the potential EIA outcomes, data collection expectations, and understand stakeholder needs (for instance, is the stakeholder motivated by understanding and communicating economic impacts?)</li>
+                        <li>Decide on depth and complexity of EIA: high level, or in-depth.</li>
+                        <li>Identify the socio-economic data requirements - pre and post implementation</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td>Phase 2: Solution Co-Design</td>
+                <td>
+                    <ol>
+                        <li>Determine the key indicators for EIA for the specific tool/service</li>
+                        <li>Collect baseline data, as needed</li>
+                        <li>Determine on how to implement constant monitoring of tool/service</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td>Phase 3: Technical Prototyping and Co-Development</td>
+                <td>
+                    <ol>
+                        <li>Continue development of the economic model</li>
+                        <li>Proceed to EIA analysis</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td>Phase 4: Transition and Impact Assessment</td>
+                <td>
+                    <ol>
+                        <li>Collect and analyze post-implementation data and information</li>
+                        <li>Final Report incorporates EIA outcomes</li>
+                        <li>Trainings on economic valuation, when needed</li>
+                        <li>Plan for continued evaluation for the codeveloped service</li>
+                    </ol>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 34</p>
+</div>
+
+<div class="subsection">
+    <h2>How to Consider the Value of EIA for EO Solutions:</h2>
+    <p>EIAs serve a few primary purposes related to EO solution co-design, adoption, and use.</p>
+    <ol class="purposes-list">
+        <li>
+            <span class="num">1</span>
+            <span><strong>Proving Value of Information (VOI):</strong> The value of a tool lies not only in the data product itself, but in the change in decision-making it enables, and even the longer term outcomes like health, wellbeing, tradeoffs, and prosperity. An EIA can quantify this change. It is essential to determine whether the tool can help prevent financial losses. This is what makes the EO industry a multi-billion dollar valuation.</span>
+        </li>
+        <li>
+            <span class="num">2</span>
+            <span><strong>Attributing Downstream Success:</strong> When EO data or services are provided to partner organizations, these partners are recognized for successful implementation, such as saving lives or reducing costs. It is important to attribute these outcomes to the original service. Anecdotal evidence is compelling, but sometimes hard metrics tell an even bigger story.</span>
+        </li>
+        <li>
+            <span class="num">3</span>
+            <span><strong>Optimizing Product Development:</strong> An EIA assists in identifying the most economically impactful investments. It supports the strategic prioritization of technical updates for the services or tools supported by the program. It is important to prioritize technical updates for tools that inform high-stakes decisions to ensure resources are allocated where they can be of most benefit.</span>
+        </li>
+        <li>
+            <span class="num">4</span>
+            <span><strong>Demonstrating Operational Cost-Savings:</strong> An EIA can justify the costs to upgrade from inefficient workflows that rely on substandard information, to more timely and accurate services. By quantifying the costs and benefits of co-designing and adopting better tools, EIAs can more clearly communicate direct benefits for taxpayers.</span>
+        </li>
+    </ol>
+</div>
+
+<div class="subsection">
+    <h2>Approaches to EIA: High Level EIA vs. In-Depth EIA</h2>
+
+    <h3>High Level Valuation:</h3>
+    <p>This is a broader look at the value chain. The steps are aligned with Designing for Impact. It defines where the benefits are happening and who the beneficiaries are but will use estimates and anecdotal evidence rather than a deep statistical model. The goal of a higher level EIA is to establish a value proposition to justify if it's worth a deeper look. High level valuation aligns with proving VOI and attributing downstream success but at a very macro level.</p>
+
+    <h4><em>Information Required:</em></h4>
+    <ul class="info-list">
+        <li>User Profiles: General sectors using the data and how [baseline information in phase 2]</li>
+        <li>Testimonials: Qualitative feedback from partners [phase 3 or 4]</li>
+        <li>Market Multipliers: Applying standard growth rates to user counts</li>
+        <li>Reach: Downloads, API hits, number of users or number of partners/stakeholders involved [During the ongoing activity]</li>
+    </ul>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 35</p>
+
+    <h4><em>General Methods and Data:</em></h4>
+    <table class="methods-table">
+        <thead>
+            <tr>
+                <th>Methods</th>
+                <th>Information Required</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Value Chain Analysis</td>
+                <td>Document stages: upstream, midstream and downstream users</td>
+            </tr>
+            <tr>
+                <td>Benefits Transfer</td>
+                <td>Studies with dollar estimates of similar applications for similar tools / Number of people in the coverage area</td>
+            </tr>
+            <tr>
+                <td>Reach Estimation</td>
+                <td>Downloads, API calls, number of organizations using the data</td>
+            </tr>
+            <tr>
+                <td>Qualitative Data Collection</td>
+                <td>Key informant interviews with implementing partners and end-users gathering feedback on how critical the tool is to produce testimonials capturing the value of the tool.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h4><em>Example:</em></h4>
+    <div class="example-box">
+        <h4>Example</h4>
+        <p><strong>Scenario:</strong> NASA soil moisture data used by Alabama farms to make informed irrigation decisions</p>
+        <p><strong>Data:</strong> Soil Moisture Index, farm sizes, average cost of irrigation and fertilizer per acre, feedback from extension agents that approximately 5000 farmers have actively used the tool</p>
+        <p><strong>Method:</strong></p>
+        <p>The variables —</p>
+        <ul>
+            <li>N: Number of farmers (5000),</li>
+            <li>A: Average farm size (assume 200 acres),</li>
+            <li>C: Cost of irrigation ($25 per acre), R: Reduction in irrigation events due to data (15% reduction),</li>
+            <li>R: Socio-economic multiplier (assume 1.4 - this indicates that every $1 saved by a farmer generates 1.4 times increase in economic output. This depends on marginal propensity to consume (MPC).</li>
+        </ul>
+        <div class="formula">Estimated direct saving S = N × A × C × R = $3,750,000</div>
+        <div class="formula">Total estimated economic impact = 3750000 × 1.4 = $5,250,000</div>
+        <div class="result">The High Level EIA — 5000 farmers used the information in 2025 leading to approximately $5 million saved (using some standard economic multiplier and socio-economic information available)</div>
+    </div>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 36</p>
+
+    <h3>In-Depth Analysis:</h3>
+    <p>This is a detailed bottom-up approach that uses economic methods like <em>value of information</em> (VOI), <em>randomized control trials</em> (RCTs), or other micro- and macro-economic models tailored to the study. The goal for an in-depth EIA is attribution. This is the best way to prove that the use of the specific EO data/service or tool has led to real world impacts. An in-depth analysis provides micro level information on all the values of EO for solutions listed above.</p>
+
+    <h4><em>Baseline Information Required:</em></h4>
+    <p>There must be documentation of existing conditions or traditional methods before the tool or service is implemented:</p>
+    <ul class="baseline-list">
+        <li><em>Counterfactual baseline:</em> frequency of data collection, lead time, error rates, etc.</li>
+        <li><em>Socio-economic baseline:</em> inventory infrastructure, economic activity data, historical damage costs, resources</li>
+        <li><em>Behavioral baseline:</em> resource allocation, insurance benchmarks, standard operation procedures</li>
+    </ul>
+
+    <h4><em>Attribution Information Required:</em></h4>
+    <ul class="baseline-list">
+        <li><em>Direct performance metrics:</em> number of direct accesses, data requests, trainings, session durations, the time difference in action from baseline to tool implementation</li>
+        <li><em>Operational decision data:</em> specific interventions, efficiency gains, preparation costs</li>
+        <li><em>Economic outcome:</em> avoided damage claims, resources conservation, improved production or services</li>
+    </ul>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 37</p>
+
+    <h4><em>General Methods and Data:</em></h4>
+    <table class="methods-table">
+        <thead>
+            <tr>
+                <th>Methods</th>
+                <th>Information Required</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Value of information (VOI)</td>
+                <td>Data on potential outcomes and their probabilities</td>
+            </tr>
+            <tr>
+                <td>Randomized control trials (RCTs)</td>
+                <td>Data treated and control groups, intervention and outcomes for both groups</td>
+            </tr>
+            <tr>
+                <td>Cost-benefit analysis (CBA)</td>
+                <td>Cost and benefits data and valuations like willingness to pay (WTP)</td>
+            </tr>
+            <tr>
+                <td>Decision models (all economic models that can used to study the impact)</td>
+                <td>Data on consumer behavior, production costs and investment returns</td>
+            </tr>
+            <tr>
+                <td>Social returns on investments (SROI)</td>
+                <td>Data on outcome and investment resources</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>For detailed information on methods:</p>
+    <ol class="references-list">
+        <li>Basu, R., Anderson, E., Cherrington, E., Deval, C., Guragai, S., Herndon, K., ... &amp; Sirichaovanichkarn, E. (2025). Using economic methods to assess impacts of earth observation-based services: Why and how?. <em>Environmental Impact Assessment Review</em>, 115, 107975.</li>
+        <li>Basu, R., Anderson, E., Deval, C., Herndon, K., Markert, A., Pransky, L., ... &amp; Sayeed, A. (2024). Serving economic prosperity: economic impact assessments (EIA) on Earth observation-based services and tools by SERVIR. <em>arXiv preprint</em> arXiv:2405.15672.</li>
+    </ol>
+
+    <h4><em>Example:</em></h4>
+    <div class="example-box">
+        <h4>Example</h4>
+        <p><strong>Scenario:</strong> NASA soil moisture data used by Alabama farms to make informed irrigation decisions</p>
+        <p><strong>The In-Depth EIA:</strong> Agricultural extension officers interview 500 farmers to gather baseline and post-implementation information on production improvement, costs saved, etc. For example, <em>"established from ground level proof that use of soil moisture data led to 12% reduction in water pumping."</em> Economic models are then used to establish the net gain in dollars specific to certain counties or the entire state.</p>
+        <p>The data and methods that can be used are more elaborate and in-depth as opposed to a high level EIA. Below are papers that provide in-depth EIAs that use methods that can be applied to the scenario above.</p>
+        <ul>
+            <li>Bernknopf, R., Kuwayama, Y., Zaitchik, B., Rodell, M., Getirana, A., Thorstensen, A., &amp; Shahreen, S. (2025). An economic impact assessment of the use of earth observation information in flood hazard communication. <em>Natural Hazards</em>, 121(15), 17913–17933.</li>
+            <li>Pakhtigian, E. L., Aziz, S., Boyle, K. J., Akanda, A. S., &amp; Hanifi, S. M. A. (2024). Early warning systems, mobile technology, and cholera aversion: Evidence from rural Bangladesh. <em>Journal of environmental economics and management</em>, 125, 102966.</li>
+        </ul>
+    </div>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 38–39</p>
+</div>
+{% endblock %}

@@ -1,0 +1,564 @@
+{% extends "base.html" %}
+{% block title %}Solution Adoption and Sustainability Plan — Solution Co-Development Toolkit{% endblock %}
+{% block content %}
+<style>
+    .section-intro p { margin-bottom: 0.9rem; line-height: 1.7; }
+
+    /* Phase grid */
+    .phases-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.75rem;
+        margin: 1.5rem 0;
+    }
+    .phase-card {
+        border-radius: 6px;
+        padding: 1rem;
+        font-size: 0.88rem;
+    }
+    .phase-card h4 { margin: 0 0 0.6rem 0; font-size: 0.9rem; color: #0b3d91; }
+    .phase-card ul { margin: 0; padding-left: 1.1rem; }
+    .phase-card ul li { margin-bottom: 0.3rem; line-height: 1.5; }
+    .phase-1 { background: #cce0f5; }
+    .phase-2 { background: #c8dff5; outline: 2px solid #c0392b; }
+    .phase-3 { background: #d4edda; outline: 2px dashed #c0392b; }
+    .phase-4 { background: #d5eddf; outline: 2px dashed #c0392b; }
+
+    /* Numbered plan sections */
+    .plan-section {
+        margin-top: 2.2rem;
+        padding-top: 0.5rem;
+        border-top: 1px solid #d0dae8;
+    }
+    .plan-section > h2 {
+        color: #0b3d91;
+        font-size: 1.2rem;
+        margin-bottom: 0.7rem;
+    }
+    .plan-section p { margin-bottom: 0.8rem; line-height: 1.7; }
+
+    /* Sub-sections */
+    .plan-subsection { margin-top: 1.4rem; }
+    .plan-subsection > h3 { color: #1a5276; font-size: 1rem; margin-bottom: 0.6rem; }
+    .plan-subsection p { margin-bottom: 0.8rem; line-height: 1.7; }
+
+    /* Bullet lists */
+    .content-list { margin: 0.4rem 0 1rem 1.5rem; }
+    .content-list li { margin-bottom: 0.4rem; line-height: 1.6; font-size: 0.93rem; }
+
+    /* Solution info labels */
+    .info-label {
+        font-weight: 700;
+        color: #0b3d91;
+        font-size: 0.93rem;
+    }
+
+    /* Italic table instruction */
+    .table-note {
+        font-style: italic;
+        font-size: 0.88rem;
+        color: #555;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Fillable tables */
+    .fill-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0.5rem 0 1.2rem 0;
+        font-size: 0.86rem;
+    }
+    .fill-table th {
+        background: #0b3d91;
+        color: #fff;
+        padding: 0.6rem 0.9rem;
+        text-align: left;
+        font-weight: 600;
+    }
+    .fill-table td {
+        padding: 0.6rem 0.9rem;
+        border: 1px solid #c0cfe0;
+        vertical-align: top;
+        line-height: 1.55;
+        min-height: 2rem;
+    }
+    .fill-table tr:nth-child(odd) td { background: #f5f8fc; }
+    .fill-table tr:nth-child(even) td { background: #fff; }
+    .fill-table td:first-child { font-weight: 500; color: #1a3a5c; }
+
+    /* Risk table – pre-filled example rows */
+    .risk-table td { font-size: 0.85rem; }
+    .risk-high { color: #c0392b; font-weight: 600; }
+    .risk-med { color: #e67e22; font-weight: 600; }
+    .risk-low { color: #27ae60; font-weight: 600; }
+
+    /* Gantt note */
+    .gantt-note {
+        font-style: italic;
+        font-size: 0.88rem;
+        color: #555;
+        margin-top: 0.4rem;
+    }
+
+    hr.section-rule { border: none; border-top: 1px solid #d0dae8; margin: 2rem 0; }
+
+    .page-note {
+        font-size: 0.8rem;
+        color: #888;
+        text-align: right;
+        margin-top: 0.5rem;
+        font-style: italic;
+    }
+</style>
+
+<div class="page-header">
+    <div class="section-tag">Section 12</div>
+    <h1>Solution Adoption and Sustainability Plan Template</h1>
+</div>
+
+<div class="section-intro">
+    <h2>Purpose:</h2>
+    <p>The Solution Adoption and Sustainability Plan provides a structured way to plan how a co-developed solution will be adopted, integrated, maintained, and sustained beyond its initial development phase. It supports the transition from development to consistent, real-world use within operational workflows. Specifically, this tool helps teams:</p>
+    <ul class="content-list">
+        <li>Clarify who will use, own, and maintain the solution over time.</li>
+        <li>Plan for training, onboarding, and user support needed for adoption.</li>
+        <li>Identify institutional, technical, data, and resource dependencies that affect sustainability.</li>
+        <li>Reduce risk associated with staff turnover, data changes, and funding constraints.</li>
+        <li>Support responsible handover, long-term maintenance, or transition to partner ownership.</li>
+        <li>Support the goals of the Solution Co-Development Toolkit by explicitly addressing adoption and sustainability, helping ensure that solutions are not only well-designed, but also usable, maintainable, and resilient over time.</li>
+    </ul>
+</div>
+
+<div style="margin-top:2rem;">
+    <h2 style="color:#0b3d91; border-bottom:2px solid #00a0b0; padding-bottom:0.4rem; margin-bottom:1rem;">How and When to Use This Tool:</h2>
+
+    <div class="phases-grid">
+        <div class="phase-card phase-1">
+            <h4>Phase 1: Assessing Needs &amp; Potential Impact</h4>
+            <ul>
+                <li>Identify stakeholders</li>
+                <li>Assess user needs, constraint, and decision context</li>
+                <li>Define problem and opportunity for impact</li>
+            </ul>
+        </div>
+        <div class="phase-card phase-2">
+            <h4>Phase 2: Solution Co-Design</h4>
+            <ul>
+                <li>Co-design solution concepts</li>
+                <li>Define requirements and success metrics</li>
+                <li>Plan implementation and sustainability</li>
+            </ul>
+        </div>
+        <div class="phase-card phase-3">
+            <h4>Phase 3: Prototyping and Co-Development</h4>
+            <ul>
+                <li>Build and test prototypes</li>
+                <li>Conduct user testing and iteration</li>
+                <li>Prepare data, workflows, and trainings</li>
+            </ul>
+        </div>
+        <div class="phase-card phase-4">
+            <h4>Phase 4: Transition and Impact Assessment</h4>
+            <ul>
+                <li>Deploy and transition ownership</li>
+                <li>Collect evidence of use and impact</li>
+                <li>Plan for scaling, replication, and long-term uptake</li>
+            </ul>
+        </div>
+    </div>
+
+    <p>This tool should be initially completed during Phase 2 of the co-development process (initial draft). It should be revisited and updated at key points throughout subsequent phases of co-development as the solution matures, user needs evolve, and sustainability considerations become clearer.</p>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 95</p>
+</div>
+
+<hr class="section-rule">
+
+<!-- Section 1 -->
+<div class="plan-section">
+    <h2>1. Solution Information</h2>
+    <p><span class="info-label">Solution Title:</span></p>
+    <p><span class="info-label">Co-Development Partners and Primary Implementing Partner(s):</span><br>
+    List the organizations involved in co-developing the solution and identify the primary implementing partner(s) responsible for operational use. (Refer to the Stakeholder Mapping outputs to ensure this section clearly identifies the specific stakeholders and user groups targeted for adoption and long-term sustainability.)</p>
+    <p><span class="info-label">Intended Operational Environment and Sustainability Requirements:</span><br>
+    Describe where and how the solution is expected to operate (e.g., internal agency systems, cloud-based platforms, partner-managed infrastructure).</p>
+</div>
+
+<!-- Section 2 -->
+<div class="plan-section">
+    <h2>2. Adoption Strategy</h2>
+    <p>This section describes the overall approach for enabling and supporting adoption of the solution by its intended users. The adoption strategy should outline the context, assumptions, needs, expectations, roles, and risks associated with transitioning the solution from development to routine operational use.</p>
+    <p>The adoption strategy should address:</p>
+    <ul class="content-list">
+        <li>How the solution will be introduced and integrated into existing partner workflows</li>
+        <li>What users and implementing partners need in order to adopt the solution successfully</li>
+        <li>Assumptions about institutional capacity, staffing, and resources</li>
+        <li>Expectations for user engagement, training, and support</li>
+        <li>Roles and responsibilities related specifically to adoption and operational use</li>
+        <li>Key risks to adoption and how they will be mitigated</li>
+    </ul>
+
+    <div class="plan-subsection">
+        <h3>2.1 Adoption Goals</h3>
+        <p>This section should define what successful adoption of the solution looks like from an operational and user perspective. Adoption goals should focus on actual use, integration into workflows, and ownership, rather than technical performance or development milestones.</p>
+        <p>Adoption goals should be specific, practical, and time-bound, and aligned with the needs and capacity of the intended users and implementing partners. Including a temporal element helps teams:</p>
+        <ul class="content-list">
+            <li>Set realistic expectations for adoption,</li>
+            <li>Support accountability and progress tracking, and</li>
+            <li>Inform how long resources and support should be planned for.</li>
+        </ul>
+        <p>Examples (select and tailor as appropriate, including a timeframe):</p>
+        <ul class="content-list">
+            <li>Integrated into the partner's annual reporting workflow within 12 months of deployment</li>
+            <li>Used by analysts each season starting in the first operational year</li>
+            <li>Validated for operational decision-making by the end of the pilot phase</li>
+            <li>Transferred to and managed by the partner's internal team within 1–2 years</li>
+            <li>Replacing or reducing reliance on manual or legacy methods over a defined transition period</li>
+        </ul>
+    </div>
+
+    <div class="plan-subsection">
+        <h3>2.2 End-User Readiness</h3>
+        <p>Assess partner readiness in practical terms:</p>
+        <ul class="content-list">
+            <li>Institutional mandate alignment</li>
+            <li>Existing workflows the solution will support</li>
+            <li>Technical capacity (software, hardware, staff skills)</li>
+            <li>Data access constraints</li>
+            <li>Training needs</li>
+            <li>Barriers to Organizational Adoption Readiness: (e.g., staffing changes, competing priorities, approval processes) (Refer also to the Needs Assessment tool)</li>
+        </ul>
+    </div>
+
+    <div class="plan-subsection">
+        <h3>2.3 Engagement and Co-Development Traceability</h3>
+        <p>This section should document how <strong>user engagement and co-development activities</strong> informed the adoption approach. It provides traceability between user input and adoption decisions, helping demonstrate that the solution and its adoption pathway are grounded in real user needs and constraints.</p>
+        <p class="table-note">You may use the table below as a reference to document user engagement and traceability.</p>
+        <table class="fill-table">
+            <thead>
+                <tr>
+                    <th>Engagement Element</th>
+                    <th>Description / Evidence</th>
+                    <th>Reference Links (optional)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>User interviews, focus groups, or co-design sessions</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>Key user needs identified</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>Key user priorities and constraints</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>How user feedback was incorporated into adoption planning</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>Open feedback items or deferred requests (future versions)</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>Stakeholder expectations regarding adoption timeline</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="plan-subsection">
+        <h3>2.4 Training, Knowledge Transfer &amp; Onboarding Plan</h3>
+        <p>This section describes the training and onboarding activities required to enable effective and sustained adoption of the solution. The focus should be on ensuring that intended users have the knowledge, skills, and support needed to use the solution confidently within their operational workflows. Training and onboarding plans should be tailored to the capacity of the implementing partner and reflect the complexity of the solution, expected frequency of use, and level of institutional ownership.</p>
+        <p class="table-note">You may use the table as reference below to document training and onboarding plans.</p>
+        <table class="fill-table">
+            <thead>
+                <tr>
+                    <th>Training / Onboarding Element</th>
+                    <th>Description</th>
+                    <th>Owner / Responsible Party</th>
+                    <th>Timeline / Frequency</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Required training materials (SOPs, slides, videos, job aids)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>Training sessions (content, duration, format)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>Delivery format (virtual, in-person, hybrid)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>Onboarding workflow (e.g., pre-training → hands-on → certification)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>Ongoing support mechanisms (helpdesk, office hours, maintainer contact)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>Local champions / focal points</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 96–97</p>
+</div>
+
+<!-- Section 3 -->
+<div class="plan-section">
+    <h2>3. Sustainability Strategy</h2>
+    <p>This section should describe the overall strategy for ensuring the solution can be maintained, supported, and used over the long term beyond the initial development and deployment period. The sustainability strategy focuses on practical considerations related to technical upkeep, data continuity, institutional ownership, and resourcing.</p>
+    <p>The sustainability strategy should clearly describe:</p>
+    <ul class="content-list">
+        <li>How the solution will remain technically functional over time, including the expected duration of support and maintenance (e.g., short-term, medium-term, or long-term horizons)</li>
+        <li>How data will be updated, managed, and stewarded</li>
+        <li>Who will own and maintain the solution after development</li>
+        <li>What resources are required to sustain operations</li>
+        <li>Key risks to sustainability and how they will be addressed</li>
+    </ul>
+
+    <div class="plan-subsection">
+        <h3>3.1 Sustainability Objectives</h3>
+        <p>This section should define the long-term outcomes the solution is expected to achieve once it has moved beyond initial development and deployment. Sustainability objectives should reflect what success looks like after the project period, including expectations for ownership, resourcing, and continuity, with clear indication of whether sustainability is intended for a defined time horizon (e.g., short- or medium-term) or for ongoing/perpetual operation. Sustainability objectives should reflect what success looks like after the project period, including expectations for ownership, resourcing, and continuity.</p>
+        <p>Examples (select and tailor as appropriate):</p>
+        <ul class="content-list">
+            <li>Solution runs annually with minimal outside support</li>
+            <li>Data and code kept current beyond the project period</li>
+            <li>Partner internalizes workflow and maintains ownership</li>
+            <li>Solution is resourced and staffed appropriately for sustained operation</li>
+            <li>Knowledge is retained across staff turnover</li>
+            <li>Feedback loops are established to capture user input, outcomes, and impact after the project period (e.g., usage feedback, outcome metrics, economic or decision-support impacts) to inform ongoing improvement and future use cases or case studies</li>
+        </ul>
+        <p>Make references to the Solutions Implementation and Impact Monitoring Plan.</p>
+    </div>
+
+    <div class="plan-subsection">
+        <h3>3.2 Technical Sustainability</h3>
+        <p>This section should describe how the solution will remain technically functional, reliable, and maintainable over the long term. It should focus on the systems, workflows, and dependencies that enable continued operation after initial development and deployment.</p>
+        <p class="table-note">You may use the table below to document technical sustainability considerations</p>
+        <table class="fill-table">
+            <thead>
+                <tr>
+                    <th>Technical Sustainability Element</th>
+                    <th>Description</th>
+                    <th>Owner / Responsible Party</th>
+                    <th>Notes / Dependencies</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Repository location and ownership (e.g., GitHub, internal systems)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>Version control and release strategy</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>Update frequency (annual, seasonal, ad hoc)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>Required technical skill sets for maintenance</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>Software, library, API, or cloud dependencies requiring monitoring</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>Level of automation in processing pipelines</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>Location of technical documentation and maintenance guides</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="plan-subsection">
+        <h3>3.3 Data Sustainability</h3>
+        <p>This section should describe how the data required to operate the solution will be maintained, updated, and managed over the long term. It focuses on ensuring continuity, reliability, and accessibility of data beyond the initial project period.</p>
+        <p class="table-note">You may use the table below to document data sustainability considerations.</p>
+        <table class="fill-table">
+            <thead>
+                <tr>
+                    <th>Data Sustainability Element</th>
+                    <th>Description</th>
+                    <th>Owner / Responsible Party</th>
+                    <th>Notes / Dependencies</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Data inputs required and update schedule</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>Data retention rules and time horizons</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>Storage locations and backup procedures</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>Identified data steward(s) or responsible team(s)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>Plan for data source changes or discontinuation (e.g., sensor or collection updates)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="plan-subsection">
+        <h3>3.4 Institutional Sustainability</h3>
+        <p>This section should describe the organizational and governance conditions that ensure the solution continues to be used and supported beyond initial development. Institutional sustainability focuses on ownership, integration into routine processes, and continuity within the implementing organization, rather than technical or data considerations.</p>
+        <p class="table-note">You may use the table below to document institutional sustainability considerations.</p>
+        <table class="fill-table">
+            <thead>
+                <tr>
+                    <th>Institutional Sustainability Element</th>
+                    <th>Description</th>
+                    <th>Owner / Responsible Party</th>
+                    <th>Notes / Dependencies</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Long-term owner of the solution (organization and responsible team)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>Integration into formal workflows, mandates, or reporting cycles</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>Cross-training or redundancy plans to manage staff turnover</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>Requirements for institutionalizing the workflow (e.g., SOPs, approvals, policy alignment)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>Alignment with ongoing national, regional, or organizational programs</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="plan-subsection">
+        <h3>3.5 Resource Sustainability</h3>
+        <p>This section should describe the human, financial, and infrastructure resources required to sustain the solution across its lifecycle, from early operations through long-term use. Resource sustainability focuses on ensuring that the solution can be maintained at an appropriate level of effort without relying on short-term or ad hoc support. This section should consider both expected resource needs under normal operation and the minimum level of support required to keep the solution functional if resources are constrained.</p>
+        <p class="table-note">You may use the table below to document resource sustainability considerations.</p>
+        <table class="fill-table">
+            <thead>
+                <tr>
+                    <th>Resource Sustainability Element</th>
+                    <th>Description</th>
+                    <th>Estimated Level / Cost</th>
+                    <th>Notes / Assumptions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Estimated annual level of effort to sustain operations</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>Required expertise and roles (e.g., developer, data manager, analyst)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>Cloud, compute, or storage costs</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>Non-labor costs (e.g., travel, meetings, licensing)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>Minimum support requirements to keep the solution operational</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>Budget planning considerations (funding sources, cost-sharing)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 98–100</p>
+</div>
+
+<!-- Section 4 -->
+<div class="plan-section">
+    <h2>4. Roles and Responsibilities Upon Successful Transfer</h2>
+    <p>This section should define the roles and responsibilities after the solution has been transferred to operational use. It clarifies ownership, accountability, and points of contact to support sustained operation, maintenance, and user engagement over the long term. The roles listed here should reflect the post-handover state, rather than development or build-phase responsibilities. This section helps ensure continuity by making clear who is responsible for the solution once initial development activities conclude.</p>
+    <p class="table-note">You may use the matrix below to document roles, responsibilities, and organizational ownership.</p>
+    <table class="fill-table">
+        <thead>
+            <tr>
+                <th>Role</th>
+                <th>Responsibility</th>
+                <th>Assigned Person/Team</th>
+                <th>Organization</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Solution Owner</td><td>Oversees long-term operation</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            <tr><td>Technical Lead</td><td>Code maintenance and updates</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            <tr><td>Data Steward</td><td>Data updates and QA/QC</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            <tr><td>Product Lead</td><td>User engagement and roadmap</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            <tr><td>Training Lead</td><td>Training and onboarding</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            <tr><td>Support Contact</td><td>First-line troubleshooting</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            <tr><td>Documentation Lead</td><td>SOPs and manuals</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            <tr><td>Communications Lead</td><td>Outreach and awareness</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+        </tbody>
+    </table>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 101</p>
+</div>
+
+<!-- Section 5 -->
+<div class="plan-section">
+    <h2>5. Adoption Milestones &amp; Timeline</h2>
+    <p>This section should document the key milestones and timeline associated with solution adoption, from initial onboarding through full operational use and handover. The milestones should focus on user readiness, operational integration, and transition to sustained ownership, rather than technical development tasks.</p>
+    <p class="table-note">List major activities and estimated dates.</p>
+    <table class="fill-table">
+        <thead>
+            <tr>
+                <th>Milestone</th>
+                <th>Description</th>
+                <th>Owner</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>User onboarding complete</td><td>All analysts trained</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            <tr><td>Pilot season operational</td><td>Workflow run end-to-end</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            <tr><td>Performance reviewed</td><td>Partner sign-off</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            <tr><td>Full operational adoption</td><td>Solution integrated into annual cycle</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            <tr><td>Handover complete</td><td>Ownership transferred</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+        </tbody>
+    </table>
+    <p class="gantt-note">You may convert this into a <strong>Gantt chart</strong> for the final toolkit.</p>
+</div>
+
+<!-- Section 6 -->
+<div class="plan-section">
+    <h2>6. Risk Assessment and Mitigation</h2>
+    <p>This section should identify adoption and sustainability risks that could affect the solution's long-term use, maintenance, or impact. Risks listed here should focus on operational, institutional, data, resource, and user-adoption considerations, rather than technical build or development risks, which are addressed in other toolkit resources.</p>
+    <p class="table-note">List key risks and proposed mitigation strategies below.</p>
+    <table class="fill-table risk-table">
+        <thead>
+            <tr>
+                <th>Risk Area</th>
+                <th>Description</th>
+                <th>Likelihood</th>
+                <th>Impact</th>
+                <th>Mitigation Strategy</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Technical</td>
+                <td>Loss of key developer</td>
+                <td class="risk-med">Med</td>
+                <td class="risk-high">High</td>
+                <td>Cross-training and documentation</td>
+            </tr>
+            <tr>
+                <td>Data</td>
+                <td>Source data changes</td>
+                <td class="risk-low">Low</td>
+                <td class="risk-med">Medium</td>
+                <td>Monitoring and adaptable scripts</td>
+            </tr>
+            <tr>
+                <td>Institutional</td>
+                <td>Staff turnover at partner</td>
+                <td class="risk-high">High</td>
+                <td class="risk-high">High</td>
+                <td>Train multiple focal points</td>
+            </tr>
+            <tr>
+                <td>Resource</td>
+                <td>No funding for maintenance</td>
+                <td class="risk-med">Med</td>
+                <td class="risk-high">High</td>
+                <td>Define minimum support level of effort</td>
+            </tr>
+            <tr>
+                <td>Adoption</td>
+                <td>Low user uptake</td>
+                <td class="risk-low">Low</td>
+                <td class="risk-high">High</td>
+                <td>Co-design and hands-on training</td>
+            </tr>
+        </tbody>
+    </table>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 102–103</p>
+</div>
+
+<!-- Section 7 -->
+<div class="plan-section">
+    <h2>7. Handover &amp; Long-Term Maintenance Plan</h2>
+    <p>This section should describe how the solution will transition from development to operational use and sustained ownership. It outlines the conditions and processes required to ensure a smooth handover, continuity of operations, and long-term maintenance after the initial development phase concludes.</p>
+    <p class="table-note">You may use the table below to document handover and long-term maintenance elements.</p>
+    <table class="fill-table">
+        <thead>
+            <tr>
+                <th>Handover &amp; Maintenance Element</th>
+                <th>Description</th>
+                <th>Owner / Responsible Party</th>
+                <th>Timing / Frequency</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Handover conditions (e.g., training completed, pilot executed, documentation finalized)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            <tr><td>Required documentation (user guides, SOPs, technical and data documentation)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            <tr><td>Knowledge transfer activities (training sessions, shadowing, walkthroughs, recorded demos)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            <tr><td>Post-handover contacts (technical, data, operational support)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            <tr><td>Expected update cycle after handover (code, documentation)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            <tr><td>Conditions for re-engagement (major upgrades, data changes, system modifications)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Section 8 -->
+<div class="plan-section">
+    <h2>8. Exit or Retirement Plan</h2>
+    <p>This section should document the end-of-life pathway for the solution, outlining how it will be responsibly retired, archived, or replaced if it is no longer needed, supported, or effective. Planning for exit or retirement helps ensure transparency for users and preserves access to relevant code, data, and documentation.</p>
+    <p class="table-note">Use the table below to document exit or retirement considerations.</p>
+    <table class="fill-table">
+        <thead>
+            <tr>
+                <th>Exit / Retirement Element</th>
+                <th>Description</th>
+                <th>Owner / Responsible Party</th>
+                <th>Timing / Triggers</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Criteria for retiring or replacing the solution (e.g., no longer meets user needs, replaced by newer system, loss of data availability, lack of resources)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            <tr><td>Steps to archive code and data (final versioning, storage location, documentation, access permissions)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            <tr><td>Communication plan for users (advance notice, timelines, alternatives, points of contact)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            <tr><td>Migration path to alternative solutions, if required (data transfer, workflow transition, user guidance)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+        </tbody>
+    </table>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 104</p>
+</div>
+
+{% endblock %}

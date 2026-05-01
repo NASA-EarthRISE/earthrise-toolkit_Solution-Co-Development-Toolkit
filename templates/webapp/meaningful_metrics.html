@@ -1,0 +1,552 @@
+{% extends "base.html" %}
+{% block title %}Developing Meaningful Metrics for EO Solutions — Solution Co-Development Toolkit{% endblock %}
+{% block content %}
+<style>
+    .section-intro p { margin-bottom: 0.9rem; line-height: 1.7; }
+
+    /* Subsection styling */
+    .subsection { margin-top: 2.5rem; }
+    .subsection > h2 { color: #0b3d91; border-bottom: 2px solid #00a0b0; padding-bottom: 0.4rem; margin-bottom: 1rem; }
+    .subsection p { margin-bottom: 0.9rem; line-height: 1.7; }
+
+    /* Bullet lists */
+    .content-list { margin: 0.4rem 0 1rem 1.5rem; }
+    .content-list li { margin-bottom: 0.4rem; line-height: 1.6; }
+
+    /* Phase grid */
+    .phases-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.75rem;
+        margin: 1.5rem 0;
+    }
+    .phase-card {
+        border-radius: 6px;
+        padding: 1rem;
+        font-size: 0.88rem;
+    }
+    .phase-card h4 { margin: 0 0 0.6rem 0; font-size: 0.9rem; color: #0b3d91; }
+    .phase-card ul { margin: 0; padding-left: 1.1rem; }
+    .phase-card ul li { margin-bottom: 0.3rem; line-height: 1.5; }
+    .phase-1 { background: #cce0f5; }
+    .phase-2 { background: #c8dff5; outline: 2px solid #c0392b; }
+    .phase-3 { background: #d4edda; }
+    .phase-4 { background: #d5eddf; }
+
+    /* Phase usage bullets */
+    .phase-usage {
+        margin: 0.5rem 0 1rem 0;
+        padding: 0;
+        list-style: none;
+    }
+    .phase-usage li {
+        display: flex;
+        gap: 0.7rem;
+        margin-bottom: 0.55rem;
+        line-height: 1.6;
+        font-size: 0.93rem;
+    }
+    .phase-usage li::before {
+        content: "▸";
+        color: #00a0b0;
+        flex-shrink: 0;
+        font-size: 0.85rem;
+        margin-top: 2px;
+    }
+
+    /* Metric level blocks */
+    .metric-levels { margin: 1.2rem 0 1.5rem 0; }
+    .metric-level {
+        border-left: 4px solid #0b3d91;
+        background: #f0f4fb;
+        padding: 0.85rem 1.1rem;
+        margin-bottom: 1rem;
+        border-radius: 0 4px 4px 0;
+        font-size: 0.93rem;
+        line-height: 1.7;
+    }
+    .metric-level .level-header {
+        font-weight: 700;
+        font-style: italic;
+        color: #0b3d91;
+        display: block;
+        margin-bottom: 0.4rem;
+    }
+    .metric-level .level-examples {
+        margin: 0.3rem 0 0 1rem;
+        color: #2c3e50;
+        font-style: normal;
+    }
+    .metric-level:nth-child(1) { border-left-color: #2980b9; background: #eaf2fb; }
+    .metric-level:nth-child(2) { border-left-color: #16a085; background: #e8f6f3; }
+    .metric-level:nth-child(3) { border-left-color: #8e44ad; background: #f5eef8; }
+    .metric-level:nth-child(4) { border-left-color: #c0392b; background: #fdf0ed; }
+
+    /* SMART list */
+    .smart-list {
+        margin: 0.5rem 0 1rem 1.5rem;
+    }
+    .smart-list li {
+        margin-bottom: 0.5rem;
+        line-height: 1.65;
+    }
+    .smart-list li .smart-term {
+        font-weight: 700;
+    }
+
+    /* Fig. 1 Results Framework diagram */
+    .results-framework {
+        margin: 1.5rem 0;
+        font-size: 0.8rem;
+        overflow-x: auto;
+    }
+    .rf-level { display: flex; justify-content: center; align-items: flex-start; gap: 0.5rem; margin-bottom: 0; }
+    .rf-impact-row { margin-bottom: 0.3rem; }
+    .rf-connectors { display: flex; justify-content: center; gap: 0; margin: 0; }
+
+    .rf-box {
+        border-radius: 6px;
+        padding: 0.55rem 0.7rem;
+        text-align: center;
+        line-height: 1.35;
+    }
+    .rf-box .rf-label {
+        font-weight: 700;
+        font-size: 0.82rem;
+        display: block;
+        margin-bottom: 0.2rem;
+        letter-spacing: 0.03em;
+    }
+    .rf-box .rf-text { font-size: 0.76rem; }
+
+    .rf-impact {
+        background: #5b9bd5;
+        color: #fff;
+        min-width: 340px;
+        max-width: 420px;
+    }
+    .rf-outcome {
+        background: #7ab3e0;
+        color: #fff;
+        width: 190px;
+        min-height: 60px;
+    }
+    .rf-output {
+        background: #a0c8ec;
+        color: #1a3a5c;
+        width: 110px;
+        min-height: 68px;
+    }
+    .rf-inputs {
+        background: #3c78b5;
+        color: #fff;
+        text-align: left;
+        padding: 0.55rem 0.8rem;
+        border-radius: 6px;
+        font-size: 0.76rem;
+        line-height: 1.45;
+    }
+    .rf-inputs .rf-label { color: #fff; }
+    .rf-inputs ol { margin: 0.2rem 0 0 1rem; padding: 0; }
+    .rf-inputs ol li { margin-bottom: 0.15rem; }
+
+    /* Arrow connector */
+    .rf-arrow {
+        text-align: center;
+        font-size: 1.1rem;
+        color: #2c3e50;
+        line-height: 1;
+        margin: 0.15rem 0;
+    }
+
+    /* Outcome row layout */
+    .rf-outcome-row {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-bottom: 0;
+    }
+    .rf-outcome-col { display: flex; flex-direction: column; align-items: center; }
+
+    /* Output row under each outcome */
+    .rf-output-group {
+        display: flex;
+        justify-content: center;
+        gap: 0.35rem;
+        margin-top: 0;
+    }
+
+    /* Inputs row */
+    .rf-inputs-row {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 0;
+    }
+    .rf-inputs-col { display: flex; flex-direction: column; align-items: center; width: 230px; }
+    .rf-inputs-col-center { width: 260px; }
+    .rf-inputs-col-right { width: 230px; }
+
+    /* Footer note box */
+    .rf-footer {
+        background: #f5f5f5;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 0.6rem 1rem;
+        margin-top: 0.6rem;
+        font-size: 0.82rem;
+        line-height: 1.65;
+    }
+    .rf-footer span { font-weight: 700; }
+
+    .fig-caption {
+        text-align: center;
+        font-style: italic;
+        font-size: 0.85rem;
+        color: #555;
+        margin-top: 0.4rem;
+    }
+
+    /* Examples section */
+    .examples-list {
+        margin: 0.5rem 0 1rem 1rem;
+        padding: 0;
+        list-style: none;
+    }
+    .examples-list > li {
+        margin-bottom: 1.2rem;
+        line-height: 1.65;
+        font-size: 0.93rem;
+    }
+    .examples-list > li::before {
+        content: "●";
+        color: #0b3d91;
+        margin-right: 0.5rem;
+        font-size: 0.7rem;
+        vertical-align: middle;
+    }
+    .example-sub {
+        display: block;
+        margin-left: 1.2rem;
+        font-style: italic;
+        color: #2c3e50;
+        line-height: 1.6;
+        margin-top: 0.2rem;
+    }
+
+    .page-note {
+        font-size: 0.8rem;
+        color: #888;
+        text-align: right;
+        margin-top: 0.5rem;
+        font-style: italic;
+    }
+
+    hr.section-rule {
+        border: none;
+        border-top: 1px solid #d0dae8;
+        margin: 2rem 0;
+    }
+</style>
+
+<div class="page-header">
+    <div class="section-tag">Section 13</div>
+    <h1>Developing Meaningful Metrics for EO Solutions</h1>
+</div>
+
+<div class="section-intro">
+    <h2>Purpose:</h2>
+    <p>This tool is an overview of how to develop and use different types of metrics to monitor and measure impact-driven Earth Science solutions and programs.</p>
+</div>
+
+<div class="subsection">
+    <h2>How and When to Use This Tool:</h2>
+
+    <div class="phases-grid">
+        <div class="phase-card phase-1">
+            <h4>Phase 1: Assessing Needs &amp; Potential Impact</h4>
+            <ul>
+                <li>Identify stakeholders</li>
+                <li>Assess user needs, constraint, and decision context</li>
+                <li>Define problem and opportunity for impact</li>
+            </ul>
+        </div>
+        <div class="phase-card phase-2">
+            <h4>Phase 2: Solution Co-Design</h4>
+            <ul>
+                <li>Co-design solution concepts</li>
+                <li>Define requirements and success metrics</li>
+                <li>Plan implementation and sustainability</li>
+            </ul>
+        </div>
+        <div class="phase-card phase-3">
+            <h4>Phase 3: Prototyping and Co-Development</h4>
+            <ul>
+                <li>Build and test prototypes</li>
+                <li>Conduct user testing and iteration</li>
+                <li>Prepare data, workflows, and trainings</li>
+            </ul>
+        </div>
+        <div class="phase-card phase-4">
+            <h4>Phase 4: Transition and Impact Assessment</h4>
+            <ul>
+                <li>Deploy and transition ownership</li>
+                <li>Collect evidence of use and impact</li>
+                <li>Plan for scaling, replication, and long-term uptake</li>
+            </ul>
+        </div>
+    </div>
+
+    <p>Use this tool during Phase 2 when developing a Solution Implementation and Impact Monitoring Plan (SIIMP). It can also be used to inform broader program and project plans as part of requirements to measure project success criteria. The SIIMP plan template includes a fillable sample table for metrics.</p>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 105</p>
+</div>
+
+<hr class="section-rule">
+
+<div class="subsection">
+    <h2>What Are Meaningful Metrics?</h2>
+    <p>Metrics are quantitative measures that become meaningful when designed specifically to monitor and validate whether a solution is achieving what it is designed to achieve.</p>
+    <p>A metric is a specific, measurable variable that provides systematic evidence about solution progress, performance, effectiveness, and impact. Metrics are embedded in the solution results framework, which acts as the blueprint for how and why a program is expected to work. More information on developing a results framework can be found in the tool Designing for Impact 101. Metric data is collected as part of a Solution Implementation and Impact Monitoring Plan associated with the solution and also built around the results framework.</p>
+</div>
+
+<div class="subsection">
+    <h2>Why Are Metrics Used?</h2>
+    <p>Metrics reframe routine project reporting and information collection into actionable intelligence that enables the solution development team, as well as broader internal (such as NASA leadership) and external stakeholders to make informed decisions related to program performance.</p>
+    <p>A well-designed suite of metrics helps solution teams track deliverables and reporting requirements, and also understand whether outcomes are achieved and intended impact can be realized. To that end, metrics are used to:</p>
+    <ul class="content-list">
+        <li>Track progress toward goals</li>
+        <li>Validate steps in the results framework</li>
+        <li>Support solution management at all levels</li>
+        <li>Demonstrate value to stakeholders</li>
+    </ul>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 106</p>
+</div>
+
+<div class="subsection">
+    <h2>Types of Metrics</h2>
+    <p>A four-tiered system can be used to categorize metrics by the level of insight they provide. This tiered approach aligns with the solution results framework, and ensures that metrics serve multiple management and reporting needs. Institutional reporting requirements should be considered at each level and relevant metrics included at solution inception.</p>
+
+    <div class="metric-levels">
+        <div class="metric-level">
+            <span class="level-header">Level 1 - Input Metrics: Track necessary steps in solution implementation and delivery requirements</span>
+            <span class="level-examples">Examples: Trainings conducted; individuals participating in trainings; needs identified; programming codes developed; stakeholders consulted, partnerships developed</span>
+        </div>
+        <div class="metric-level">
+            <span class="level-header">Level 2 - Output Metrics: Track solution deliverables and anything generated from solution team inputs (Level 1)</span>
+            <span class="level-examples">Examples: Solutions developed; users trained and able to adopt and sustain solutions, institutions adopting solutions, publications, information products, etc.</span>
+        </div>
+        <div class="metric-level">
+            <span class="level-header">Level 3 - Outcome Metrics: Measure immediate results of the solution and whether intended objectives have been met; measure change in behavior, capacity or conditions as a result of adopting the solution. Validate whether assumptions held true and/or risks were successfully mitigated. (For more on assumptions and risks, see Needs Assessment Tool, Guidance for Analyzing User Inputs, and Designing for Impact 101). Outcome metrics are the first level that demonstrate a result of the solution and what a solution has achieved.</span>
+            <span class="level-examples">Examples: Solutions adopted; successful uptake confirmed; decision-makers and beneficiaries have greater access to timely, trusted, quality data, information and analyses; applications being used in decision-making.</span>
+        </div>
+        <div class="metric-level">
+            <span class="level-header">Level 4 - Impact Metrics: Designed to measure deeper or longer-term results arising from solution adoption and use or changes in behavior as a result. Impact metrics can address both the breadth of impact (for example, how many people are affected) and the depth of impact a solution can have on one or more individuals. Collecting information on impact metrics may not be within the solutions team's capacity to complete based on availability of resources, access to information, and project timeline. Metrics associated with Economic Impact Assessment are often impact level metrics.</span>
+            <span class="level-examples">Examples: Improved resilience and sustainable resource management through the ability to take early and informed action, as a result of increased use of EO and EO-based solutions. Number of people evacuated prior to floods, how much saved by harvesting crops prior to floods.</span>
+        </div>
+    </div>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 107</p>
+</div>
+
+<div class="subsection">
+    <h2>What Makes a Good Metric?</h2>
+    <p>A good metric is SMART:</p>
+    <ul class="smart-list">
+        <li><span class="smart-term">Specific:</span> Clearly defines what is being measured</li>
+        <li><span class="smart-term">Measurable:</span> Quantifiable or qualitatively assessable; information is available, and capacity exists to collect and process</li>
+        <li><span class="smart-term">Achievable:</span> Realistic within the program's scope and timeframe</li>
+        <li><span class="smart-term">Relevant:</span> Aligned with solution and broader strategic objectives</li>
+        <li><span class="smart-term">Time-bound:</span> Includes a timeframe for measurement</li>
+    </ul>
+    <p>The number of metrics developed by a solution team will depend on a variety of factors including: 1) the complexity of the solution; 2) the level of effort and inputs required; 3) the number of and types of outputs and outcomes anticipated; and 4) any required reporting that involves data collection methods. For example, some programs or offices have program-wide objectives for which metrics that capture progress towards those priorities can be included at the solution level MIL plans.</p>
+    <p>Metrics should serve a purpose, specifically to validate or track steps in your logic chain and results framework or to fulfill reporting requirements. Don't count only for the sake of counting. A useful suite of metrics to best fit your solution should ensure the following:</p>
+    <ul class="content-list">
+        <li>You are measuring what is needed for funding reporting requirements.</li>
+        <li>What you are measuring is insightful, and not just easy/convenient to measure.</li>
+        <li>The insight provided by the metric is worth the time spent pursuing it.</li>
+        <li>A balance of metrics that address both breadth and depth of a solution's results.</li>
+        <li>Metrics information source is accessible and can be collected with a reasonable level of effort.</li>
+    </ul>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 108</p>
+</div>
+
+<hr class="section-rule">
+
+<div class="subsection">
+    <h2>Fig. 1 — Sample Results Framework with Example Metrics</h2>
+
+    <div class="results-framework">
+
+        <!-- IMPACT row -->
+        <div style="display:flex; justify-content:center; margin-bottom:0.2rem;">
+            <div class="rf-box rf-impact">
+                <span class="rf-label">IMPACT</span>
+                <span class="rf-text">Reduced loss of life and property during floods</span>
+            </div>
+        </div>
+
+        <!-- Arrows up to IMPACT -->
+        <div style="display:flex; justify-content:center; gap:8.5rem; margin-bottom:0.2rem;">
+            <div class="rf-arrow">↑</div>
+            <div class="rf-arrow">↑</div>
+            <div class="rf-arrow">↑</div>
+        </div>
+
+        <!-- OUTCOME row -->
+        <div class="rf-outcome-row" style="align-items:flex-start; margin-bottom:0.2rem;">
+
+            <!-- Outcome 1 + outputs -->
+            <div class="rf-outcome-col">
+                <div class="rf-box rf-outcome">
+                    <span class="rf-label">OUTCOME</span>
+                    <span class="rf-text">Local institutions report improved response times</span>
+                </div>
+                <div style="display:flex; justify-content:center; gap:4.5rem; margin:0.15rem 0;">
+                    <div class="rf-arrow">↑</div>
+                    <div class="rf-arrow">↑</div>
+                    <div class="rf-arrow">↑</div>
+                </div>
+                <div class="rf-output-group">
+                    <div class="rf-box rf-output">
+                        <span class="rf-label">OUTPUT</span>
+                        <span class="rf-text">Protocols for early warnings</span>
+                    </div>
+                    <div class="rf-box rf-output">
+                        <span class="rf-label">OUTPUT</span>
+                        <span class="rf-text">Operational flood forecast model</span>
+                    </div>
+                    <div class="rf-box rf-output">
+                        <span class="rf-label">OUTPUT</span>
+                        <span class="rf-text">User ready dashboard and alert system</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Outcome 2 + outputs -->
+            <div class="rf-outcome-col">
+                <div class="rf-box rf-outcome" style="width:210px;">
+                    <span class="rf-label">OUTCOME</span>
+                    <span class="rf-text">Local officials integrated updated maps into procedures, resulting in more precise, efficient decisions</span>
+                </div>
+                <div style="display:flex; justify-content:center; gap:3rem; margin:0.15rem 0;">
+                    <div class="rf-arrow">↑</div>
+                    <div class="rf-arrow">↑</div>
+                </div>
+                <div class="rf-output-group">
+                    <div class="rf-box rf-output">
+                        <span class="rf-label">OUTPUT</span>
+                        <span class="rf-text">Updated flood risk maps</span>
+                    </div>
+                    <div class="rf-box rf-output">
+                        <span class="rf-label">OUTPUT</span>
+                        <span class="rf-text">Land use dashboard prototype</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Outcome 3 + outputs -->
+            <div class="rf-outcome-col">
+                <div class="rf-box rf-outcome" style="width:195px;">
+                    <span class="rf-label">OUTCOME</span>
+                    <span class="rf-text">Community starts using warning systems and messaging, strengthening emergency response</span>
+                </div>
+                <div style="display:flex; justify-content:center; gap:4.5rem; margin:0.15rem 0;">
+                    <div class="rf-arrow">↑</div>
+                    <div class="rf-arrow">↑</div>
+                    <div class="rf-arrow">↑</div>
+                </div>
+                <div class="rf-output-group">
+                    <div class="rf-box rf-output">
+                        <span class="rf-label">OUTPUT</span>
+                        <span class="rf-text">Officials trained to interpret maps</span>
+                    </div>
+                    <div class="rf-box rf-output">
+                        <span class="rf-label">OUTPUT</span>
+                        <span class="rf-text">New workflow for community drills</span>
+                    </div>
+                    <div class="rf-box rf-output">
+                        <span class="rf-label">OUTPUT</span>
+                        <span class="rf-text">Training on new alert system</span>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- end outcome row -->
+
+        <!-- Arrows up to outputs -->
+        <div style="display:flex; justify-content:center; gap:7.5rem; margin:0.15rem 0;">
+            <div class="rf-arrow">↑</div>
+            <div class="rf-arrow">↑</div>
+            <div class="rf-arrow">↑</div>
+        </div>
+
+        <!-- INPUTS row -->
+        <div class="rf-inputs-row">
+            <div class="rf-inputs" style="width:220px;">
+                <span class="rf-label">INPUTS</span>
+                <ol>
+                    <li>Early warning procedures developed</li>
+                    <li>Progress made on flood forecast model</li>
+                    <li>Data incorporated into prototype</li>
+                    <li>Training event held</li>
+                </ol>
+            </div>
+            <div class="rf-inputs" style="width:210px;">
+                <span class="rf-label">INPUTS</span>
+                <ol>
+                    <li>Training event held</li>
+                    <li>Flood maps updated</li>
+                    <li>Alert zones updated</li>
+                </ol>
+            </div>
+            <div class="rf-inputs" style="width:210px;">
+                <span class="rf-label">INPUTS</span>
+                <ol>
+                    <li>Stakeholder engagement conducted</li>
+                    <li>Needs assessment</li>
+                    <li>Messaging beta-tested</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Footer note -->
+        <div class="rf-footer" style="margin-top:0.8rem;">
+            <span>Input Metrics:</span> # of data layers, # of stakeholder engagements, # of training participants, ARL increases, etc.<br>
+            <span>Risks:</span><br>
+            <span>Assumptions:</span>
+        </div>
+
+        <p class="fig-caption">Fig. 1 - Sample Results Framework with Example Metrics</p>
+    </div>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 109</p>
+</div>
+
+<hr class="section-rule">
+
+<div class="subsection">
+    <h2>Examples of Meaning Metrics: Outputs, Outcomes, and Impact</h2>
+
+    <ul class="examples-list">
+        <li>
+            <em>Output</em>: "Number of individuals trained"
+            <span class="example-sub"><em>Outcome</em>: "Percentage of trained individuals demonstrating sustained skill application in professional contexts" (measured three-six months post-training)</span>
+            <span class="example-sub"><em>Outcome</em>: "Percentage of trained individuals with a self-reported acquisition of a new skill." (measured immediately post-training)</span>
+        </li>
+        <li>
+            <em>Output</em>: "% of trainees/partners completing pre- and post-activity surveys"
+            <span class="example-sub"><em>Outcome</em>: "Number of feedback/needs assessment documents produced identifying institutional or individual partner needs, best practices and/or actionable lessons learned"</span>
+            <span class="example-sub"><em>Outcome</em>: "% increase in trainee/partner ability to apply geospatial tools for modeling water quality, as indicated by pre- and post-training testing."</span>
+        </li>
+        <li>
+            <em>Output</em>: "Number of solutions achieving ARL goal"
+            <span class="example-sub"><em>Outcome</em>: "Number of solutions operationalized and showing sustained use in decision making (Measured one year after project solution is put into practice.)</span>
+            <span class="example-sub"><em>Impact</em>: "Number of solutions leading to intended benefits" (Measured one year after project solution is put into practice.)</span>
+        </li>
+        <li>
+            <em>Output</em>: "Number of products developed (incl. publications, training materials, tools/applications)."
+            <span class="example-sub"><em>Outcome</em>: "Number of training materials developed under Training-of-trainers model and then successfully used by end users/beneficiaries"</span>
+            <span class="example-sub"><em>Outcome</em>: "Number of co-developed products adopted by end-users for early warning alerts."</span>
+        </li>
+    </ul>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 110</p>
+</div>
+{% endblock %}

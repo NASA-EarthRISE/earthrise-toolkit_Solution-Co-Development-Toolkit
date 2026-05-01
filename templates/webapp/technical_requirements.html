@@ -1,0 +1,574 @@
+{% extends "base.html" %}
+{% block title %}Technical Requirements Template — Solution Co-Development Toolkit{% endblock %}
+{% block content %}
+<style>
+    .section-intro p { margin-bottom: 0.9rem; line-height: 1.7; }
+
+    /* Subsection styling */
+    .subsection { margin-top: 2.5rem; }
+    .subsection > h2 { color: #0b3d91; border-bottom: 2px solid #00a0b0; padding-bottom: 0.4rem; margin-bottom: 1rem; }
+    .subsection p { margin-bottom: 0.9rem; line-height: 1.7; }
+
+    /* Phase grid */
+    .phases-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.75rem;
+        margin: 1.5rem 0;
+    }
+    .phase-card {
+        border-radius: 6px;
+        padding: 1rem;
+        font-size: 0.88rem;
+    }
+    .phase-card h4 { margin: 0 0 0.6rem 0; font-size: 0.9rem; color: #0b3d91; }
+    .phase-card ul { margin: 0; padding-left: 1.1rem; }
+    .phase-card ul li { margin-bottom: 0.3rem; line-height: 1.5; }
+    .phase-1 { background: #cce0f5; }
+    .phase-2 { background: #c8dff5; outline: 2px solid #c0392b; }
+    .phase-3 { background: #d4edda; }
+    .phase-4 { background: #d5eddf; }
+
+    /* Template item rows */
+    .template-section {
+        margin-top: 2rem;
+    }
+    .template-section > h3 {
+        color: #0b3d91;
+        border-bottom: 2px solid #00a0b0;
+        padding-bottom: 0.35rem;
+        margin-bottom: 1rem;
+        font-size: 1.05rem;
+    }
+
+    .template-item {
+        margin-bottom: 1.2rem;
+        border: 1px solid #c0cfe0;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+    .template-item-header {
+        display: flex;
+        align-items: stretch;
+        background: #f0f4f8;
+        border-bottom: 1px solid #c0cfe0;
+        gap: 0;
+    }
+    .template-item-title {
+        font-weight: 700;
+        color: #0b3d91;
+        padding: 0.55rem 1rem;
+        font-size: 0.92rem;
+        flex: 1;
+    }
+    .template-item-ref {
+        background: #dce8f5;
+        color: #1a5276;
+        padding: 0.55rem 1rem;
+        font-size: 0.82rem;
+        font-style: italic;
+        border-left: 1px solid #b0c8e0;
+        display: flex;
+        align-items: center;
+        max-width: 55%;
+        line-height: 1.4;
+    }
+    .template-item-body {
+        padding: 0.8rem 1rem;
+        font-size: 0.9rem;
+        line-height: 1.7;
+        background: #fff;
+    }
+    .template-item-body p { margin: 0 0 0.6rem 0; }
+    .template-item-body p:last-child { margin-bottom: 0; }
+    .template-item-body ul {
+        margin: 0.3rem 0 0.5rem 1.3rem;
+        padding: 0;
+    }
+    .template-item-body ul li { margin-bottom: 0.3rem; line-height: 1.6; }
+    .template-item-body ol {
+        margin: 0.3rem 0 0.5rem 1.3rem;
+        padding: 0;
+    }
+    .template-item-body ol li { margin-bottom: 0.5rem; line-height: 1.6; }
+
+    /* Simple item (no reference) */
+    .template-item-header.no-ref .template-item-title {
+        border-bottom: none;
+    }
+
+    /* Data source sub-specs */
+    .data-specs {
+        margin: 0.3rem 0 0.3rem 1.5rem;
+        padding: 0;
+        list-style: none;
+        font-size: 0.87rem;
+        color: #444;
+    }
+    .data-specs li {
+        margin-bottom: 0.2rem;
+        padding-left: 0.8rem;
+        border-left: 2px solid #00a0b0;
+    }
+
+    /* Agreements bullet list */
+    .agreements-list { margin: 0.3rem 0 0.5rem 1.3rem; }
+    .agreements-list li { margin-bottom: 0.3rem; line-height: 1.6; }
+
+    /* Validation checklist */
+    .checklist { margin: 0.3rem 0 0.5rem 1.3rem; list-style: none; padding: 0; }
+    .checklist li { margin-bottom: 0.35rem; line-height: 1.6; padding-left: 1.2rem; position: relative; }
+    .checklist li::before {
+        content: "☐";
+        position: absolute;
+        left: 0;
+        color: #0b3d91;
+    }
+
+    .page-note {
+        font-size: 0.8rem;
+        color: #888;
+        text-align: right;
+        margin-top: 0.5rem;
+        font-style: italic;
+    }
+</style>
+
+<div class="page-header">
+    <div class="section-tag">Section 9</div>
+    <h1>Technical Requirements Template</h1>
+</div>
+
+<div class="section-intro">
+    <h2>Purpose:</h2>
+    <p><em>Technical requirements</em> are specifications that guide usage of: data, software, processing environments/platforms., outputs, and hardware needed during solution production. This template walks the solution team through technical components required for a solution and that should be considered and included in solution design.</p>
+    <p>Proactively considering the technical requirements of a solution early in the co-development process is vital for efficient collaboration and meeting deadlines. Though most dialogue on the user's technical requirements will arise during co-design, keep in mind that important information about needs and preferences is likely to arise even earlier. For example, a user may mention their preferred software or computing limitations during preliminary stakeholder engagements.</p>
+    <p>Also, note that some stakeholders who are newer to geospatial tools or Earth observations may not have clear preferences or may be unsure of certain technical specifications, so they may require more thorough conversation to fully understand their requirements. <em>Teams should be attentive to user needs that come up during Phase 1 and other Phase 2 tools and remember to document them in this template.</em></p>
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 72</p>
+</div>
+
+<div class="subsection">
+    <h2>How and When to Use This Template:</h2>
+
+    <div class="phases-grid">
+        <div class="phase-card phase-1">
+            <h4>Phase 1: Assessing Needs &amp; Potential Impact</h4>
+            <ul>
+                <li>Identify stakeholders</li>
+                <li>Assess user needs, constraint, and decision context</li>
+                <li>Define problem and opportunity for impact</li>
+            </ul>
+        </div>
+        <div class="phase-card phase-2">
+            <h4>Phase 2: Solution Co-Design</h4>
+            <ul>
+                <li>Co-design solution concepts</li>
+                <li>Define requirements and success metrics</li>
+                <li>Plan implementation and sustainability</li>
+            </ul>
+        </div>
+        <div class="phase-card phase-3">
+            <h4>Phase 3: Prototyping and Co-Development</h4>
+            <ul>
+                <li>Build and test prototypes</li>
+                <li>Conduct user testing and iteration</li>
+                <li>Prepare data, workflows, and trainings</li>
+            </ul>
+        </div>
+        <div class="phase-card phase-4">
+            <h4>Phase 4: Transition and Impact Assessment</h4>
+            <ul>
+                <li>Deploy and transition ownership</li>
+                <li>Collect evidence of use and impact</li>
+                <li>Plan for scaling, replication, and long-term uptake</li>
+            </ul>
+        </div>
+    </div>
+
+    <p>This template is used at the beginning of Phase 2 of the co-development framework once a solution team starts designing the solution. Referencing the Stakeholder mapping, Needs Assessment, and the Design for Impact tools provides understanding of the needs and the objectives of the solution, it documents who the stakeholders are, the beneficiaries and the deliverables.</p>
+</div>
+
+<!-- Key Questions Section -->
+<div class="template-section">
+    <h3>Key Questions for Co-Development Partners</h3>
+
+    <div class="template-item">
+        <div class="template-item-header">
+            <div class="template-item-title">Agreements</div>
+            <div class="template-item-ref">Refer to Co-Design Process Guidance (provide Link)</div>
+        </div>
+        <div class="template-item-body">
+            <p>Do you need to establish agreements to co-design with partners? If yes, provide a link to the collaboration agreement as feasible. If agreement is not shareable, just indicating that there's an agreement in place that enables collaboration and captures the elements indicated in this section should be sufficient. Types of sample agreements (all indicating collaboration roles) include:</p>
+            <ul class="agreements-list">
+                <li>Email confirmation</li>
+                <li>Signed meeting minutes confirming collaboration and partner roles</li>
+                <li>Letter of collaboration</li>
+                <li>Interagency agreement</li>
+                <li>DAACS agreement</li>
+                <li>Legal collaboration agreement</li>
+                <li>External partners collaboration agreement</li>
+            </ul>
+            <p>Do you need to establish data-sharing agreements? If yes, provide a link to the data sharing agreement. Include confidentiality and non-disclosure agreements NDAs) where necessary.</p>
+            <p>Is the data available under open access mechanisms or is it private data? Does the data access and sharing need encryption? Do you have a mechanism for data encryption? If yes, ensure to include a data encryption tool in the list of software needed.</p>
+            <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 73</p>
+            <p>What are the roles and responsibilities for each partner? Include a link to the roles and responsibilities for partners</p>
+            <p>Please ensure these agreements are in place to streamline co-development processes.</p>
+        </div>
+    </div>
+
+    <div class="template-item">
+        <div class="template-item-header">
+            <div class="template-item-title">What are the data sharing mechanisms between partners?</div>
+            <div class="template-item-ref">Refer to the Data Governance and Storage Plan</div>
+        </div>
+        <div class="template-item-body"></div>
+    </div>
+
+    <div class="template-item">
+        <div class="template-item-header">
+            <div class="template-item-title">Communication with partners</div>
+        </div>
+        <div class="template-item-body">
+            <ul>
+                <li>Do you need to establish communication channels for co-developement?</li>
+                <li>Do you have tools/software in place for everyday exchange and meetings?</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="template-item">
+        <div class="template-item-header">
+            <div class="template-item-title">Existing partner capabilities</div>
+            <div class="template-item-ref">Reference to the Stakeholder Mapping tool</div>
+        </div>
+        <div class="template-item-body"></div>
+    </div>
+
+    <div class="template-item">
+        <div class="template-item-header">
+            <div class="template-item-title">User feedback</div>
+            <div class="template-item-ref">Refer to the User Co-Design Process Guidance and the User Centered Design Tool</div>
+        </div>
+        <div class="template-item-body">
+            <p>How will user feedback be collected before production? Identify the timing of when to collect feedback at different stages of the solution co-development lifecycle. Feedback will need to be integrated into the new design.</p>
+        </div>
+    </div>
+
+    <div class="template-item">
+        <div class="template-item-header">
+            <div class="template-item-title">Inputs</div>
+            <div class="template-item-ref">Refer to the Solution Implementation and Impact Monitoring and the Designing for Impact tools</div>
+        </div>
+        <div class="template-item-body">
+            <p>What are the inputs at different stages of development?</p>
+            <ul>
+                <li>Inputs for Development and Testing</li>
+                <li>Inputs for Deployment</li>
+                <li>Inputs for System Maintenance</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="template-item">
+        <div class="template-item-header">
+            <div class="template-item-title">Outputs</div>
+            <div class="template-item-ref">Refer to the Solution Implementation and Impact Monitoring and the Designing for Impact tools</div>
+        </div>
+        <div class="template-item-body">
+            <ul>
+                <li>What are the outputs desired?</li>
+                <li>What is the minimum viable product?</li>
+                <li>Does it address the user's needs? Feedback from stakeholders at this stage should determine the outputs are satisfactory</li>
+                <li>Does it integrate stakeholders feedback?</li>
+                <li>Does it have considerations for future use?</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="template-item">
+        <div class="template-item-header">
+            <div class="template-item-title">Deliverables</div>
+            <div class="template-item-ref">Refer to the Solution Implementation and Impact Monitoring Plan and the Design for Impact tools</div>
+        </div>
+        <div class="template-item-body"></div>
+    </div>
+
+    <div class="template-item">
+        <div class="template-item-header">
+            <div class="template-item-title">End user requirements</div>
+            <div class="template-item-ref">Refer to the Solution Adoption Sustainability Plan and User-Centered Design Guidance</div>
+        </div>
+        <div class="template-item-body"></div>
+    </div>
+
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 74</p>
+</div>
+
+<!-- Technical Requirements Section -->
+<div class="template-section">
+    <h3>Technical Requirements | Example Specifications</h3>
+
+    <div class="template-item">
+        <div class="template-item-header">
+            <div class="template-item-title">Existing data and tools</div>
+        </div>
+        <div class="template-item-body">
+            <ol>
+                <li>
+                    <strong>Data source 1</strong> <em>(can be cloud-based such as Cloud Optimized GeoTIFFs (CoGs) or downloadable to local stations)</em>
+                    <ul class="data-specs">
+                        <li>Access: (Open Access, purchase required)</li>
+                        <li>Spatial Resolution: (m, cm)</li>
+                        <li>Spectral Resolution: (no of bands)</li>
+                        <li>Latency: (Days, Hours)</li>
+                        <li>Level of Analysis Readiness: (Processing Level)</li>
+                    </ul>
+                </li>
+                <li><strong>Data source 2</strong></li>
+                <li><strong>Data source 3</strong></li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="template-item">
+        <div class="template-item-header">
+            <div class="template-item-title">Existing methods and approaches</div>
+            <div class="template-item-ref">Provide reference links (Select approach from list)</div>
+        </div>
+        <div class="template-item-body"></div>
+    </div>
+
+    <div class="template-item">
+        <div class="template-item-header">
+            <div class="template-item-title">Existing codes</div>
+            <div class="template-item-ref">Provide links and dependencies for the codes</div>
+        </div>
+        <div class="template-item-body"></div>
+    </div>
+
+    <div class="template-item">
+        <div class="template-item-header">
+            <div class="template-item-title">Relevant tools prior to design</div>
+            <div class="template-item-ref">Refer to the following tools:</div>
+        </div>
+        <div class="template-item-body">
+            <ul>
+                <li>Stakeholder mapping tool (provide link)</li>
+                <li>Needs Assessment tool (provide link)</li>
+                <li>User Centered Design (provide link)</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="template-item">
+        <div class="template-item-header">
+            <div class="template-item-title">User-centered design</div>
+            <div class="template-item-ref">Review can be made to the User Centered Design Guidance and the Designing for Impact tool</div>
+        </div>
+        <div class="template-item-body"></div>
+    </div>
+
+    <div class="template-item">
+        <div class="template-item-header">
+            <div class="template-item-title">System architecture and workflow</div>
+            <div class="template-item-ref">Diagram</div>
+        </div>
+        <div class="template-item-body"></div>
+    </div>
+
+    <div class="template-item">
+        <div class="template-item-header">
+            <div class="template-item-title">Codes to be leveraged and their dependencies</div>
+        </div>
+        <div class="template-item-body">
+            <ul>
+                <li>Code 1:
+                    <ul>
+                        <li>Dependencies</li>
+                    </ul>
+                </li>
+                <li>Code 2..</li>
+                <li>Code 3...</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="template-item">
+        <div class="template-item-header">
+            <div class="template-item-title">Information security and responsible AI use</div>
+            <div class="template-item-ref">Refer to the "Information Security and Responsible AI Use" section of the Solution Co-Development in Practice document and integrate relevant considerations</div>
+        </div>
+        <div class="template-item-body"></div>
+    </div>
+
+    <div class="template-item">
+        <div class="template-item-header">
+            <div class="template-item-title">Input data</div>
+            <div class="template-item-ref">List</div>
+        </div>
+        <div class="template-item-body"></div>
+    </div>
+
+    <div class="template-item">
+        <div class="template-item-header">
+            <div class="template-item-title">Field data / <em>in situ</em> data requirements</div>
+            <div class="template-item-ref">Required for validation of outputs</div>
+        </div>
+        <div class="template-item-body"></div>
+    </div>
+
+    <div class="template-item">
+        <div class="template-item-header">
+            <div class="template-item-title">Output data and data formats</div>
+        </div>
+        <div class="template-item-body">
+            <ul>
+                <li>Output 1, format (can be cloud-based or downloadable)</li>
+                <li>Output 2, format</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="template-item">
+        <div class="template-item-header">
+            <div class="template-item-title">Metadata</div>
+            <div class="template-item-ref">Refer to the Data Governance and Storage Plan</div>
+        </div>
+        <div class="template-item-body"></div>
+    </div>
+
+    <div class="template-item">
+        <div class="template-item-header">
+            <div class="template-item-title">Processing environment (platform)</div>
+        </div>
+        <div class="template-item-body">
+            <ul>
+                <li>Spec 1</li>
+                <li>Spec 2...</li>
+            </ul>
+        </div>
+    </div>
+
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 75</p>
+
+    <div class="template-item">
+        <div class="template-item-header">
+            <div class="template-item-title">File naming convention</div>
+            <div class="template-item-ref">Refer to the Data Governance and Storage Plan</div>
+        </div>
+        <div class="template-item-body"></div>
+    </div>
+
+    <div class="template-item">
+        <div class="template-item-header">
+            <div class="template-item-title">Versioning strategy</div>
+            <div class="template-item-ref">Refer to the Data Governance and Storage Plan</div>
+        </div>
+        <div class="template-item-body"></div>
+    </div>
+
+    <div class="template-item">
+        <div class="template-item-header">
+            <div class="template-item-title">Storage location &amp; backups</div>
+            <div class="template-item-ref">Refer to the Data Governance and Storage Plan</div>
+        </div>
+        <div class="template-item-body"></div>
+    </div>
+
+    <div class="template-item">
+        <div class="template-item-header">
+            <div class="template-item-title">User co-design</div>
+            <div class="template-item-ref">Refer to the User Co-Design Inputs and integrate relevant considerations</div>
+        </div>
+        <div class="template-item-body"></div>
+    </div>
+
+    <div class="template-item">
+        <div class="template-item-header">
+            <div class="template-item-title">Validating results and system testing</div>
+        </div>
+        <div class="template-item-body">
+            <ul class="checklist">
+                <li>Do the results meet the validation thresholds?</li>
+                <li>Test and retest prototype/system before deployment.</li>
+                <li>If successful then you can proceed to deployment.</li>
+                <li>Does the system and results meet intended needs?</li>
+                <li>Does the UI/UX meet user requirements?</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="template-item">
+        <div class="template-item-header">
+            <div class="template-item-title">Deployment environment (platform)</div>
+        </div>
+        <div class="template-item-body">
+            <ul>
+                <li>Spec 1</li>
+                <li>Spec 2...</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="template-item">
+        <div class="template-item-header">
+            <div class="template-item-title">Key considerations</div>
+        </div>
+        <div class="template-item-body">
+            <ul class="checklist">
+                <li>Is deployment Successful?</li>
+                <li>Did it meet the Minimal Viable product?</li>
+                <li>Does it meet the user requirement based on the User Centered Co-Design Guidance?</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="template-item">
+        <div class="template-item-header">
+            <div class="template-item-title">Sharing permissions</div>
+            <div class="template-item-ref">Refer to guidance provided in the Data Governance and Storage Plan</div>
+        </div>
+        <div class="template-item-body"></div>
+    </div>
+
+    <div class="template-item">
+        <div class="template-item-header">
+            <div class="template-item-title">Branding and acknowledgment requirements</div>
+        </div>
+        <div class="template-item-body"></div>
+    </div>
+
+    <div class="template-item">
+        <div class="template-item-header">
+            <div class="template-item-title">User co-design</div>
+            <div class="template-item-ref">Refer to the User Co-Design Inputs and integrate relevant considerations</div>
+        </div>
+        <div class="template-item-body"></div>
+    </div>
+
+    <div class="template-item">
+        <div class="template-item-header">
+            <div class="template-item-title">System maintenance and transfer</div>
+            <div class="template-item-ref">Refer to the Solution Adoption and Sustainability Plan</div>
+        </div>
+        <div class="template-item-body"></div>
+    </div>
+
+    <div class="template-item">
+        <div class="template-item-header">
+            <div class="template-item-title">Existing technical capacities</div>
+            <div class="template-item-ref">E.g., servers, compute resources, data...</div>
+        </div>
+        <div class="template-item-body"></div>
+    </div>
+
+    <div class="template-item">
+        <div class="template-item-header">
+            <div class="template-item-title">Additional required technical capacities</div>
+        </div>
+        <div class="template-item-body"></div>
+    </div>
+
+    <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 76</p>
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+# Python
+*.py[cod]
+*$py.class
+*.so
+__pycache__/
+
+# Django
+*.log
+db.sqlite3
+db.sqlite3-journal
+/staticfiles/
+/media/
+*.pdf
+
+# Virtual Environment (condavenv)
+.condavenv/
+condavenv/
+env/
+venv/
+
+# IDE
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+.claude/settings.local.json
