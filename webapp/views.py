@@ -1,31 +1,20 @@
 from django.shortcuts import render
+from .models import NavSection
 
-NAV_SECTIONS = [
-    {'name': 'Introduction', 'url_name': 'webapp:introduction', 'slug': 'introduction'},
-    {'name': 'Designing for Impact', 'url_name': 'webapp:designing_for_impact', 'slug': 'designing-for-impact'},
-    {'name': 'Capturing & Communicating Impact', 'url_name': 'webapp:capturing_communicating_impact', 'slug': 'capturing-communicating-impact'},
-    {'name': 'Economic Impact Assessments', 'url_name': 'webapp:economic_impact_assessments', 'slug': 'economic-impact-assessments'},
-    {'name': 'Stakeholder Mapping & Analysis', 'url_name': 'webapp:stakeholder_mapping', 'slug': 'stakeholder-mapping'},
-    {'name': 'Needs Assessment', 'url_name': 'webapp:needs_assessment', 'slug': 'needs-assessment'},
-    {'name': 'Information Chain Analysis', 'url_name': 'webapp:information_chain_analysis', 'slug': 'information-chain-analysis'},
-    {'name': 'User-Centered Design', 'url_name': 'webapp:user_centered_design', 'slug': 'user-centered-design'},
-    {'name': 'Technical Requirements Template', 'url_name': 'webapp:technical_requirements', 'slug': 'technical-requirements'},
-    {'name': 'Data Governance & Storage', 'url_name': 'webapp:data_governance', 'slug': 'data-governance'},
-    {'name': 'Implementation & Monitoring Plan', 'url_name': 'webapp:implementation_monitoring', 'slug': 'implementation-monitoring'},
-    {'name': 'Adoption & Sustainability Plan', 'url_name': 'webapp:adoption_sustainability', 'slug': 'adoption-sustainability'},
-    {'name': 'Meaningful Metrics Development', 'url_name': 'webapp:meaningful_metrics', 'slug': 'meaningful-metrics'},
-]
+
+def _nav():
+    return NavSection.objects.all()
 
 
 def _ctx(active_slug, extra=None):
-    ctx = {'nav_sections': NAV_SECTIONS, 'active_slug': active_slug}
+    ctx = {'nav_sections': _nav(), 'active_slug': active_slug}
     if extra:
         ctx.update(extra)
     return ctx
 
 
 def home(request):
-    return render(request, 'webapp/home.html', {'nav_sections': NAV_SECTIONS, 'active_slug': ''})
+    return render(request, 'webapp/home.html', {'nav_sections': _nav(), 'active_slug': ''})
 
 
 def introduction(request):
@@ -78,3 +67,7 @@ def adoption_sustainability(request):
 
 def meaningful_metrics(request):
     return render(request, 'webapp/meaningful_metrics.html', _ctx('meaningful-metrics'))
+
+
+def authors(request):
+    return render(request, 'webapp/authors.html', _ctx('authors'))

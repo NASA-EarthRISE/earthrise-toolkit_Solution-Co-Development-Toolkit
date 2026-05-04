@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Solution Implementation and Impact Monitoring Plan — Solution Co-Development Toolkit{% endblock %}
 {% block content %}
 <style>
@@ -182,7 +183,7 @@
 </style>
 
 <div class="page-header">
-    <div class="section-tag">Section 11</div>
+    <div class="section-tag">Section 10</div>
     <h1>Solution Implementation and Impact Monitoring Plan</h1>
 </div>
 
@@ -192,60 +193,29 @@
 
     <h3 style="color:#1a5276; margin-top:1.2rem; margin-bottom:0.5rem;">Why this Tool is Important:</h3>
     <p>This tool supports program management elements and helps in connecting needs and concepts to real-world, executable solutions. It provides clarity across teams and implementing partners on the roles, responsibilities, expectations, and commitments for solution delivery, ensuring that activities are implemented at the right time.</p>
-    <p>It also serves as a tool for systematically reviewing solution progress, testing the validity of risks and assumptions, and determining whether specific inputs and outputs require adjustment or refocusing to respond to evolving conditions. It can be used to capture best practices, lessons learned, and feedback for broader NASA initiatives as part of the Earth Science to Action Strategy (ES2A).</p>
+    <p>It also serves as a tool for systematically reviewing solution progress, testing the validity of risks and assumptions, and determining whether specific inputs and outputs require adjustment or refocusing to respond to evolving conditions. It can be used to capture best practices, lessons learned, and feedback for broader NASA initiatives as part of the <a href="https://science.nasa.gov/earth-science/earth-science-to-action/">Earth Science to Action Strategy (ES2A)</a>.</p>
     <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 85</p>
 </div>
 
 <div style="margin-top:2rem;">
     <h2 style="color:#0b3d91; border-bottom:2px solid #00a0b0; padding-bottom:0.4rem; margin-bottom:1rem;">How and When to Use this Tool:</h2>
 
-    <div class="phases-grid">
-        <div class="phase-card phase-1">
-            <h4>Phase 1: Assessing Needs &amp; Potential Impact</h4>
-            <ul>
-                <li>Identify stakeholders</li>
-                <li>Assess user needs, constraint, and decision context</li>
-                <li>Define problem and opportunity for impact</li>
-            </ul>
-        </div>
-        <div class="phase-card phase-2">
-            <h4>Phase 2: Solution Co-Design</h4>
-            <ul>
-                <li>Co-design solution concepts</li>
-                <li>Define requirements and success metrics</li>
-                <li>Plan implementation and sustainability</li>
-            </ul>
-        </div>
-        <div class="phase-card phase-3">
-            <h4>Phase 3: Prototyping and Co-Development</h4>
-            <ul>
-                <li>Build and test prototypes</li>
-                <li>Conduct user testing and iteration</li>
-                <li>Prepare data, workflows, and trainings</li>
-            </ul>
-        </div>
-        <div class="phase-card phase-4">
-            <h4>Phase 4: Transition and Impact Assessment</h4>
-            <ul>
-                <li>Deploy and transition ownership</li>
-                <li>Collect evidence of use and impact</li>
-                <li>Plan for scaling, replication, and long-term uptake</li>
-            </ul>
-        </div>
+    <div style="text-align: center;">
+        <img src="{%  static 'images/fig_15.png'  %}" alt="How and when" style="max-width: 600px;" >
     </div>
 
     <p>This tool is used initially during Phase 2: Solution Co-design as a template to create a SIIMP tailored to a specific solution. Once created, the solution SIIMP will be used throughout Phase 3 and during Phase 4: Transition and Impact Reporting to capture project outcomes, impact, and constructive feedback.</p>
     <p>This template refers to tools developed in other phases of the solution co-development lifecycle including the:</p>
     <ul class="tools-list">
-        <li>Needs Assessment</li>
-        <li>Stakeholder mapping</li>
-        <li>Designing for Impact 101</li>
-        <li>Economic Impact Assessment (EIA)</li>
+        <li><a href="{% url 'webapp:needs_assessment' %}">Needs Assessment</a></li>
+        <li><a href="{% url 'webapp:stakeholder_mapping' %}">Stakeholder mapping</a></li>
+        <li><a href="{% url 'webapp:designing_for_impact' %}">Designing for Impact 101</a></li>
+        <li><a href="{% url 'webapp:economic_impact_assessments' %}">Economic Impact Assessment (EIA)</a></li>
         <li>Indicators Guidance</li>
-        <li>User Centered Design</li>
-        <li>Technical Requirements</li>
-        <li>Data Governance and Storage Plan</li>
-        <li>Solution Adoption and Sustainability Plan</li>
+        <li><a href="{% url 'webapp:user_centered_design' %}">User Centered Design</a></li>
+        <li><a href="{% url 'webapp:technical_requirements' %}">Technical Requirements</a></li>
+        <li><a href="{% url 'webapp:data_governance' %}">Data Governance and Storage Plan</a></li>
+        <li><a href="{% url 'webapp:adoption_sustainability' %}">Solution Adoption and Sustainability Plan</a></li>
     </ul>
     <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 86</p>
 </div>
@@ -257,23 +227,23 @@
 <!-- Section 1 -->
 <div class="siimp-section">
     <h2>1. Solution Summary</h2>
-    <p>Provide a brief description of the solution, including its background, scope, challenge or need it is addressing, and perceived benefit. Include what the expected outputs or deliverables of the solution will be. Review the Needs Assessment tool and Designing for Impact tool as needed.</p>
+    <p>Provide a brief description of the solution, including its background, scope, challenge or need it is addressing, and perceived benefit. Include what the expected outputs or deliverables of the solution will be. Review the <a href="{% url 'webapp:needs_assessment' %}">Needs Assessment tool</a> and <a href="{% url 'webapp:designing_for_impact' %}">Designing for Impact tool</a> as needed.</p>
 </div>
 
 <!-- Section 2 -->
 <div class="siimp-section">
     <h2>2. Goals and Objectives</h2>
-    <p>Describe the specific goals and objectives of the activity in terms of the desired end-state of the activity/solution (outputs), and the overall planned outcomes and intended impacts including broader benefit to society, decision-makers, or the community. Reference the Designing for Impact tool. Note that while assumptions can be made that reaching objectives improves stakeholder ability to meet the goal. External factors beyond the manageable control of the project may contribute or impede ability to achieve intended impact.</p>
+    <p>Describe the specific goals and objectives of the activity in terms of the desired end-state of the activity/solution (outputs), and the overall planned outcomes and intended impacts including broader benefit to society, decision-makers, or the community. Reference the <a href="{% url 'webapp:designing_for_impact' %}">Designing for Impact tool</a>. Note that while assumptions can be made that reaching objectives improves stakeholder ability to meet the goal. External factors beyond the manageable control of the project may contribute or impede ability to achieve intended impact.</p>
     <div class="siimp-subsection">
         <h3>2.1 Results Framework</h3>
-        <p>Finalize development of the results framework as guided by the Designing for Impact tool.</p>
+        <p>Finalize development of the results framework as guided by the <a href="{% url 'webapp:designing_for_impact' %}">Designing for Impact tool</a>.</p>
     </div>
 </div>
 
 <!-- Section 3 -->
 <div class="siimp-section">
     <h2>3. Stakeholders and Partners</h2>
-    <p>Who will be involved in co-developing the solution? Identify the main customers or beneficiaries, stakeholders, and partners for the solution. List specific co-developers and other users who will help design, develop, and/or maintain the product. Describe the motivation for each identified stakeholder's involvement, their perceived level of engagement, and the stakeholder's capacity (if relevant). Consider linking to the Stakeholder Mapping tool and the Technical Requirements template as needed.</p>
+    <p>Who will be involved in co-developing the solution? Identify the main customers or beneficiaries, stakeholders, and partners for the solution. List specific co-developers and other users who will help design, develop, and/or maintain the product. Describe the motivation for each identified stakeholder's involvement, their perceived level of engagement, and the stakeholder's capacity (if relevant). Consider linking to the <a href="{% url 'webapp:stakeholder_mapping' %}">Stakeholder Mapping tool</a> and the <a href="{% url 'webapp:technical_requirements' %}">Technical Requirements template</a> as needed.</p>
 </div>
 
 <!-- Section 4 -->
@@ -304,25 +274,25 @@
 <!-- Section 6 -->
 <div class="siimp-section">
     <h2>6. Schedule</h2>
-    <p>What is the timeline for solution development and deployment? Document the solution's schedule including all major milestones outlined in Section 5.0, such as planned launches and deployments, co-development activities, stakeholder touch points, key decision points, major deliverables, technology development milestones, and other activities throughout the lifecycle of the solution. Recommend providing the schedule as a Gantt chart. Modify the Gantt chart template as needed.</p>
+    <p>What is the timeline for solution development and deployment? Document the solution's schedule including all major milestones outlined in Section 5.0, such as planned launches and deployments, co-development activities, stakeholder touch points, key decision points, major deliverables, technology development milestones, and other activities throughout the lifecycle of the solution. Recommend providing the schedule as a Gantt chart. Modify the <a href="https://docs.google.com/spreadsheets/d/1dVA_GuRyGW3C8-2CpA8DPSYKpElA4ix5LgY0mQtU4f0/edit?usp=drive_link">Gantt chart template</a> as needed.</p>
 </div>
 
 <!-- Section 7 -->
 <div class="siimp-section">
     <h2>7. Technical Requirements</h2>
-    <p>Refer to the Technical Requirements template.</p>
+    <p>Refer to the <a href="{% url 'webapp:technical_requirements' %}">Technical Requirements template</a>.</p>
 </div>
 
 <!-- Section 8 -->
 <div class="siimp-section">
     <h2>8. Data Governance and Storage</h2>
-    <p>Consider linking to your Data Governance and Storage Plan, or develop one if needed.</p>
+    <p>Consider linking to your <a href="{% url 'webapp:data_governance' %}">Data Governance and Storage Plan</a>, or develop one if needed.</p>
 </div>
 
 <!-- Section 9 -->
 <div class="siimp-section">
     <h2>9. Roles and Responsibilities</h2>
-    <p>What are the team's various roles and responsibilities? Describe the solution management and team structure. Address the respective roles, responsibilities, and relationships between the solution implementation team, its implementing partners, and stakeholders. Consider including an ownership matrix, and reference the Technical Requirements template as needed. Adjust the table below as needed.</p>
+    <p>What are the team's various roles and responsibilities? Describe the solution management and team structure. Address the respective roles, responsibilities, and relationships between the solution implementation team, its implementing partners, and stakeholders. Consider including an ownership matrix, and reference the <a href="{% url 'webapp:technical_requirements' %}">Technical Requirements template</a> as needed. Adjust the table below as needed.</p>
 
     <table class="siimp-table">
         <caption>Table 1: Roles and Responsibilities</caption>
@@ -342,32 +312,8 @@
 
     <p>Consider also including an organization chart, reporting lines, and points of contact for each partner in this section. The depth of this will depend on the number of partners, size of teams, complexity of solutions being implemented, and the diversity of teams in terms of the roles they play. Adjust the diagram below as needed.</p>
 
-    <div class="org-chart">
-        <div style="display:flex; justify-content:center; margin-bottom:0.4rem;">
-            <div class="org-box root">PRINCIPAL<br>INVESTIGATOR</div>
-        </div>
-        <div style="display:flex; justify-content:center; gap:5rem; margin-bottom:0.3rem;">
-            <div style="width:2px; height:0.5rem; background:#7baad0;"></div>
-        </div>
-        <div style="display:flex; justify-content:center; gap:4rem;">
-            <div style="display:flex; flex-direction:column; align-items:center; gap:0.3rem;">
-                <div class="org-box">PoC,<br>CO-DEVELOPMENT<br>PARTNER 1</div>
-                <div style="width:2px; height:0.4rem; background:#7baad0;"></div>
-                <div style="display:flex; gap:0.6rem;">
-                    <div class="org-box" style="font-size:0.75rem; min-width:85px;">PARTNER 1,<br>TEAM A</div>
-                    <div class="org-box" style="font-size:0.75rem; min-width:85px;">PARTNER 1,<br>TEAM B</div>
-                </div>
-            </div>
-            <div style="display:flex; flex-direction:column; align-items:center; gap:0.3rem;">
-                <div class="org-box">PoC,<br>CO-DEVELOPMENT<br>PARTNER 2</div>
-                <div style="width:2px; height:0.4rem; background:#7baad0;"></div>
-                <div style="display:flex; gap:0.6rem;">
-                    <div class="org-box" style="font-size:0.75rem; min-width:85px;">PARTNER 2,<br>TEAM A</div>
-                    <div class="org-box" style="font-size:0.75rem; min-width:85px;">PARTNER 2,<br>TEAM B</div>
-                </div>
-            </div>
-        </div>
-        <p class="org-caption">Figure 1. Org. Chart</p>
+    <div style="text-align: center;">
+        <img src="{%  static 'images/fig_16.png'  %}" alt="How and when" style="max-width: 600px;" >
     </div>
     <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 89</p>
 </div>
@@ -375,7 +321,7 @@
 <!-- Section 10 -->
 <div class="siimp-section">
     <h2>10. Sustainability Strategy</h2>
-    <p>Refer to your Solution Adoption and Sustainability Plan.</p>
+    <p>Refer to your <a href="{% url 'webapp:adoption_sustainability' %}">Solution Adoption and Sustainability Plan</a>.</p>
 </div>
 
 <!-- Section 11 -->
@@ -482,14 +428,14 @@
 <!-- Section 12 -->
 <div class="siimp-section">
     <h2>12. Monitoring Solution Implementation and Impact</h2>
-    <p>Provide an overview of how the Solution Implementation Team intends to monitor and track progress against the Solution Implementation Plan, including the Technical Requirements Document, Data Management Plan, and Solution Adoption and Sustainability Plan, as appropriate.</p>
+    <p>Provide an overview of how the Solution Implementation Team intends to monitor and track progress against the Solution Implementation Plan, including the <a href="{% url 'webapp:technical_requirements' %}">Technical Requirements Document</a>, <a href="{% url 'webapp:data_governance' %}">Data Management Plan</a>, and <a href="{% url 'webapp:adoption_sustainability' %}">Solution Adoption and Sustainability Plan</a>, as appropriate.</p>
     <p>Outline the ways in which progress will be monitored. These can include tracking milestones, co-development meetings, solution implementation team meetings, user-testing and feedback integration, adopting indicators, and tracking indicator data.</p>
 
     <div class="siimp-subsection">
         <h3>12.1 Indicator Monitoring Matrix</h3>
-        <p>Complete the Fillable Indicator Template. The fillable indicator template identifies the type of indicator, how information will be collected during the solution implementation process (source, responsible party, frequency), the baseline metric, and the target. The template includes additional guidance and helpful hints on numbers and types of indicators to consider and how to create strong indicators.</p>
+        <p>Complete the <a href="https://docs.google.com/spreadsheets/d/1VGShXy_S_h8P5l0_Lh2ltbeq2Z423EpB/edit?gid=427899109#gid=427899109">Fillable Indicator Template</a>. The fillable indicator template identifies the type of indicator, how information will be collected during the solution implementation process (source, responsible party, frequency), the baseline metric, and the target. The template includes additional guidance and helpful hints on numbers and types of indicators to consider and how to create strong indicators.</p>
         <p>Reference the Indicator Development Tool, a guide to designing indicators that monitor solution progress and collect data on outputs and outcomes, as needed. The Indicator Development tool includes best practices for data sources and collection methods.</p>
-        <p>Indicators intended to capture the intended impact of a solution can also be developed at this stage, especially if the solution team intended to capture economic impact at some level. More information on the types of economic impact indicators to consider can be found in Economic Impact Assessment for EO.</p>
+        <p>Indicators intended to capture the intended impact of a solution can also be developed at this stage, especially if the solution team intended to capture economic impact at some level. More information on the types of economic impact indicators to consider can be found in <a href="{% url 'webapp:economic_impact_assessments' %}">Economic Impact Assessment for EO</a>.</p>
     </div>
 
     <div class="siimp-subsection">
@@ -518,7 +464,7 @@
 <div class="siimp-section">
     <h2>14. Understanding and Capturing Impact</h2>
     <p>Describe how the Solution Implementation Team expects to collect and verify information related to impact. This can be conducted in a variety of ways: capturing use cases for decision-making, beneficiary case studies, economic impact assessments, user feedback surveys, key informant interviews, or other qualitative data collection methods.</p>
-    <p>Consider both immediate post-activity information collection as well as plans for medium and longer-term impact monitoring and information collection. See resources including Capturing Impact: Use Cases, Case Studies and More, and Economic Impact Assessment Guidance</p>
+    <p>Consider both immediate post-activity information collection as well as plans for medium and longer-term impact monitoring and information collection. See resources including <a href="{% url 'webapp:capturing_communicating_impact' %}">Capturing Impact: Use Cases, Case Studies and More</a>, and <a href="{% url 'webapp:economic_impact_assessments' %}">Economic Impact Assessment Guidance</a></p>
 </div>
 
 <!-- Section 15 -->

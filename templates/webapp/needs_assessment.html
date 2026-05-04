@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Needs Assessment — Solution Co-Development Toolkit{% endblock %}
 {% block content %}
 <style>
@@ -272,7 +273,7 @@
 </style>
 
 <div class="page-header">
-    <div class="section-tag">Section 6</div>
+    <div class="section-tag">Section 5</div>
     <h1>Needs Assessment</h1>
 </div>
 
@@ -298,8 +299,11 @@
 
 <div class="subsection">
     <h2>How and When To Use this Tool:</h2>
+    <div style="text-align: center;">
+        <img src="{%  static 'images/fig_9.png'  %}" alt="How and when" style="max-width: 600px;" >
+    </div>
     <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 46</p>
-    <p>The Needs Assessment Tool is used after completing the Stakeholder Mapping process. Use the Needs Assessment Template for each priority group to capture:</p>
+    <p>The Needs Assessment Tool is used after completing the Stakeholder Mapping process. Use the <a href="https://docs.google.com/spreadsheets/d/1Yi0ScvjPthAMr1fQNkLX50kDHNTalrHz/edit?gid=78278432#gid=78278432">Needs Assessment Template</a> for each priority group to capture:</p>
     <ul class="content-list">
         <li>A list of priority user needs, gaps, and pain points</li>
         <li>A summary of workflow constraints and barriers to EO integration</li>
@@ -310,7 +314,7 @@
 
     <div class="related-box">
         <strong>How does this relate to other tools in the Toolkit?</strong><br>
-        This tool complements and depends on the Solution Stakeholder Mapping and Analysis Tool.
+        This tool complements and depends on the Solution <a href="{% url 'webapp:stakeholder_mapping' %}">Stakeholder Mapping and Analysis Tool</a>.
         <ul>
             <li>Stakeholder Mapping → identifies who to talk to and priorities for engagement.</li>
             <li>Needs Assessment → identifies user needs and decision pathways.</li>
@@ -321,7 +325,7 @@
 
 <div class="subsection">
     <h2>Workflow, Roles &amp; Timeline</h2>
-    <p>Workflow, roles and timeline estimated based on steps and guidance captured in Needs Assessment Template with Step-by-Step Guidance</p>
+    <p>Workflow, roles and timeline estimated based on steps and guidance captured in <a href="">Needs Assessment Template with Step-by-Step Guidance</a></p>
 
     <table class="workflow-table">
         <thead>

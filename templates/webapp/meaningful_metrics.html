@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Developing Meaningful Metrics for EO Solutions — Solution Co-Development Toolkit{% endblock %}
 {% block content %}
 <style>
@@ -250,7 +251,7 @@
 </style>
 
 <div class="page-header">
-    <div class="section-tag">Section 13</div>
+    <div class="section-tag">Section 12</div>
     <h1>Developing Meaningful Metrics for EO Solutions</h1>
 </div>
 
@@ -262,42 +263,11 @@
 <div class="subsection">
     <h2>How and When to Use This Tool:</h2>
 
-    <div class="phases-grid">
-        <div class="phase-card phase-1">
-            <h4>Phase 1: Assessing Needs &amp; Potential Impact</h4>
-            <ul>
-                <li>Identify stakeholders</li>
-                <li>Assess user needs, constraint, and decision context</li>
-                <li>Define problem and opportunity for impact</li>
-            </ul>
-        </div>
-        <div class="phase-card phase-2">
-            <h4>Phase 2: Solution Co-Design</h4>
-            <ul>
-                <li>Co-design solution concepts</li>
-                <li>Define requirements and success metrics</li>
-                <li>Plan implementation and sustainability</li>
-            </ul>
-        </div>
-        <div class="phase-card phase-3">
-            <h4>Phase 3: Prototyping and Co-Development</h4>
-            <ul>
-                <li>Build and test prototypes</li>
-                <li>Conduct user testing and iteration</li>
-                <li>Prepare data, workflows, and trainings</li>
-            </ul>
-        </div>
-        <div class="phase-card phase-4">
-            <h4>Phase 4: Transition and Impact Assessment</h4>
-            <ul>
-                <li>Deploy and transition ownership</li>
-                <li>Collect evidence of use and impact</li>
-                <li>Plan for scaling, replication, and long-term uptake</li>
-            </ul>
-        </div>
+    <div style="text-align: center;">
+        <img src="{%  static 'images/fig_14.png'  %}" alt="How and when" style="max-width: 600px;" >
     </div>
 
-    <p>Use this tool during Phase 2 when developing a Solution Implementation and Impact Monitoring Plan (SIIMP). It can also be used to inform broader program and project plans as part of requirements to measure project success criteria. The SIIMP plan template includes a fillable sample table for metrics.</p>
+    <p>Use this tool during Phase 2 when developing a <a href="{% url 'webapp:implementation_monitoring' %}">Solution Implementation and Impact Monitoring Plan</a> (SIIMP). It can also be used to inform broader program and project plans as part of requirements to measure project success criteria. The SIIMP plan template includes a <a href="https://docs.google.com/spreadsheets/d/1VGShXy_S_h8P5l0_Lh2ltbeq2Z423EpB/edit?gid=427899109#gid=427899109">fillable sample table</a> for metrics.</p>
     <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 105</p>
 </div>
 
@@ -306,7 +276,7 @@
 <div class="subsection">
     <h2>What Are Meaningful Metrics?</h2>
     <p>Metrics are quantitative measures that become meaningful when designed specifically to monitor and validate whether a solution is achieving what it is designed to achieve.</p>
-    <p>A metric is a specific, measurable variable that provides systematic evidence about solution progress, performance, effectiveness, and impact. Metrics are embedded in the solution results framework, which acts as the blueprint for how and why a program is expected to work. More information on developing a results framework can be found in the tool Designing for Impact 101. Metric data is collected as part of a Solution Implementation and Impact Monitoring Plan associated with the solution and also built around the results framework.</p>
+    <p>A metric is a specific, measurable variable that provides systematic evidence about solution progress, performance, effectiveness, and impact. Metrics are embedded in the solution results framework, which acts as the blueprint for how and why a program is expected to work. More information on developing a results framework can be found in the tool <a href="{% url 'webapp:designing_for_impact' %}">Designing for Impact 101</a>. Metric data is collected as part of a <a href="{% url 'webapp:implementation_monitoring' %}">Solution Implementation and Impact Monitoring Plan</a> associated with the solution and also built around <a href="https://docs.google.com/presentation/d/1LY2tE5McwaIL48I5LAu-AV9ANFbLD0qh/edit?slide=id.p2#slide=id.p2">the results framework</a>.</p>
 </div>
 
 <div class="subsection">
@@ -336,7 +306,7 @@
             <span class="level-examples">Examples: Solutions developed; users trained and able to adopt and sustain solutions, institutions adopting solutions, publications, information products, etc.</span>
         </div>
         <div class="metric-level">
-            <span class="level-header">Level 3 - Outcome Metrics: Measure immediate results of the solution and whether intended objectives have been met; measure change in behavior, capacity or conditions as a result of adopting the solution. Validate whether assumptions held true and/or risks were successfully mitigated. (For more on assumptions and risks, see Needs Assessment Tool, Guidance for Analyzing User Inputs, and Designing for Impact 101). Outcome metrics are the first level that demonstrate a result of the solution and what a solution has achieved.</span>
+            <span class="level-header">Level 3 - Outcome Metrics: Measure immediate results of the solution and whether intended objectives have been met; measure change in behavior, capacity or conditions as a result of adopting the solution. Validate whether assumptions held true and/or risks were successfully mitigated. (For more on assumptions and risks, see <a href="{% url 'webapp:needs_assessment' %}">Needs Assessment Tool</a>, Guidance for Analyzing User Inputs, and <a href="{% url 'webapp:designing_for_impact' %}">Designing for Impact 101</a>). Outcome metrics are the first level that demonstrate a result of the solution and what a solution has achieved.</span>
             <span class="level-examples">Examples: Solutions adopted; successful uptake confirmed; decision-makers and beneficiaries have greater access to timely, trusted, quality data, information and analyses; applications being used in decision-making.</span>
         </div>
         <div class="metric-level">
@@ -374,148 +344,8 @@
 <div class="subsection">
     <h2>Fig. 1 — Sample Results Framework with Example Metrics</h2>
 
-    <div class="results-framework">
-
-        <!-- IMPACT row -->
-        <div style="display:flex; justify-content:center; margin-bottom:0.2rem;">
-            <div class="rf-box rf-impact">
-                <span class="rf-label">IMPACT</span>
-                <span class="rf-text">Reduced loss of life and property during floods</span>
-            </div>
-        </div>
-
-        <!-- Arrows up to IMPACT -->
-        <div style="display:flex; justify-content:center; gap:8.5rem; margin-bottom:0.2rem;">
-            <div class="rf-arrow">↑</div>
-            <div class="rf-arrow">↑</div>
-            <div class="rf-arrow">↑</div>
-        </div>
-
-        <!-- OUTCOME row -->
-        <div class="rf-outcome-row" style="align-items:flex-start; margin-bottom:0.2rem;">
-
-            <!-- Outcome 1 + outputs -->
-            <div class="rf-outcome-col">
-                <div class="rf-box rf-outcome">
-                    <span class="rf-label">OUTCOME</span>
-                    <span class="rf-text">Local institutions report improved response times</span>
-                </div>
-                <div style="display:flex; justify-content:center; gap:4.5rem; margin:0.15rem 0;">
-                    <div class="rf-arrow">↑</div>
-                    <div class="rf-arrow">↑</div>
-                    <div class="rf-arrow">↑</div>
-                </div>
-                <div class="rf-output-group">
-                    <div class="rf-box rf-output">
-                        <span class="rf-label">OUTPUT</span>
-                        <span class="rf-text">Protocols for early warnings</span>
-                    </div>
-                    <div class="rf-box rf-output">
-                        <span class="rf-label">OUTPUT</span>
-                        <span class="rf-text">Operational flood forecast model</span>
-                    </div>
-                    <div class="rf-box rf-output">
-                        <span class="rf-label">OUTPUT</span>
-                        <span class="rf-text">User ready dashboard and alert system</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Outcome 2 + outputs -->
-            <div class="rf-outcome-col">
-                <div class="rf-box rf-outcome" style="width:210px;">
-                    <span class="rf-label">OUTCOME</span>
-                    <span class="rf-text">Local officials integrated updated maps into procedures, resulting in more precise, efficient decisions</span>
-                </div>
-                <div style="display:flex; justify-content:center; gap:3rem; margin:0.15rem 0;">
-                    <div class="rf-arrow">↑</div>
-                    <div class="rf-arrow">↑</div>
-                </div>
-                <div class="rf-output-group">
-                    <div class="rf-box rf-output">
-                        <span class="rf-label">OUTPUT</span>
-                        <span class="rf-text">Updated flood risk maps</span>
-                    </div>
-                    <div class="rf-box rf-output">
-                        <span class="rf-label">OUTPUT</span>
-                        <span class="rf-text">Land use dashboard prototype</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Outcome 3 + outputs -->
-            <div class="rf-outcome-col">
-                <div class="rf-box rf-outcome" style="width:195px;">
-                    <span class="rf-label">OUTCOME</span>
-                    <span class="rf-text">Community starts using warning systems and messaging, strengthening emergency response</span>
-                </div>
-                <div style="display:flex; justify-content:center; gap:4.5rem; margin:0.15rem 0;">
-                    <div class="rf-arrow">↑</div>
-                    <div class="rf-arrow">↑</div>
-                    <div class="rf-arrow">↑</div>
-                </div>
-                <div class="rf-output-group">
-                    <div class="rf-box rf-output">
-                        <span class="rf-label">OUTPUT</span>
-                        <span class="rf-text">Officials trained to interpret maps</span>
-                    </div>
-                    <div class="rf-box rf-output">
-                        <span class="rf-label">OUTPUT</span>
-                        <span class="rf-text">New workflow for community drills</span>
-                    </div>
-                    <div class="rf-box rf-output">
-                        <span class="rf-label">OUTPUT</span>
-                        <span class="rf-text">Training on new alert system</span>
-                    </div>
-                </div>
-            </div>
-
-        </div><!-- end outcome row -->
-
-        <!-- Arrows up to outputs -->
-        <div style="display:flex; justify-content:center; gap:7.5rem; margin:0.15rem 0;">
-            <div class="rf-arrow">↑</div>
-            <div class="rf-arrow">↑</div>
-            <div class="rf-arrow">↑</div>
-        </div>
-
-        <!-- INPUTS row -->
-        <div class="rf-inputs-row">
-            <div class="rf-inputs" style="width:220px;">
-                <span class="rf-label">INPUTS</span>
-                <ol>
-                    <li>Early warning procedures developed</li>
-                    <li>Progress made on flood forecast model</li>
-                    <li>Data incorporated into prototype</li>
-                    <li>Training event held</li>
-                </ol>
-            </div>
-            <div class="rf-inputs" style="width:210px;">
-                <span class="rf-label">INPUTS</span>
-                <ol>
-                    <li>Training event held</li>
-                    <li>Flood maps updated</li>
-                    <li>Alert zones updated</li>
-                </ol>
-            </div>
-            <div class="rf-inputs" style="width:210px;">
-                <span class="rf-label">INPUTS</span>
-                <ol>
-                    <li>Stakeholder engagement conducted</li>
-                    <li>Needs assessment</li>
-                    <li>Messaging beta-tested</li>
-                </ol>
-            </div>
-        </div>
-
-        <!-- Footer note -->
-        <div class="rf-footer" style="margin-top:0.8rem;">
-            <span>Input Metrics:</span> # of data layers, # of stakeholder engagements, # of training participants, ARL increases, etc.<br>
-            <span>Risks:</span><br>
-            <span>Assumptions:</span>
-        </div>
-
-        <p class="fig-caption">Fig. 1 - Sample Results Framework with Example Metrics</p>
+    <div style="text-align: center;">
+        <img src="{%  static 'images/fig_17.png'  %}" alt="How and when" style="max-width: 600px;" >
     </div>
     <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 109</p>
 </div>

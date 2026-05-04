@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Solution Adoption and Sustainability Plan — Solution Co-Development Toolkit{% endblock %}
 {% block content %}
 <style>
@@ -112,7 +113,7 @@
 </style>
 
 <div class="page-header">
-    <div class="section-tag">Section 12</div>
+    <div class="section-tag">Section 11</div>
     <h1>Solution Adoption and Sustainability Plan Template</h1>
 </div>
 
@@ -132,41 +133,9 @@
 <div style="margin-top:2rem;">
     <h2 style="color:#0b3d91; border-bottom:2px solid #00a0b0; padding-bottom:0.4rem; margin-bottom:1rem;">How and When to Use This Tool:</h2>
 
-    <div class="phases-grid">
-        <div class="phase-card phase-1">
-            <h4>Phase 1: Assessing Needs &amp; Potential Impact</h4>
-            <ul>
-                <li>Identify stakeholders</li>
-                <li>Assess user needs, constraint, and decision context</li>
-                <li>Define problem and opportunity for impact</li>
-            </ul>
-        </div>
-        <div class="phase-card phase-2">
-            <h4>Phase 2: Solution Co-Design</h4>
-            <ul>
-                <li>Co-design solution concepts</li>
-                <li>Define requirements and success metrics</li>
-                <li>Plan implementation and sustainability</li>
-            </ul>
-        </div>
-        <div class="phase-card phase-3">
-            <h4>Phase 3: Prototyping and Co-Development</h4>
-            <ul>
-                <li>Build and test prototypes</li>
-                <li>Conduct user testing and iteration</li>
-                <li>Prepare data, workflows, and trainings</li>
-            </ul>
-        </div>
-        <div class="phase-card phase-4">
-            <h4>Phase 4: Transition and Impact Assessment</h4>
-            <ul>
-                <li>Deploy and transition ownership</li>
-                <li>Collect evidence of use and impact</li>
-                <li>Plan for scaling, replication, and long-term uptake</li>
-            </ul>
-        </div>
+    <div style="text-align: center;">
+        <img src="{%  static 'images/fig_15.png'  %}" alt="How and when" style="max-width: 600px;" >
     </div>
-
     <p>This tool should be initially completed during Phase 2 of the co-development process (initial draft). It should be revisited and updated at key points throughout subsequent phases of co-development as the solution matures, user needs evolve, and sustainability considerations become clearer.</p>
     <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 95</p>
 </div>
@@ -178,7 +147,7 @@
     <h2>1. Solution Information</h2>
     <p><span class="info-label">Solution Title:</span></p>
     <p><span class="info-label">Co-Development Partners and Primary Implementing Partner(s):</span><br>
-    List the organizations involved in co-developing the solution and identify the primary implementing partner(s) responsible for operational use. (Refer to the Stakeholder Mapping outputs to ensure this section clearly identifies the specific stakeholders and user groups targeted for adoption and long-term sustainability.)</p>
+    List the organizations involved in co-developing the solution and identify the primary implementing partner(s) responsible for operational use. (Refer to the <a href="{% url 'webapp:stakeholder_mapping' %}">Stakeholder Mapping</a> outputs to ensure this section clearly identifies the specific stakeholders and user groups targeted for adoption and long-term sustainability.)</p>
     <p><span class="info-label">Intended Operational Environment and Sustainability Requirements:</span><br>
     Describe where and how the solution is expected to operate (e.g., internal agency systems, cloud-based platforms, partner-managed infrastructure).</p>
 </div>
@@ -225,7 +194,7 @@
             <li>Technical capacity (software, hardware, staff skills)</li>
             <li>Data access constraints</li>
             <li>Training needs</li>
-            <li>Barriers to Organizational Adoption Readiness: (e.g., staffing changes, competing priorities, approval processes) (Refer also to the Needs Assessment tool)</li>
+            <li>Barriers to Organizational Adoption Readiness: (e.g., staffing changes, competing priorities, approval processes) (Refer also to the <a href="{% url 'webapp:needs_assessment' %}">Needs Assessment tool</a>)</li>
         </ul>
     </div>
 
@@ -303,7 +272,7 @@
             <li>Knowledge is retained across staff turnover</li>
             <li>Feedback loops are established to capture user input, outcomes, and impact after the project period (e.g., usage feedback, outcome metrics, economic or decision-support impacts) to inform ongoing improvement and future use cases or case studies</li>
         </ul>
-        <p>Make references to the Solutions Implementation and Impact Monitoring Plan.</p>
+        <p>Make references to the <a href="{% url 'webapp:implementation_monitoring' %}">Solutions Implementation and Impact Monitoring Plan</a>.</p>
     </div>
 
     <div class="plan-subsection">

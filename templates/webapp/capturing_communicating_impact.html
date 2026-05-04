@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Capturing and Communicating Impact — Solution Co-Development Toolkit{% endblock %}
 {% block content %}
 <style>
@@ -120,7 +121,7 @@
 </style>
 
 <div class="page-header">
-    <div class="section-tag">Section 3</div>
+    <div class="section-tag">Section 2</div>
     <h1>Capturing and Communicating Impact</h1>
 </div>
 
@@ -137,42 +138,11 @@
 
     <h2>How and When to Use This Tool:</h2>
 
-    <div class="phases-grid">
-        <div class="phase-card phase-1">
-            <div class="phase-title">Phase 1:<br>Assessing Needs &amp; Potential Impact</div>
-            <ul>
-                <li>Identify stakeholders</li>
-                <li>Assess user needs, constraint, and decision context</li>
-                <li>Define problem and opportunity for impact</li>
-            </ul>
-        </div>
-        <div class="phase-card phase-24">
-            <div class="phase-title">Phase 2:<br>Solution Co-Design</div>
-            <ul>
-                <li>Co-design solution concepts</li>
-                <li>Define requirements and success metrics</li>
-                <li>Plan implementation and sustainability</li>
-            </ul>
-        </div>
-        <div class="phase-card phase-3">
-            <div class="phase-title">Phase 3:<br>Prototyping and Co-Development</div>
-            <ul>
-                <li>Build and test prototypes</li>
-                <li>Conduct user testing and iteration</li>
-                <li>Prepare data, workflows, and trainings</li>
-            </ul>
-        </div>
-        <div class="phase-card phase-24">
-            <div class="phase-title">Phase 4:<br>Transition and Impact Assessment</div>
-            <ul>
-                <li>Deploy and transition ownership</li>
-                <li>Collect evidence of use and impact</li>
-                <li>Plan for scaling, replication, and long-term uptake</li>
-            </ul>
-        </div>
+    <div style="text-align: center;">
+        <img src="{%  static 'images/fig_5.png'  %}" alt="How and when" style="max-width: 600px;" >
     </div>
 
-    <p>This tool can be used at any point in the co-development process, but it is most effective when integrated into early phases of solution planning and co-design. After reviewing the Designing for Impact 101 document, use this too to ensure that you are planning to capture and effectively communicate impact in a way that supports your team's strategic goals. This tool should also be used in developing the Solution Implementation, Impact, and Monitoring Plan (SIIMP Plan), to outline the qualitative approaches that will be used to capture impact.</p>
+    <p>This tool can be used at any point in the co-development process, but it is most effective when integrated into early phases of solution planning and co-design. After reviewing the <a href="{% url 'webapp:designing_for_impact' %}">Designing for Impact 101</a> document, use this too to ensure that you are planning to capture and effectively communicate impact in a way that supports your team's strategic goals. This tool should also be used in developing the <a href="{% url 'webapp:implementation_monitoring' %}">Solution Implementation, Impact, and Monitoring Plan (SIIMP Plan)</a>, to outline the qualitative approaches that will be used to capture impact.</p>
 
     <hr>
 
@@ -239,7 +209,7 @@
 
     <p>Communications and reporting documents need to be able to demonstrate a project's impact in different ways to maximize the reach and efficacy of messaging. This section will walk through different dimensions of impact and ways of showing it.</p>
 
-    <p>Strong impact stories can take time to emerge, but you don't have to wait for impact to start telling a great story. <em>Teams should start articulating the intended impacts of a project from the beginning of the co-design process</em> (refer to the Designing for Impact document) to help engage partners and advocate for the value of a project within NASA. Before the completion of a project, there should already be potential to illustrate the planned impacts of a project through showing the connections between the user needs and the outcomes of that project. A project SIIMP plan will help outline what information to capture when and in what forms, as a solution is co-designed, delivered, adopted, and put into sustained use or practice.</p>
+    <p>Strong impact stories can take time to emerge, but you don't have to wait for impact to start telling a great story. <em>Teams should start articulating the intended impacts of a project from the beginning of the co-design process</em> (refer to the <a href="{% url 'webapp:designing_for_impact' %}">Designing for Impact</a> document) to help engage partners and advocate for the value of a project within NASA. Before the completion of a project, there should already be potential to illustrate the planned impacts of a project through showing the connections between the user needs and the outcomes of that project. A project SIIMP plan will help outline what information to capture when and in what forms, as a solution is co-designed, delivered, adopted, and put into sustained use or practice.</p>
 
     <p><em>Impact is a matter of both breadth and depth; both should be considered as part of a project MIL plan.</em></p>
     <ul>
@@ -248,23 +218,8 @@
     </ul>
 
     <!-- Fig. 1: Impact scale pyramid -->
-    <div class="impact-pyramid">
-        <div class="pyramid-row pr-gov">
-            <div class="row-title">GOV'T &amp; POLICY</div>
-            <div class="row-sub" style="font-style:italic;">Interacts at a very <strong>broad scale</strong>, often several steps removed from an issue</div>
-        </div>
-        <div class="pyramid-row pr-high">
-            <div class="row-title">HIGH-LEVEL USERS</div>
-            <div class="row-sub"><em>Use services to address issues at a <strong>systems level</strong></em></div>
-        </div>
-        <div class="pyramid-row pr-front">
-            <div class="row-title">FRONT-LINE USERS</div>
-            <div class="row-sub"><em>Use services to address issues at a <strong>local or individual level</strong></em></div>
-        </div>
-        <div class="pyramid-row pr-indiv">
-            <div class="row-title">INDIVIDUALS BEYOND THE USERS</div>
-            <div class="row-sub"><em>People who <strong>benefit from the service</strong></em> &nbsp;|&nbsp; <em>Interacts at a personal scale, experience issues very directly</em></div>
-        </div>
+    <div style="text-align: center;">
+        <img src="{%  static 'images/fig_6.png'  %}" alt="Impact scale pyramid" style="max-width: 600px;" >
     </div>
     <p class="fig-caption">Fig. 1-Different groups and organizations experience impact at very different scales. When we want to show the breadth of impact, focusing on organizations that work on issues at an administrative or systems level will suffice. When it's important to put a human face to impact, it may be necessary to look for users or beneficiaries who experience impact on a local or personal level to illustrate the depth of impact.</p>
 

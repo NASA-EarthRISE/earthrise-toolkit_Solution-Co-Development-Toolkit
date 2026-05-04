@@ -1,15 +1,9 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Introduction — Solution Co-Development Toolkit{% endblock %}
 {% block content %}
 <style>
-    .tk-body { font-size: 0.95rem; line-height: 1.75; color: #1a1a2e; }
-    .tk-body h2 { font-size: 1.5rem; font-weight: 700; color: #0b3d91; margin: 2.25rem 0 0.6rem; }
-    .tk-body h3 { font-size: 1.15rem; font-weight: 600; color: #0b3d91; margin: 1.75rem 0 0.5rem; }
-    .tk-body h4 { font-size: 0.95rem; font-style: italic; font-weight: 600; color: #1a1a2e; margin: 1.4rem 0 0.4rem; }
-    .tk-body p { margin-bottom: 1rem; }
-    .tk-body ul, .tk-body ol { margin: 0.5rem 0 1rem 1.5rem; }
-    .tk-body li { margin-bottom: 0.4rem; }
-    .tk-body hr { border: none; border-top: 1px solid #d0d7e3; margin: 2rem 0; }
+
 
     .workflow-box {
         background: #dce8f5;
@@ -66,7 +60,6 @@
 </style>
 
 <div class="page-header">
-    <div class="section-tag">Section 1</div>
     <h1>Introduction: Solution Co-Development in Practice</h1>
 </div>
 
@@ -90,7 +83,7 @@
     <hr>
 
     <h2>Purpose</h2>
-    <p>The Toolkit supports scientists and practitioners in translating NASA Earth observation (EO) data and capabilities into solutions that respond directly to user needs and decision contexts. It complements NASA's <em>Earth Science Applications Guidebook</em> by providing a deeper, practical approach to implementing co-development in the context of Earth science solutions. The Toolkit is best suited for activities at NASA's <strong>Application Readiness Levels (ARL) 3 or higher and can maximize impact and sustainability as they reach ARL 9.</strong></p>
+    <p>The Toolkit supports scientists and practitioners in translating NASA Earth observation (EO) data and capabilities into solutions that respond directly to user needs and decision contexts. It complements NASA's <em>Earth Science Applications Guidebook</em> by providing a deeper, practical approach to implementing co-development in the context of Earth science solutions. The Toolkit is best suited for activities at NASA's <strong><a href="https://carbon.nasa.gov/docs/The%20ARL%20Metric.pdf" title="Application Readiness Levels (ARL)">Application Readiness Levels (ARL)</a> 3 or higher and can maximize impact and sustainability as they reach ARL 9.</strong></p>
 
     <h2>Audience</h2>
     <p>The Toolkit is designed for Earth scientists and practitioners of all career levels seeking to strengthen stakeholder engagement, expand the impact of applied research, and adopt participatory approaches, strengthen stakeholder alignment, and ensure that EO applications translate into measurable outcomes.</p>
@@ -108,39 +101,8 @@
 
     <p><strong>Phase 4—Transition and Impact Assessment</strong> supports adoption and handoff, documents evidence of use and impact, and identifies opportunities for scaling, adaptation, or replication. Phase 4 is when solution teams ensure sustainability, capture lessons learned, and plan for scalability, informing future modifications to a project.</p>
 
-    <div class="phases-grid">
-        <div class="phase-card phase-1">
-            <div class="phase-title">Phase 1:<br>Assessing Needs &amp; Potential Impact</div>
-            <ul>
-                <li>Identify stakeholders</li>
-                <li>Assess user needs, constraint, and decision context</li>
-                <li>Define problem and opportunity for impact</li>
-            </ul>
-        </div>
-        <div class="phase-card phase-2">
-            <div class="phase-title">Phase 2:<br>Solution Co-Design</div>
-            <ul>
-                <li>Co-design solution concepts</li>
-                <li>Define requirements and success metrics</li>
-                <li>Plan implementation and sustainability</li>
-            </ul>
-        </div>
-        <div class="phase-card phase-3">
-            <div class="phase-title">Phase 3:<br>Prototyping and Co-Development</div>
-            <ul>
-                <li>Build and test prototypes</li>
-                <li>Conduct user testing and iteration</li>
-                <li>Prepare data, workflows, and trainings</li>
-            </ul>
-        </div>
-        <div class="phase-card phase-4">
-            <div class="phase-title">Phase 4:<br>Transition and Impact Assessment</div>
-            <ul>
-                <li>Deploy and transition ownership</li>
-                <li>Collect evidence of use and impact</li>
-                <li>Plan for scaling, replication, and long-term uptake</li>
-            </ul>
-        </div>
+    <div style="text-align: center">
+        <img src="{%  static 'images/fig_1.png'  %}" alt="Co-Development Phases" style="max-width: 600px;" >
     </div>
     <p class="fig-caption">Fig. 1. Phases of Co-Development and key activities for each phase</p>
 
@@ -299,8 +261,8 @@
 
     <p>Resources for more information:</p>
     <ol>
-        <li>National Aeronautics and Space Administration. <em>NPR 1382.1B: NASA Privacy Procedural Requirements — Appendix A: Definitions</em>. 2022. NASA Online Directives Information System, https://nodis3.gsfc.nasa.gov/displayDir.cfm?Internal_ID=N_PR_1382_001B_&amp;page_name=AppendixA&amp;search_term=PII</li>
-        <li>National Aeronautics and Space Administration. (2024, September 23). NASA Compliance Plan for OMB Memorandum M-24-10. Retrieved from https://www.nasa.gov/wp-content/uploads/2024/09/nasa-omb-compliance-plan-20240923.pdf</li>
+        <li>National Aeronautics and Space Administration. <em>NPR 1382.1B: NASA Privacy Procedural Requirements — Appendix A: Definitions</em>. 2022. NASA Online Directives Information System, <a href="https://nodis3.gsfc.nasa.gov/displayDir.cfm?Internal_ID=N_PR_1382_001B_&amp;page_name=AppendixA&amp;search_term=PII" target="_blank" rel="noopener">https://nodis3.gsfc.nasa.gov/displayDir.cfm?Internal_ID=N_PR_1382_001B_&amp;page_name=AppendixA&amp;search_term=PII</a></li>
+        <li>National Aeronautics and Space Administration. (2024, September 23). NASA Compliance Plan for OMB Memorandum M-24-10. Retrieved from <a href="https://www.nasa.gov/wp-content/uploads/2024/09/nasa-omb-compliance-plan-20240923.pdf" target="_blank" rel="noopener">https://www.nasa.gov/wp-content/uploads/2024/09/nasa-omb-compliance-plan-20240923.pdf</a></li>
     </ol>
 
 </div>

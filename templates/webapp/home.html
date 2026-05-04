@@ -1,121 +1,606 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}NASA Earth Action — Solution Co-Development Toolkit{% endblock %}
 
 {% block content %}
-<style>
-    .hero {
-        background: linear-gradient(135deg, #0b3d91 0%, #00a0b0 100%);
-        color: #fff;
-        border-radius: 12px;
-        padding: 3rem 2.5rem;
-        margin-bottom: 2.5rem;
-    }
-    .hero .eyebrow {
-        font-size: 0.75rem;
-        font-weight: 700;
-        letter-spacing: 0.15em;
-        text-transform: uppercase;
-        opacity: 0.85;
-        margin-bottom: 0.75rem;
-    }
-    .hero h1 {
-        font-size: 2.4rem;
-        font-weight: 800;
-        line-height: 1.15;
-        margin-bottom: 1rem;
-    }
-    .hero p {
-        font-size: 1.05rem;
-        opacity: 0.9;
-        max-width: 560px;
-        line-height: 1.65;
-    }
-    .hero .version-tag {
-        display: inline-block;
-        margin-top: 1.25rem;
-        background: rgba(255,255,255,0.18);
-        font-size: 0.75rem;
-        font-weight: 600;
-        padding: 0.25rem 0.75rem;
-        border-radius: 20px;
-        letter-spacing: 0.06em;
-    }
+    <style>
+        /* ── Hero ── */
+        .home-hero {
+            position: relative;
+            margin: -2.5rem -3rem 0;
+            background-image: url("{% static 'images/hero.jpg' %}");
+            background-size: cover;
+            background-position: center 40%;
+            color: #fff;
+            padding: 4rem 1rem 3rem;
+            overflow: hidden;
+        }
 
-    .section-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-        gap: 1rem;
-    }
+        .hero-content {
+            position: relative;
+            max-width: 600px;
+            background: linear-gradient(115deg, rgba(11, 61, 145, 0.92) 0%, rgba(11, 61, 145, 0.78) 45%, rgba(0, 80, 110, 0.55) 100%);
+            padding: 2em;
+        }
 
-    .section-card {
-        background: #fff;
-        border: 1px solid #d0d7e3;
-        border-radius: 8px;
-        padding: 1.25rem 1.5rem;
-        text-decoration: none;
-        color: #1a1a2e;
-        display: flex;
-        align-items: flex-start;
-        gap: 1rem;
-        transition: box-shadow 0.15s, border-color 0.15s;
-    }
-    .section-card:hover {
-        box-shadow: 0 4px 16px rgba(0,160,176,0.15);
-        border-color: #00a0b0;
-    }
-    .section-card .num {
-        flex-shrink: 0;
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        background: #e6f7f9;
-        color: #0b3d91;
-        font-size: 0.8rem;
-        font-weight: 700;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .section-card .card-body .card-title {
-        font-size: 0.9rem;
-        font-weight: 600;
-        line-height: 1.35;
-        color: #0b3d91;
-    }
-    .section-card .card-body .card-desc {
-        font-size: 0.78rem;
-        color: #4a4a6a;
-        margin-top: 0.3rem;
-        line-height: 1.45;
-    }
+        .hero-eyebrow {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.4rem;
+            background: rgba(0, 0, 0, 0.9);
+        }
 
-    .grid-heading {
-        font-size: 1rem;
-        font-weight: 700;
-        color: #0b3d91;
-        margin-bottom: 1rem;
-        padding-bottom: 0.4rem;
-        border-bottom: 2px solid #e6f7f9;
-    }
-</style>
+        .hero-badge {
 
-<div class="hero">
-    <div class="eyebrow">NASA Earth Action &mdash; Marshall Space Flight Center</div>
-    <h1>Solution Co-Development Toolkit</h1>
-    <p>A practical approach and corresponding tools for planning, conducting, and communicating collaborative applied Earth science.</p>
-    <span class="version-tag">Version 0.1</span>
-</div>
+            font-weight: 900;
+            font-size: 0.82rem;
+            letter-spacing: 0.06em;
+            padding: 0.22rem 0.6rem;
+            border-radius: 3px;
+        }
 
-<div class="grid-heading">Toolkit Sections</div>
-<div class="section-grid">
-    {% for section in nav_sections %}
-    <a href="{% url section.url_name %}" class="section-card">
-        <div class="num">{{ forloop.counter }}</div>
-        <div class="card-body">
-            <div class="card-title">{{ section.name }}</div>
+        .hero-eyebrow .eyebrow-text {
+            font-size: 0.76rem;
+            font-weight: 600;
+            letter-spacing: 0.13em;
+            text-transform: uppercase;
+            opacity: 0.85;
+        }
+
+        .hero-content h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.08;
+            margin-bottom: 1.2rem;
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+            letter-spacing: -0.01em;
+        }
+
+        .hero-content p {
+            font-size: 1.08rem;
+            line-height: 1.7;
+            opacity: 0.93;
+            max-width: 520px;
+            margin-bottom: 2rem;
+            text-shadow: 0 1px 6px rgba(0, 0, 0, 0.25);
+        }
+
+        .hero-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-cta {
+            background: #fff;
+            color: #0b3d91;
+            font-weight: 700;
+            font-size: 0.9rem;
+            padding: 0.7rem 1.6rem;
+            border-radius: 5px;
+            text-decoration: none;
+            letter-spacing: 0.02em;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+            transition: background 0.15s, transform 0.1s;
+        }
+
+        .hero-cta:hover {
+            background: #e6f7f9;
+            transform: translateY(-1px);
+        }
+
+        .hero-version {
+            font-size: 0.74rem;
+            font-weight: 600;
+            letter-spacing: 0.09em;
+            opacity: 0.8;
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            padding: 0.28rem 0.8rem;
+            border-radius: 20px;
+        }
+
+        /* ── Intro strip ── */
+        .intro-strip {
+            background: #fff;
+            border: 1px solid #d0d7e3;
+            border-top: 4px solid #0b3d91;
+            border-radius: 0 0 8px 8px;
+            margin: 2.8rem 0 2.8rem 0;
+            padding: 1.4rem 2rem;
+            font-size: 0.97rem;
+            line-height: 1.75;
+            color: #2c3e50;
+        }
+
+        /* ── Section sub-headings ── */
+        .home-section-label {
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.13em;
+            text-transform: uppercase;
+            color: #6b7a99;
+            margin-bottom: 0.9rem;
+        }
+
+        /* ── Phase lifecycle ── */
+        .phase-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.65rem;
+            margin-bottom: 3rem;
+        }
+
+        .phase-item {
+            background: #fff;
+            border: 1px solid #d0d7e3;
+            border-top: 3px solid var(--pc, #00a0b0);
+            border-radius: 0 0 6px 6px;
+            padding: 1rem 1.1rem;
+        }
+
+        .phase-item .p-num {
+            font-size: 0.67rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--pc, #00a0b0);
+            margin-bottom: 0.35rem;
+        }
+
+        .phase-item .p-name {
+            font-weight: 700;
+            font-size: 0.87rem;
+            color: #0b3d91;
+            margin-bottom: 0.45rem;
+            line-height: 1.3;
+        }
+
+        .phase-item .p-desc {
+            color: #4a4a6a;
+            line-height: 1.5;
+            font-size: 0.79rem;
+        }
+
+        /* ── Section card grid ── */
+        .section-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(268px, 1fr));
+            gap: 0.85rem;
+            margin-bottom: 3rem;
+        }
+
+        .section-card {
+            background: #fff;
+            border: 1px solid #d0d7e3;
+            border-radius: 8px;
+            padding: 1.15rem 1.35rem;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            transition: box-shadow 0.15s, border-color 0.15s, transform 0.12s;
+        }
+
+        .section-card:hover {
+            box-shadow: 0 5px 20px rgba(11, 61, 145, 0.13);
+            border-color: #00a0b0;
+            transform: translateY(-2px);
+        }
+
+        .card-num {
+            flex-shrink: 0;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0b3d91 0%, #1a6aaf 100%);
+            color: #fff;
+            font-size: 0.78rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 1px;
+            box-shadow: 0 2px 6px rgba(11, 61, 145, 0.28);
+        }
+
+        .card-title {
+            font-size: 0.91rem;
+            font-weight: 700;
+            line-height: 1.35;
+            color: #0b3d91;
+            margin-bottom: 0.28rem;
+        }
+
+        .card-desc {
+            font-size: 0.78rem;
+            color: #5a6a85;
+            line-height: 1.5;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .home-hero {
+                margin: -1.5rem -1.25rem 0;
+                padding: 4rem 1.5rem 3.5rem;
+            }
+
+            .home-hero h1 {
+                font-size: 2.1rem;
+            }
+
+            .home-hero p {
+                font-size: 0.97rem;
+            }
+
+            .phase-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* This allows clicks to pass through */
+            z-index: 9999; /* High z-index to stay on top */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0.1; /* Adjust transparency */
+        }
+
+        .watermark-text {
+            font-size: 5rem;
+            font-weight: bold;
+            color: #000;
+            transform: rotate(-45deg);
+            user-select: none; /* Prevents text selection */
+            text-shadow: -2px -2px 0 #fff,
+            2px -2px 0 #fff,
+            -2px 2px 0 #fff,
+            2px 2px 0 #fff,
+            -2px 0 0 #fff,
+            2px 0 0 #fff,
+            0 -2px 0 #fff,
+            0 2px 0 #fff;
+        }
+    </style>
+    <div class="watermark-overlay">
+        <div class="watermark-text">For Review</div>
+    </div>
+    <!-- Hero -->
+    <div class="home-hero">
+        <div class="hero-content">
+            <div class="hero-eyebrow">
+                <span class="hero-badge"><img src="{% static 'images/nasa-logo.svg' %}" alt="NASA Logo" width="60"
+                                              height="50.58" style="margin-right: 5px;"></span>
+                <span class="eyebrow-text">Earth Action &mdash; Marshall Space Flight Center</span>
+            </div>
+            <h1>Solution<br>Co-Development<br>Toolkit</h1>
+            <p>A practical, evidence-based approach for planning, conducting, and communicating collaborative Earth
+                observation solutions — from needs assessment to sustained impact.</p>
+            <div class="hero-actions">
+                <a href="{% url 'webapp:introduction' %}" class="hero-cta">Get Started &rarr;</a>
+                <span class="hero-version">Version 0.1</span>
+            </div>
         </div>
-    </a>
-    {% endfor %}
+    </div>
+    <div>
+        <div class="page-header">
+            <div class="section-tag"></div>
+            <h1>Preface</h1>
+        </div>
+        <div class="tk-body">
+            <p>This Solution Co-Development Toolkit was created as a resource for NASA-affiliated scientists of all
+                levels to advance efforts in collaborative, applied Earth science. Its design prioritizes clear,
+                actionable steps and tools for planning, conducting, and communicating scientific collaborations with
+                partners and beneficiaries. This Toolkit was envisioned to demystify collaborative development, because
+                collaboration is what builds the public trust necessary for Earth science to achieve the greatest
+                societal good.</p>
+
+            <p>The Toolkit is itself an act of co-development, bringing together lessons learned from three Earth Action
+                teams at NASA’s Marshall Space Flight Center: the Short-term Prediction Research and Transition (SPoRT)
+                Center, NASA’s Satellite Needs Working Group Implementation Team (NSITE), and the EarthRISE Project,
+                which convened and led this effort. This Toolkit could not have come together without the unique
+                perspectives of each of these teams, and the insights shared to us from the wider Earth Action
+                community.</p>
+
+            <p>Co-development is both the principle and process of actively involving the eventual users of a product
+                throughout the entire process of planning and creating the product. Co-development goes beyond
+                consideration of the user’s need, treating collaborators as respected sources of knowledge and fostering
+                a sense of shared ownership of the work. It is how we keep our work firmly connected to the public
+                interest. Effective co-development requires time and thoughtful effort, but it ensures that scientific
+                solutions are effective, trustworthy, and likely to achieve the greatest possible impact.</p>
+
+            <p>Co-development is not a new idea. Since the 1960s, NASA has built and maintained long-lasting
+                relationships in the public and private sectors to preserve a connection between our science and
+                societal needs. The Landsat program, a crown jewel of NASA Earth, is the result of a six-decade
+                co-development relationship between NASA and our colleagues in the U.S. Geological Survey. Trust in NASA
+                Earth is grounded in co-developments like these that generate tens of billions of dollars of annual
+                economic value across sectors such as agriculture, forestry, disaster management, and water resources
+                management.</p>
+
+            <p>This Toolkit is an extension of the Earth Science to Action Strategy, designed to further the mission of
+                applied science by organizing and sharing best practices and lessons learned across the Earth Science
+                Division. As NASA introduces new programs and missions, it is imperative that our co-development
+                practices keep pace so that we can maintain and strengthen our reputation for trusted science and
+                technology and increase the benefit of Earth Science missions as a national asset. We welcome new voices
+                and contributions to this Toolkit to both refine existing approaches and introduce new perspectives.
+                Whether you are new to applied science or a seasoned expert, we are confident the Toolkit will have
+                something useful to offer you. We thank you for your commitment to impactful science.</p>
+
+            Daniel Irwin (NASA EarthRISE)<br/>
+            Emily Berndt (NASA SPoRT)<br/>
+            Pontus Olofsson (NASA NSITE)<br/>
+        </div>
+    </div>
+
+    <!-- Intro strip -->
+    <div class="intro-strip">
+        Designed for NASA Earth science teams and their partners, this toolkit provides structured guidance, templates,
+        and tools for every stage of co-developed solution design — ensuring Earth observation data translates into
+        real-world decisions and measurable outcomes.
+    </div>
+
+    <!-- Phase lifecycle -->
+{#    <div class="home-section-label">Co-Development Lifecycle</div>#}
+{#    <div class="phase-row">#}
+{#        <div class="phase-item" style="--pc: #2980b9;">#}
+{#            <div class="p-num">Phase 1</div>#}
+{#            <div class="p-name">Assessing Needs &amp; Potential Impact</div>#}
+{#            <div class="p-desc">Identify stakeholders, assess decision contexts, and define the problem and opportunity#}
+{#                for impact.#}
+{#            </div>#}
+{#        </div>#}
+{#        <div class="phase-item" style="--pc: #0b3d91;">#}
+{#            <div class="p-num">Phase 2</div>#}
+{#            <div class="p-name">Solution Co-Design</div>#}
+{#            <div class="p-desc">Co-design solution concepts, define requirements and success metrics, and plan for#}
+{#                implementation.#}
+{#            </div>#}
+{#        </div>#}
+{#        <div class="phase-item" style="--pc: #16a085;">#}
+{#            <div class="p-num">Phase 3</div>#}
+{#            <div class="p-name">Prototyping &amp; Co-Development</div>#}
+{#            <div class="p-desc">Build and test prototypes, conduct user testing and iteration, and prepare workflows and#}
+{#                training.#}
+{#            </div>#}
+{#        </div>#}
+{#        <div class="phase-item" style="--pc: #27ae60;">#}
+{#            <div class="p-num">Phase 4</div>#}
+{#            <div class="p-name">Transition &amp; Impact Assessment</div>#}
+{#            <div class="p-desc">Deploy solutions, transfer ownership, collect evidence of use, and plan for scaling and#}
+{#                replication.#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+
+<div class="page-header">
+    <h1>Introduction: Solution Co-Development in Practice</h1>
 </div>
+
+    <div class="tk-body">
+
+    <p>The <strong>Solution Co-Development Toolkit</strong> is a step-by-step framework that guides applied Earth scientists in collaboratively designing actionable, user-centered Earth Action solutions with their stakeholders. It draws on best practices from decades of NASA Earth Action experience, as well as social science methodologies. The Toolkit provides concrete methods, templates, and tools to support every stage of the process—from assessing user needs to designing, testing, and refining solutions that deliver measurable and lasting impact.</p>
+
+    <p>A <strong>solution</strong> is any application of Earth science capabilities designed to address a user-specified need. It encompasses not only technical components (e.g., data, models, platforms, or services), but also social and institutional elements—like capacity, trust, incentives, and governance—required for sustained use and impact.</p>
+
+    <p>This Toolkit is grounded in <strong>co-development</strong> as the overarching approach to solution design. At its core, co-development emphasizes collaboration, iteration, and shared ownership among scientists, practitioners, and end users throughout the development of a solution. This approach engages stakeholders as active partners whose knowledge and needs directly inform design choices, not merely as recipients of finished products. The framework below and tools that follow are organized around this approach and reflect its emphasis on working together to define problems, shape objectives, and develop solutions that are responsive to real-world contexts.</p>
+
+    <p>Throughout, the Toolkit maintains a clear orientation toward measurable and lasting impact. Solutions are designed not simply to produce outputs, but to improve decision-making in ways that are trackable, scalable, and sustainable. By aligning collaborative engagement, trusted science, and impact-driven design, the Toolkit supports solutions that endure beyond initial deployment and ultimately benefit communities and citizens.</p>
+
+    <p>The Solution Co-Development Toolkit is built upon three core principles:</p>
+    <ol>
+        <li><strong>Collaborative and iterative engagement with solution stakeholders within and outside NASA</strong> – emphasizing co-ownership, trust, and continuous learning throughout the process.</li>
+        <li><strong>Trusted and innovative science</strong> – grounding EO solutions in transparent, rigorous and replicable methods that are both relevant and scientifically sound.</li>
+        <li><strong>Measurable and sustained impact</strong> – designing solutions to improve decision-making in ways that are trackable, scalable, and sustainable, and which ultimately benefit citizens.</li>
+    </ol>
+
+    <hr>
+
+    <h2>Purpose</h2>
+    <p>The Toolkit supports scientists and practitioners in translating NASA Earth observation (EO) data and capabilities into solutions that respond directly to user needs and decision contexts. It complements NASA's <em>Earth Science Applications Guidebook</em> by providing a deeper, practical approach to implementing co-development in the context of Earth science solutions. The Toolkit is best suited for activities at NASA's <strong><a href="https://carbon.nasa.gov/docs/The%20ARL%20Metric.pdf" title="Application Readiness Levels (ARL)">Application Readiness Levels (ARL)</a> 3 or higher and can maximize impact and sustainability as they reach ARL 9.</strong></p>
+
+    <h2>Audience</h2>
+    <p>The Toolkit is designed for Earth scientists and practitioners of all career levels seeking to strengthen stakeholder engagement, expand the impact of applied research, and adopt participatory approaches, strengthen stakeholder alignment, and ensure that EO applications translate into measurable outcomes.</p>
+
+    <h2>How to Use This Toolkit</h2>
+    <p>The Solution Co-Development Toolkit is organized around <strong>four interconnected phases of co-development</strong>, each with clear objectives, activities, and outputs. Together, these phases provide a coherent logic for moving from an initial understanding of user needs to the delivery of sustained, real-world impact (see Fig. 1). Each phase builds on the insights and outcomes of the previous one, while allowing for iteration as understanding deepens and conditions evolve. At the same time, the Toolkit is intentionally flexible: teams may follow the phases sequentially or selectively apply individual tools based on their goals, timelines, capacities, and resource constraints.</p>
+
+    <p>Co-development unfolds across the full lifecycle of solution development:</p>
+
+    <p><strong>Phase 1—Assessment of Stakeholder Needs</strong> focuses on identifying who the users are, how decisions are made, and where EO data can add value. Through stakeholder mapping, needs assessments, and information flow analysis, this phase establishes clear, user-centered problem statements and opportunities for impact. During this phase the solution moves from an initial concept of a need or opportunity to a clearly defined, stakeholder-validated problem statement.</p>
+
+    <p><strong>Phase 2—Solution Co-Design</strong> brings scientists and stakeholders together to collaboratively design solutions, translating identified needs into technical requirements, implementation pathways, success metrics, and sustainability strategies, while explicitly foregrounding ethical and responsible use. During this phase, the solution team translates validated needs and opportunities into well-defined, user-centered solution concepts.</p>
+
+    <p><strong>Phase 3—Technical Prototyping and Co-Development</strong> transforms designs into needs-driven solutions through iterative development, user testing, training, and refinement, ensuring solutions are usable, trustworthy, and aligned with real-world workflows. In Phase 3, solution teams build, pilot, and iteratively test solutions to ensure they function as intended and meet user needs.</p>
+
+    <p><strong>Phase 4—Transition and Impact Assessment</strong> supports adoption and handoff, documents evidence of use and impact, and identifies opportunities for scaling, adaptation, or replication. Phase 4 is when solution teams ensure sustainability, capture lessons learned, and plan for scalability, informing future modifications to a project.</p>
+
+    <div style="text-align: center">
+        <img src="{%  static 'images/fig_1.png'  %}" alt="Co-Development Phases" style="max-width: 600px;" >
+    </div>
+    <p class="fig-caption">Fig. 1. Phases of Co-Development and key activities for each phase</p>
+
+    <h2>Foundational Tools</h2>
+    <p>Across all four phases, the Toolkit is supported by a <strong>set of foundational guidance tools</strong>. These tools apply throughout the lifecycle, informing key decisions at multiple points rather than belonging to any single phase.</p>
+    <p>The foundational guidance tools include:</p>
+    <ul>
+        <li><strong>Designing &amp; Monitoring for Impact</strong>, which introduces core concepts for defining goals, usability, effectiveness, and value, ensuring teams design for outcomes and impact—not just outputs—from the outset.</li>
+        <li><strong>Economic Impact Assessment Guidance</strong>, which supports the scoping, estimation, and monitoring of economic impacts across the solution lifecycle, from early projections to endline evaluation.</li>
+    </ul>
+    <p>Teams are encouraged to engage these foundational tools early and return to them at key decision points across all phases.</p>
+
+    <hr>
+
+    <h2>Co-Development Phases and the Associated Tools</h2>
+
+    <h3>Phase 1: Assessment of Stakeholder Needs and Potential Impact</h3>
+    <p>During Phase 1, solution teams identify relevant stakeholders, assess decision needs and constraints, and trace how information currently flows from data to decisions. These insights are used to define the problem and opportunities for impact—including anticipated economic impacts–which is then validated with stakeholders.</p>
+
+    <h4>Core Phase 1 Tools</h4>
+    <ul>
+        <li><em>Stakeholder Mapping Tool</em> — Identifies users, decision-makers, and intermediaries; clarifies roles, influence, and relationships.</li>
+        <li><em>Needs Assessment Tool</em> — Captures user priorities, challenges, and decision contexts to define actionable needs.</li>
+        <li><em>Information Flow Analysis</em> — Maps how information moves from data to decisions to identify gaps, bottlenecks, and opportunities for EO use.</li>
+    </ul>
+
+    <h4>Foundational Tools Referenced</h4>
+    <ul>
+        <li><em>Designing &amp; Monitoring for Impact</em></li>
+        <li><em>User-Centered Design Guidance</em></li>
+        <li><em>Economic Impact Assessment Guidance</em></li>
+    </ul>
+
+    <p><strong>Note:</strong> During Phase 1, teams should also be proactive in considering information security and (if applicable) best practices for responsible use of artificial intelligence (AI). Further information and links to NASA resources are included at the end of this document.</p>
+
+    <div class="workflow-box">
+        <div class="wf-label">Phase 1 Workflow Steps</div>
+        <ol>
+            <li>Initial concept of need or opportunity</li>
+            <li>Map stakeholders</li>
+            <li>Assess stakeholder needs, constraints, and priorities</li>
+            <li>Trace current data → decision pathways</li>
+            <li>Define the problem and opportunity for impact, including relevant economic impacts</li>
+            <li>Validate findings with stakeholders</li>
+            <li>Consider best practices for information security and responsible use of AI</li>
+        </ol>
+    </div>
+
+    <h3>Phase 2: Solution Co-Design</h3>
+    <p>In Phase 2, solution teams work collaboratively with stakeholders to explore solution options, define functional requirements, and align proposed approaches with decision contexts and constraints. Co-design activities focus on feasibility, usability, and value, ensuring that proposed solutions are grounded in real decision environments and informed by earlier assessments of economic and ethical considerations.</p>
+
+    <h4>Core Phase 2 Tools</h4>
+    <ul>
+        <li><em>User-Centered Design Tool</em> — Translates stakeholder-validated decision contexts and constraints into workflows, interaction logic, and system architecture, ensuring solutions perform effectively at the point of decision.</li>
+        <li><em>Technical Requirements Template</em> — Converts validated needs into system specification.</li>
+        <li><em>Solution Implementation and Impact Monitoring Plan</em> — Defines activities, timelines, roles, risks, and partnerships and establishes how performance and outcomes will be tracked.</li>
+        <li><em>Data Governance and Storage Plan</em> — Specifies data acquisition, processing, governance, storage, and sharing.</li>
+        <li><em>Solutions Adoption &amp; Sustainability Plan</em> — Identifies long-term ownership, resourcing, and institutional arrangements.</li>
+        <li><em>Meaningful Metrics Development</em> — Supports how to develop and use different types of metrics to monitor and measure impact-driven Earth Science solutions, identifying key progress and success metrics.</li>
+    </ul>
+
+    <h4>Secondary Tools (updated as needed)</h4>
+    <ul>
+        <li><em>Stakeholder Mapping Tool</em></li>
+        <li><em>Needs Assessment Tool</em></li>
+        <li><em>Information Flow Analysis</em></li>
+    </ul>
+
+    <h4>Foundational Tools Referenced</h4>
+    <ul>
+        <li><em>Economic Impact Assessment Guidance</em></li>
+    </ul>
+
+    <div class="workflow-box">
+        <div class="wf-label">Phase 2 Workflow Steps</div>
+        <ol>
+            <li>Run co-design meetings and/or workshops with stakeholders</li>
+            <li>Apply user-centered design principles</li>
+            <li>Define solution concept and system interactions</li>
+            <li>Draft technical requirements and architecture</li>
+            <li>Develop implementation plan and partnership model, including impact monitoring metrics and approaches</li>
+        </ol>
+    </div>
+
+    <h3>Phase 3: Technical Prototyping and Co-Development</h3>
+    <p>In Phase 3, teams develop prototypes or pilot implementations, test them with users, refine workflows and interfaces, finalize data governance, and prepare training and documentation. Monitoring approaches established in Phase 2 begin capturing early signals of progress, performance, and impact. Phase 3 ends with a solution ready for transfer to and adoption by user(s).</p>
+
+    <h4>Core Phase 3 Tools</h4>
+    <ul>
+        <li><em>User-Centered Design Tool</em> — Ensures prototypes remain intuitive and responsive to user feedback.</li>
+        <li><em>Data Governance and Storage Plan</em> — Finalized to support secure and interoperable development.</li>
+        <li><em>Solutions Adoption &amp; Sustainability Plan</em> — Refined to assess capacity, skills transfer, and long-term viability.</li>
+    </ul>
+
+    <h4>Secondary Tools (updated as needed)</h4>
+    <ul>
+        <li><em>Technical Requirements Template</em></li>
+        <li><em>Solution Implementation Impact and Monitoring Plan</em></li>
+        <li><em>Information Flow Analysis</em></li>
+        <li><em>Capturing and Communicating Impact</em> (use cases, case studies)</li>
+    </ul>
+
+    <h4>Foundational Tools Referenced</h4>
+    <ul>
+        <li><em>Designing &amp; Monitoring for Impact</em></li>
+        <li><em>Economic Impact Assessment Guidance</em></li>
+        <li><em>Consult resources on Information Security and Responsible Use of AI</em></li>
+    </ul>
+
+    <div class="workflow-box">
+        <div class="wf-label">Phase 3 Workflow Steps</div>
+        <ol>
+            <li>Build initial prototypes or adapt existing tools (as required)</li>
+            <li>Conduct user testing and iterate design</li>
+            <li>Validate user interface, workflows, data inputs/outputs</li>
+            <li>Develop data governance and storage plan</li>
+            <li>Produce training materials and technical documentation</li>
+            <li>Carefully examine information security and AI use risks in prototypes</li>
+            <li>Operationalize the solution</li>
+        </ol>
+    </div>
+
+    <h3>Phase 4: Transition and Impact Assessment</h3>
+    <p>In Phase 4, solutions are deployed and transitioned to institutional partners. Impact evidence is collected, evaluated, and communicated. Teams identify opportunities for replication, scaling, or integration into broader systems.</p>
+
+    <h4>Core Phase 4 Tools</h4>
+    <ul>
+        <li><em>Capturing and Communicating Impact</em> — documents results, lessons, and value for diverse audiences.</li>
+    </ul>
+
+    <h4>Foundational Guidance Applied</h4>
+    <ul>
+        <li><em>Designing &amp; Monitoring for Impact</em></li>
+        <li><em>Economic Impact Assessment Guidance</em></li>
+        <li><em>Consult resources on Information Security and Responsible Use of AI</em></li>
+    </ul>
+
+    <div class="workflow-box">
+        <div class="wf-label">Phase 4 Workflow Steps</div>
+        <ol>
+            <li>Implement sustainability plan and resourcing pathways</li>
+            <li>Carry out adoption of solution by and/or transfer to users</li>
+            <li>Collect and evaluate impact evidence and plan additional efforts to collect impact evidence as determined by the Solution Implementation Impact and Monitoring Plan (SIIMP)</li>
+            <li>Produce impact reports, case studies, and identify knowledge sharing opportunities</li>
+            <li>Identify opportunities for scaling or replicating</li>
+        </ol>
+    </div>
+
+    <hr>
+
+    <h2>A Note on Information Security and Responsible Use of Artificial Intelligence</h2>
+
+    <p>In the application of the tools within the Co-Development Toolkit approach, collection of personal identifiable information (PII) from stakeholders, end users, organizations, etc., is likely. It is mandatory to comply with NASA guidance NPR 1382.1B<sup>1</sup> for the safeguarding of security and individual privacy. Further guidance should be followed from the Office of the Chief Information Officer (OCIO).</p>
+
+    <p>Additionally, policies on the use of artificial intelligence (AI) are informed by the OCIO, and more specifically the NASA Chief Data Officer/Chief AI Officer (OCAIO) and Chief Science Data Officer. NASA has established a governing board within the Agency to serve as a forum for senior leaders to drive AI adoption and governance for NASA. The Artificial Intelligence Strategy Board (AISB) is responsible for defining the vision and strategy for AI, promoting AI adoption and innovation, establishing AI policy and procedural guardrails, identifying AI risk mitigation practices across the Agency, and monitoring NASA compliance with federal guidelines<sup>2</sup>. More specifically, the AISB reviews and approves NASA AI Strategy to harness the mission value of AI while assuring responsible and ethical use. The Board reviews safety and rights impacting AI-use case assessments and waiver procedures and monitors overall AI risk mitigation procedures. For the use and implementation of AI tools including large language models (LLMs) especially in proximity/conjunction with potential PII refer to OCAIO and AISB agency guidance.</p>
+
+    <p>Resources for more information:</p>
+    <ol>
+        <li>National Aeronautics and Space Administration. <em>NPR 1382.1B: NASA Privacy Procedural Requirements — Appendix A: Definitions</em>. 2022. NASA Online Directives Information System, <a href="https://nodis3.gsfc.nasa.gov/displayDir.cfm?Internal_ID=N_PR_1382_001B_&amp;page_name=AppendixA&amp;search_term=PII" target="_blank" rel="noopener">https://nodis3.gsfc.nasa.gov/displayDir.cfm?Internal_ID=N_PR_1382_001B_&amp;page_name=AppendixA&amp;search_term=PII</a></li>
+        <li>National Aeronautics and Space Administration. (2024, September 23). NASA Compliance Plan for OMB Memorandum M-24-10. Retrieved from <a href="https://www.nasa.gov/wp-content/uploads/2024/09/nasa-omb-compliance-plan-20240923.pdf" target="_blank" rel="noopener">https://www.nasa.gov/wp-content/uploads/2024/09/nasa-omb-compliance-plan-20240923.pdf</a></li>
+    </ol>
+
+</div>
+
+    <!-- Section cards -->
+    <div class="home-section-label">Toolkit Sections</div>
+    <div class="section-grid">
+        {% for section in nav_sections %}
+            <a href="{% url section.url_name %}" class="section-card">
+                <div class="card-num">{{ forloop.counter }}</div>
+                <div>
+                    <div class="card-title">{{ section.name }}</div>
+                    {% if section.desc %}
+                        <div class="card-desc">{{ section.desc }}</div>{% endif %}
+                </div>
+            </a>
+        {% endfor %}
+    </div>
 {% endblock %}

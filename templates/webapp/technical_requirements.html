@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Technical Requirements Template — Solution Co-Development Toolkit{% endblock %}
 {% block content %}
 <style>
@@ -135,7 +136,7 @@
 </style>
 
 <div class="page-header">
-    <div class="section-tag">Section 9</div>
+    <div class="section-tag">Section 8</div>
     <h1>Technical Requirements Template</h1>
 </div>
 
@@ -150,39 +151,8 @@
 <div class="subsection">
     <h2>How and When to Use This Template:</h2>
 
-    <div class="phases-grid">
-        <div class="phase-card phase-1">
-            <h4>Phase 1: Assessing Needs &amp; Potential Impact</h4>
-            <ul>
-                <li>Identify stakeholders</li>
-                <li>Assess user needs, constraint, and decision context</li>
-                <li>Define problem and opportunity for impact</li>
-            </ul>
-        </div>
-        <div class="phase-card phase-2">
-            <h4>Phase 2: Solution Co-Design</h4>
-            <ul>
-                <li>Co-design solution concepts</li>
-                <li>Define requirements and success metrics</li>
-                <li>Plan implementation and sustainability</li>
-            </ul>
-        </div>
-        <div class="phase-card phase-3">
-            <h4>Phase 3: Prototyping and Co-Development</h4>
-            <ul>
-                <li>Build and test prototypes</li>
-                <li>Conduct user testing and iteration</li>
-                <li>Prepare data, workflows, and trainings</li>
-            </ul>
-        </div>
-        <div class="phase-card phase-4">
-            <h4>Phase 4: Transition and Impact Assessment</h4>
-            <ul>
-                <li>Deploy and transition ownership</li>
-                <li>Collect evidence of use and impact</li>
-                <li>Plan for scaling, replication, and long-term uptake</li>
-            </ul>
-        </div>
+    <div style="text-align: center;">
+        <img src="{%  static 'images/fig_14.png'  %}" alt="How and when" style="max-width: 600px;" >
     </div>
 
     <p>This template is used at the beginning of Phase 2 of the co-development framework once a solution team starts designing the solution. Referencing the Stakeholder mapping, Needs Assessment, and the Design for Impact tools provides understanding of the needs and the objectives of the solution, it documents who the stakeholders are, the beneficiaries and the deliverables.</p>

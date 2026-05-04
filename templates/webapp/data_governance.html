@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Data Governance and Storage Plan — Solution Co-Development Toolkit{% endblock %}
 {% block content %}
 <style>
@@ -150,7 +151,7 @@
 </style>
 
 <div class="page-header">
-    <div class="section-tag">Section 10</div>
+    <div class="section-tag">Section 9</div>
     <h1>Data Governance and Storage Plan</h1>
 </div>
 
@@ -163,42 +164,11 @@
 <div class="subsection">
     <h2>How and When to Use This Tool:</h2>
 
-    <div class="phases-grid">
-        <div class="phase-card phase-1">
-            <h4>Phase 1: Assessing Needs &amp; Potential Impact</h4>
-            <ul>
-                <li>Identify stakeholders</li>
-                <li>Assess user needs, constraint, and decision context</li>
-                <li>Define problem and opportunity for impact</li>
-            </ul>
-        </div>
-        <div class="phase-card phase-2">
-            <h4>Phase 2: Solution Co-Design</h4>
-            <ul>
-                <li>Co-design solution concepts</li>
-                <li>Define requirements and success metrics</li>
-                <li>Plan implementation and sustainability</li>
-            </ul>
-        </div>
-        <div class="phase-card phase-3">
-            <h4>Phase 3: Prototyping and Co-Development</h4>
-            <ul>
-                <li>Build and test prototypes</li>
-                <li>Conduct user testing and iteration</li>
-                <li>Prepare data, workflows, and trainings</li>
-            </ul>
-        </div>
-        <div class="phase-card phase-4">
-            <h4>Phase 4: Transition and Impact Assessment</h4>
-            <ul>
-                <li>Deploy and transition ownership</li>
-                <li>Collect evidence of use and impact</li>
-                <li>Plan for scaling, replication, and long-term uptake</li>
-            </ul>
-        </div>
+   <div style="text-align: center;">
+        <img src="{%  static 'images/fig_13.png'  %}" alt="How and when" style="max-width: 600px;" >
     </div>
 
-    <p>The Data Governance and Storage Plan is used in the beginning of Phase 2, as soon as stakeholders begin making decisions on co-development and approaches to be used in solution design. This plan is used alongside the Technical Requirements Plan and the Solution Implementation and Impact Monitoring Plan</p>
+    <p>The Data Governance and Storage Plan is used in the beginning of Phase 2, as soon as stakeholders begin making decisions on co-development and approaches to be used in solution design. This plan is used alongside the <a href="{% url 'webapp:technical_requirements' %}">Technical Requirements Plan</a> and the <a href="{% url 'webapp:implementation_monitoring' %}">Solution Implementation and Impact Monitoring Plan</a></p>
     <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 77</p>
 </div>
 
@@ -247,7 +217,7 @@
 
         <div class="data-item">
             <h4>1.1.4 Personally Identifiable Information (PII) &amp; Sensitive Data</h4>
-            <p>Refer to the PII guidance, including data security and redacting PII information, provided in the Solution Co-Developments in Practice document. Everyone has the responsibility to protect PII in any form (physical or electronic) from unauthorized disclosure, modification, or destruction in order to ensure its confidentiality, integrity, and availability. PII data should only be destroyed in accordance with NASA Records Retention Schedules. PII that is no longer needed should be destroyed in order to reduce risk to NASA. NASA CUI Destruction requirements can be found in NPR 2810.7. Additional guidance is provided through NASA Records Management.</p>
+            <p>Refer to the PII guidance, including data security and redacting PII information, provided in the Solution Co-Developments in Practice document. Everyone has the responsibility to protect PII in any form (physical or electronic) from unauthorized disclosure, modification, or destruction in order to ensure its confidentiality, integrity, and availability. PII data should only be destroyed in accordance with <a href="https://nodis3.gsfc.nasa.gov/NPR_attachments/NRRS_1441.1_03122025.pdf">NASA Records Retention Schedules</a>. PII that is no longer needed should be destroyed in order to reduce risk to NASA. NASA CUI Destruction requirements can be found in NPR 2810.7. Additional guidance is provided through <a href="https://www.nasa.gov/nasa-records-management/">NASA Records Management</a>.</p>
             <p>Sensitive data, such as data on location on sensitive assets such as Wildlife, Military Assets, Refuge locations, should be treated with data security levels provided by International Traffic in Arms Regulations (ITAR) and the Export Administration Regulations (EAR).</p>
         </div>
 

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Economic Impact Assessments — Solution Co-Development Toolkit{% endblock %}
 {% block content %}
 <style>
@@ -175,7 +176,7 @@
 </style>
 
 <div class="page-header">
-    <div class="section-tag">Section 4</div>
+    <div class="section-tag">Section 3</div>
     <h1>Economic Impact Assessments</h1>
 </div>
 
@@ -187,39 +188,8 @@
 
 <div class="subsection">
     <h2>How and When to Use This Tool:</h2>
-    <div class="phases-grid">
-        <div class="phase-card phase-1">
-            <h4>Phase 1: Assessing Needs &amp; Potential Impact</h4>
-            <ul>
-                <li>Identify stakeholders</li>
-                <li>Assess user needs, constraint, and decision context</li>
-                <li>Define problem and opportunity for impact</li>
-            </ul>
-        </div>
-        <div class="phase-card phase-2">
-            <h4>Phase 2: Solution Co-Design</h4>
-            <ul>
-                <li>Co-design solution concepts</li>
-                <li>Define requirements and success metrics</li>
-                <li>Plan implementation and sustainability</li>
-            </ul>
-        </div>
-        <div class="phase-card phase-3">
-            <h4>Phase 3: Prototyping and Co-Development</h4>
-            <ul>
-                <li>Build and test prototypes</li>
-                <li>Conduct user testing and iteration</li>
-                <li>Prepare data, workflows, and trainings</li>
-            </ul>
-        </div>
-        <div class="phase-card phase-4">
-            <h4>Phase 4: Transition and Impact Assessment</h4>
-            <ul>
-                <li>Deploy and transition ownership</li>
-                <li>Collect evidence of use and impact</li>
-                <li>Plan for scaling, replication, and long-term uptake</li>
-            </ul>
-        </div>
+     <div style="text-align: center;">
+        <img src="{%  static 'images/fig_7.png'  %}" alt="How and when" style="max-width: 600px;" >
     </div>
 
     <p>This tool is first used during Phase 1, to ensure necessary aspects are incorporated in needs assessment. It can be considered alongside Designing for Impact. It can continue to be consulted in Phase 2 to ensure approaches for EIA are included in the Solution Implementation Impact and Monitoring Plan (SIIMP), as appropriate. This tool is most useful when consulted early in the solution co-development process, in order to gather baseline information and set expectations with stakeholders regarding future information collection needs. Experience and a difficult lesson already learned by EO scientists and practitioners is that it is nearly impossible to measure economic impacts and value of information if you only think to do so halfway through a project or near a project's end. While the tool can be reviewed, revisited and aspects incorporated into the solution design and delivery during Phase 3 and Phase 4 as appropriate, it can only be truly accurate and effective when integrated at the start of a project or solution.</p>
@@ -312,7 +282,7 @@
     <h2>Approaches to EIA: High Level EIA vs. In-Depth EIA</h2>
 
     <h3>High Level Valuation:</h3>
-    <p>This is a broader look at the value chain. The steps are aligned with Designing for Impact. It defines where the benefits are happening and who the beneficiaries are but will use estimates and anecdotal evidence rather than a deep statistical model. The goal of a higher level EIA is to establish a value proposition to justify if it's worth a deeper look. High level valuation aligns with proving VOI and attributing downstream success but at a very macro level.</p>
+    <p>This is a broader look at the value chain. The steps are aligned with <a href="{% url 'webapp:designing_for_impact' %}">Designing for Impact</a>. It defines where the benefits are happening and who the beneficiaries are but will use estimates and anecdotal evidence rather than a deep statistical model. The goal of a higher level EIA is to establish a value proposition to justify if it's worth a deeper look. High level valuation aligns with proving VOI and attributing downstream success but at a very macro level.</p>
 
     <h4><em>Information Required:</em></h4>
     <ul class="info-list">
@@ -423,8 +393,8 @@
 
     <p>For detailed information on methods:</p>
     <ol class="references-list">
-        <li>Basu, R., Anderson, E., Cherrington, E., Deval, C., Guragai, S., Herndon, K., ... &amp; Sirichaovanichkarn, E. (2025). Using economic methods to assess impacts of earth observation-based services: Why and how?. <em>Environmental Impact Assessment Review</em>, 115, 107975.</li>
-        <li>Basu, R., Anderson, E., Deval, C., Herndon, K., Markert, A., Pransky, L., ... &amp; Sayeed, A. (2024). Serving economic prosperity: economic impact assessments (EIA) on Earth observation-based services and tools by SERVIR. <em>arXiv preprint</em> arXiv:2405.15672.</li>
+        <li><a href="https://www.sciencedirect.com/science/article/pii/S0195925525001726?via%3Dihub">Basu, R., Anderson, E., Cherrington, E., Deval, C., Guragai, S., Herndon, K., ... &amp; Sirichaovanichkarn, E. (2025). Using economic methods to assess impacts of earth observation-based services: Why and how?. <em>Environmental Impact Assessment Review</em>, 115, 107975.</a></li>
+        <li><a href="https://arxiv.org/abs/2405.15672" target="_blank" rel="noopener">Basu, R., Anderson, E., Deval, C., Herndon, K., Markert, A., Pransky, L., ... &amp; Sayeed, A. (2024). Serving economic prosperity: economic impact assessments (EIA) on Earth observation-based services and tools by SERVIR. <em>arXiv preprint</em> arXiv:2405.15672.</a></li>
     </ol>
 
     <h4><em>Example:</em></h4>
@@ -434,8 +404,8 @@
         <p><strong>The In-Depth EIA:</strong> Agricultural extension officers interview 500 farmers to gather baseline and post-implementation information on production improvement, costs saved, etc. For example, <em>"established from ground level proof that use of soil moisture data led to 12% reduction in water pumping."</em> Economic models are then used to establish the net gain in dollars specific to certain counties or the entire state.</p>
         <p>The data and methods that can be used are more elaborate and in-depth as opposed to a high level EIA. Below are papers that provide in-depth EIAs that use methods that can be applied to the scenario above.</p>
         <ul>
-            <li>Bernknopf, R., Kuwayama, Y., Zaitchik, B., Rodell, M., Getirana, A., Thorstensen, A., &amp; Shahreen, S. (2025). An economic impact assessment of the use of earth observation information in flood hazard communication. <em>Natural Hazards</em>, 121(15), 17913–17933.</li>
-            <li>Pakhtigian, E. L., Aziz, S., Boyle, K. J., Akanda, A. S., &amp; Hanifi, S. M. A. (2024). Early warning systems, mobile technology, and cholera aversion: Evidence from rural Bangladesh. <em>Journal of environmental economics and management</em>, 125, 102966.</li>
+            <li><a href="https://ntrs.nasa.gov/api/citations/20250006450/downloads/NHAZ-D-24-02237_R1.pdf">Bernknopf, R., Kuwayama, Y., Zaitchik, B., Rodell, M., Getirana, A., Thorstensen, A., &amp; Shahreen, S. (2025). An economic impact assessment of the use of earth observation information in flood hazard communication. <em>Natural Hazards</em>, 121(15), 17913–17933.</a></li>
+            <li><a href="https://www.sciencedirect.com/science/article/abs/pii/S0095069624000408">Pakhtigian, E. L., Aziz, S., Boyle, K. J., Akanda, A. S., &amp; Hanifi, S. M. A. (2024). Early warning systems, mobile technology, and cholera aversion: Evidence from rural Bangladesh. <em>Journal of environmental economics and management</em>, 125, 102966.</a></li>
         </ul>
     </div>
     <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 38–39</p>

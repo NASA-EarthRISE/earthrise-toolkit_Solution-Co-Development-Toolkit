@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Designing for Impact — Solution Co-Development Toolkit{% endblock %}
 {% block content %}
 <style>
@@ -194,7 +195,7 @@
 </style>
 
 <div class="page-header">
-    <div class="section-tag">Section 2</div>
+    <div class="section-tag">Section 1</div>
     <h1>Designing for Impact: <span style="font-weight:400;color:#4a4a6a;">An Overview for Earth Science to Action</span></h1>
 </div>
 
@@ -205,39 +206,40 @@
 
     <h2>How and When to Use This Tool:</h2>
 
-    <div class="phases-grid">
-        <div class="phase-card phase-1">
-            <div class="phase-title">Phase 1:<br>Assessing Needs &amp; Potential Impact</div>
-            <ul>
-                <li>Identify stakeholders</li>
-                <li>Assess user needs, constraint, and decision context</li>
-                <li>Define problem and opportunity for impact</li>
-            </ul>
-        </div>
-        <div class="phase-card phase-2">
-            <div class="phase-title">Phase 2:<br>Solution Co-Design</div>
-            <ul>
-                <li>Co-design solution concepts</li>
-                <li>Define requirements and success metrics</li>
-                <li>Plan implementation and sustainability</li>
-            </ul>
-        </div>
-        <div class="phase-card phase-3">
-            <div class="phase-title">Phase 3:<br>Prototyping and Co-Development</div>
-            <ul>
-                <li>Build and test prototypes</li>
-                <li>Conduct user testing and iteration</li>
-                <li>Prepare data, workflows, and trainings</li>
-            </ul>
-        </div>
-        <div class="phase-card phase-4">
-            <div class="phase-title">Phase 4:<br>Transition and Impact Assessment</div>
-            <ul>
-                <li>Deploy and transition ownership</li>
-                <li>Collect evidence of use and impact</li>
-                <li>Plan for scaling, replication, and long-term uptake</li>
-            </ul>
-        </div>
+    <div style="text-align: center">
+{#        <div class="phase-card phase-1">#}
+{#            <div class="phase-title">Phase 1:<br>Assessing Needs &amp; Potential Impact</div>#}
+{#            <ul>#}
+{#                <li>Identify stakeholders</li>#}
+{#                <li>Assess user needs, constraint, and decision context</li>#}
+{#                <li>Define problem and opportunity for impact</li>#}
+{#            </ul>#}
+{#        </div>#}
+{#        <div class="phase-card phase-2">#}
+{#            <div class="phase-title">Phase 2:<br>Solution Co-Design</div>#}
+{#            <ul>#}
+{#                <li>Co-design solution concepts</li>#}
+{#                <li>Define requirements and success metrics</li>#}
+{#                <li>Plan implementation and sustainability</li>#}
+{#            </ul>#}
+{#        </div>#}
+{#        <div class="phase-card phase-3">#}
+{#            <div class="phase-title">Phase 3:<br>Prototyping and Co-Development</div>#}
+{#            <ul>#}
+{#                <li>Build and test prototypes</li>#}
+{#                <li>Conduct user testing and iteration</li>#}
+{#                <li>Prepare data, workflows, and trainings</li>#}
+{#            </ul>#}
+{#        </div>#}
+{#        <div class="phase-card phase-4">#}
+{#            <div class="phase-title">Phase 4:<br>Transition and Impact Assessment</div>#}
+{#            <ul>#}
+{#                <li>Deploy and transition ownership</li>#}
+{#                <li>Collect evidence of use and impact</li>#}
+{#                <li>Plan for scaling, replication, and long-term uptake</li>#}
+{#            </ul>#}
+{#        </div>#}
+        <img src="{%  static 'images/fig_2.png'  %}" alt="Co-Development Phases" style="max-width: 600px;" >
     </div>
 
     <p>This tool is used throughout an applied Earth science project, especially when the goal is to inform decisions, take action, or generate societal benefit. It is first used during Phase 1 of the Solution Co-Development Toolkit when planning to co-develop solutions with users, partners, or stakeholders, but it can and should also be used during project implementation to strengthen or redirect ongoing solution development toward clearer, more achievable pathways to impact. It can be referenced throughout the process to ensure all parts of the co-development process align around the same goals.</p>
@@ -259,7 +261,7 @@
 
     <p><em>Impact answers why this work matters.</em> It goes beyond technical performance, such as more accurate long-range forecasts, to capture how those improvements make processes more efficient, improve decisions, and ultimately influence lives, livelihoods, and economies. For example, if forecasts become more accurate, then trusted evacuation warnings can be issued to the correct locations, leading to saved lives and resources.</p>
 
-    <p>In Earth science, impact is not automatically achieved when an application becomes operational, as measured by NASA's Application Readiness Level (ARL) 8 or even ARL 9 when the solution is integrated into the user's decision-making. <em>Impact occurs only when the solution is used and actions are taken that lead to positive, real-world change.</em></p>
+    <p>In Earth science, impact is not automatically achieved when an application becomes operational, as measured by <a href="https://carbon.nasa.gov/docs/The%20ARL%20Metric.pdf" target="_blank" rel="noopener">NASA's Application Readiness Level</a> (ARL) 8 or even ARL 9 when the solution is integrated into the user's decision-making. <em>Impact occurs only when the solution is used and actions are taken that lead to positive, real-world change.</em></p>
 
     <p>Returning to our example, <strong>IF</strong> insurance companies have access to satellite data and models indicating conditions likely to produce large hail, and high resolution imaging of hail damage, <strong>THEN</strong> farmers will be able to submit claims to the insurance companies knowing that the process to review these claims will be more reliable and timely, payouts will be received more quickly than previously, and <strong>THEN</strong> the farmers will be able to replant a crop early enough to see a good harvest and returns on investment.</p>
 
@@ -352,25 +354,7 @@
 
     <!-- Fig. 1: Results framework pyramid diagram -->
     <div class="results-pyramid">
-        <div class="pyramid-level lvl-impacts">
-            <div class="level-title">IMPACTS</div>
-            <div class="level-desc">Real-world improvements (e.g., reduced flood risk)</div>
-        </div>
-        <span style="font-size:1.4rem;color:#0b3d91;line-height:1;">↑</span>
-        <div class="pyramid-level lvl-outcomes">
-            <div class="level-title">OUTCOMES</div>
-            <div class="level-desc">User decisions &amp; actions, data use, increased capacity</div>
-        </div>
-        <span style="font-size:1.4rem;color:#0b3d91;line-height:1;">↑</span>
-        <div class="pyramid-level lvl-outputs">
-            <div class="level-title">OUTPUTS</div>
-            <div class="level-desc">Tools, models, dashboards, reports</div>
-        </div>
-        <span style="font-size:1.4rem;color:#0b3d91;line-height:1;">↑</span>
-        <div class="pyramid-level lvl-inputs">
-            <div class="level-title">INPUTS</div>
-            <div class="level-desc">Resources, activities, co-designs, data wrangling</div>
-        </div>
+        <img src="{%  static 'images/fig_3.png'  %}" alt="Results Framework Pyramid" style="max-width: 600px;" >
     </div>
     <p class="fig-caption" style="text-align:center;">Fig. 1: Results framework diagram.</p>
 
@@ -398,39 +382,8 @@
     </ul>
 
     <!-- Fig. 2: Logic chain diagram -->
-    <div class="logic-chain">
-        <div class="lc-impact">
-            <div style="font-weight:700;">IMPACT</div>
-            <div class="lc-sub">More effective disaster relief efforts, reduced economic losses, and greater overall drought resilience</div>
-        </div>
-        <div class="lc-arrow-row">↑ &nbsp; ↑ &nbsp; ↑</div>
-        <div class="lc-outcomes-row">
-            <div class="lc-outcome">
-                OUTCOME
-                <div class="lc-sub">Improved prediction and classification of severe drought</div>
-            </div>
-            <div class="lc-outcome">
-                OUTCOME
-                <div class="lc-sub">More efficient and accurate process for drought assessment</div>
-            </div>
-            <div class="lc-outcome">
-                OUTCOME
-                <div class="lc-sub">Users adopt land surface modeling system</div>
-            </div>
-        </div>
-        <div class="lc-arrow-row">↑ &nbsp; ↑</div>
-        <div class="lc-outputs-row">
-            <div class="lc-output">
-                OUTPUT
-                <div class="lc-sub">Produce soil moisture estimates at multiple depths across the country</div>
-            </div>
-            <div class="lc-output">
-                OUTPUT
-                <div class="lc-sub">Develop a land surface modeling system for the US</div>
-            </div>
-        </div>
-        <div class="lc-arrow-row">↑</div>
-        <div class="lc-inputs">INPUTS</div>
+    <div style="text-align:center;">
+        <img src="{%  static 'images/fig_4.png'  %}" alt="Results Framework Logic Chain" style="max-width: 600px;" >
     </div>
     <p class="fig-caption" style="text-align:center;">Fig. 2: Examples of a results framework depiction of logic chain:</p>
 
@@ -455,8 +408,8 @@
     <p>Each step draws directly on tools throughout this Toolkit: Stakeholder Mapping, Needs Assessment, Solution Implementation Plan, Information Chain Analysis, Solution Implementation and Impact Monitoring Plan, etc).</p>
 
     <div class="resource-box">
-        <p>Fillable Results Narrative and Sample Results Narrative</p>
-        <p>Fillable Results Framework and Sample Results Framework</p>
+        <p><a href="https://docs.google.com/document/d/10CsxBj6OPVhqANu8ltliY5KabnHfHCTDNJAqW4ZA1no/edit?tab=t.0#heading=h.ngk0rbfnvjcg">Fillable Results Narrative</a> and <a href="https://docs.google.com/document/d/1zel3fDal1obW_l7Sf5bz_n2qdL7f8znVuDXFMrWTzsg/edit?tab=t.0#heading=h.jnfhlm8qcd0a">Sample Results Narrative</a></p>
+        <p><a href="https://docs.google.com/presentation/d/1LY2tE5McwaIL48I5LAu-AV9ANFbLD0qh/edit?slide=id.p1#slide=id.p1">Fillable Results Framework Sample Results Framework</a></p>
     </div>
 
     <div class="step-box">

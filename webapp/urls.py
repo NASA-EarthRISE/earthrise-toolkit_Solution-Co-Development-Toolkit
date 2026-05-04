@@ -18,4 +18,5 @@ urlpatterns = [
     path('implementation-monitoring/', views.implementation_monitoring, name='implementation_monitoring'),
     path('adoption-sustainability/', views.adoption_sustainability, name='adoption_sustainability'),
     path('meaningful-metrics/', views.meaningful_metrics, name='meaningful_metrics'),
+    path('authors-and-contributors/', views.authors, name='authors'),
 ]

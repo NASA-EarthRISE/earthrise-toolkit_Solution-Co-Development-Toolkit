@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Information Chain Analysis — Solution Co-Development Toolkit{% endblock %}
 {% block content %}
 <style>
@@ -313,7 +314,7 @@
 </style>
 
 <div class="page-header">
-    <div class="section-tag">Section 7</div>
+    <div class="section-tag">Section 6</div>
     <h1>Information Chain Analysis</h1>
 </div>
 
@@ -341,39 +342,8 @@
     <h2>How and When to Use This Tool:</h2>
     <p>An ICA can be started during Phase 1 after stakeholder mapping and needs assessment are completed. During this phase, the ICA helps to sharpen understanding of stakeholder needs and constraints to help teams better understand practical limitations and opportunities for impact. However, consulting an ICA is useful throughout the lifecycle of a project, as outlined in the following table.</p>
 
-    <div class="phases-grid">
-        <div class="phase-card phase-1">
-            <h4>Phase 1: Assessing Needs &amp; Potential Impact</h4>
-            <ul>
-                <li>Identify stakeholders</li>
-                <li>Assess user needs, constraint, and decision context</li>
-                <li>Define problem and opportunity for impact</li>
-            </ul>
-        </div>
-        <div class="phase-card phase-2">
-            <h4>Phase 2: Solution Co-Design</h4>
-            <ul>
-                <li>Co-design solution concepts</li>
-                <li>Define requirements and success metrics</li>
-                <li>Plan implementation and sustainability</li>
-            </ul>
-        </div>
-        <div class="phase-card phase-3">
-            <h4>Phase 3: Prototyping and Co-Development</h4>
-            <ul>
-                <li>Build and test prototypes</li>
-                <li>Conduct user testing and iteration</li>
-                <li>Prepare data, workflows, and trainings</li>
-            </ul>
-        </div>
-        <div class="phase-card phase-4">
-            <h4>Phase 4: Transition and Impact Assessment</h4>
-            <ul>
-                <li>Deploy and transition ownership</li>
-                <li>Collect evidence of use and impact</li>
-                <li>Plan for scaling, replication, and long-term uptake</li>
-            </ul>
-        </div>
+    <div style="text-align: center;">
+        <img src="{%  static 'images/fig_10.png'  %}" alt="How and when" style="max-width: 600px;" >
     </div>
 
     <table class="lifecycle-table">
@@ -492,56 +462,21 @@
     <p>Importantly, ICA does not assume that all links function equally well. A decision pathway may be technically sound overall but still fail because of one or two critical weak links. By making chain links explicit, ICA enables targeted design and delivery actions focused on the points where intervention will have the greatest impact.</p>
 
     <!-- Fig 1 -->
-    <p><strong>PATHWAY TO DECISION A</strong></p>
-    <div class="chain-diagram">
-        <div class="chain-wrapper">
-            <div class="chain-link">Chain Link 1<br>Data &amp; Inputs</div>
-        </div>
-        <div class="chain-arrow">→</div>
-        <div class="chain-wrapper">
-            <div class="chain-link">Chain Link 2<br>Analysis &amp; Translation</div>
-        </div>
-        <div class="chain-arrow">→</div>
-        <div class="chain-wrapper">
-            <div class="chain-link">Chain Link 3<br>Packaging &amp; Channel</div>
-        </div>
-        <div class="chain-arrow">→</div>
-        <div class="chain-wrapper">
-            <div class="chain-link">Chain Link 4<br>Decision &amp; Action</div>
-        </div>
+
+    <div style="text-align: center;">
+        <img src="{%  static 'images/fig_11.png'  %}" alt="How and when" style="max-width: 600px;" >
     </div>
     <p class="fig-caption">Each box is a chain link in the decision-making process—a specific hand-off or transformation of the data that leads to the decision.<br><em>Fig. 1 Illustration of chain links constituting a decision pathway</em></p>
     <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 61</p>
 
     <!-- Fig 2 -->
-    <div class="ica-system">
-        <h5>Comprehensive Information System (emerges over time)</h5>
-        <div class="ica-rows">
-            <div class="ica-row">
-                <span class="ica-label">ICA 1</span>
-                <span class="ica-arrow">→</span>
-                <span class="ica-decision">Decision A</span>
-                <span class="ica-arrow">→</span>
-                <span class="ica-pathway">Decision Pathway (chain links)</span>
-            </div>
-            <div class="ica-row">
-                <span class="ica-label">ICA 2</span>
-                <span class="ica-arrow">→</span>
-                <span class="ica-decision">Decision B</span>
-                <span class="ica-arrow">→</span>
-                <span class="ica-pathway">Decision Pathway (chain links)</span>
-            </div>
-            <div class="ica-row">
-                <span class="ica-label">ICA 3</span>
-                <span class="ica-arrow">→</span>
-                <span class="ica-decision">Decision C</span>
-                <span class="ica-arrow">→</span>
-                <span class="ica-pathway">Decision Pathway (chain links)</span>
-            </div>
-        </div>
+    <div style="text-align: center;">
+    <img src="{%  static 'images/fig_12.png'  %}" alt="Comprehensive Information Chain Analysis" style="max-width: 600px;" >
         <div class="ica-note">Shared actors, channels, bottlenecks identified across ICAs over time<br>
         If an analysis spans multiple decisions, it should be split into multiple ICAs</div>
     </div>
+
+
     <p class="fig-caption"><em>Fig. 2 Visualization of how decisions based on decision pathways lead to a comprehensive information system</em></p>
 </div>
 
@@ -618,8 +553,8 @@
 
 <div class="subsection">
     <h2>ICA in Practice: Conducting an Information Chain Analysis</h2>
-    <p><em>To conduct an ICA, follow the steps outlined in the instructions on this Excel ICA Worksheet</em></p>
-    <p>If you prefer to follow the written steps only, you can reference the step-by-step document.</p>
+    <p><em>To conduct an ICA, follow the steps outlined in the instructions on this <a href="https://docs.google.com/spreadsheets/d/1YaT-YCXNPUeqECTnpKF9_Xj-IQ5JmbAP/edit?gid=1640323216#gid=1640323216">Excel ICA Worksheet</a></em></p>
+    <p>If you prefer to follow the written steps only, you can reference the <a href="https://docs.google.com/document/d/1tgW-T5S_0-QgC6C_Hs40V5S3gSQMRTROOnlhOuRdY0I/edit?usp=drive_web&ouid=117699359864161579268">step-by-step document</a>.</p>
 
     <!-- Step 1 -->
     <div class="step-header">STEP 1: Define and Anchor the ICA to a Decision</div>

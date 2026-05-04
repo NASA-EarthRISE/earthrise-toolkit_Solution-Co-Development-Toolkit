@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,7 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}NASA Earth Action — Solution Co-Development Toolkit{% endblock %}</title>
     <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         :root {
             --nasa-blue: #0b3d91;
@@ -30,16 +35,18 @@
         /* ── Header ── */
         .site-header {
             position: fixed;
-            top: 0; left: 0; right: 0;
+            top: 0;
+            left: 0;
+            right: 0;
             height: var(--header-height);
-            background: var(--nasa-blue);
+            background: #000000;
             color: #fff;
             display: flex;
             align-items: center;
             padding: 0 1.5rem;
             z-index: 100;
             gap: 1rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,.3);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .3);
         }
 
         .site-header .hamburger {
@@ -61,12 +68,7 @@
         }
 
         .site-header .brand-badge {
-            background: var(--nasa-red);
-            font-weight: 900;
-            font-size: 0.85rem;
-            letter-spacing: 0.05em;
             padding: 0.2rem 0.5rem;
-            border-radius: 3px;
         }
 
         .site-header .brand-title {
@@ -79,6 +81,34 @@
             font-size: 0.7rem;
             opacity: 0.8;
             font-weight: 400;
+        }
+
+        .header-nav {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .header-nav a {
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            font-size: 0.82rem;
+            font-weight: 500;
+            padding: 0.4rem 0.85rem;
+            border-radius: 4px;
+            transition: background 0.15s, color 0.15s;
+            white-space: nowrap;
+        }
+
+        .header-nav a:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+        }
+
+        .header-nav a.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
         }
 
         /* ── Layout ── */
@@ -165,7 +195,7 @@
             margin-left: var(--sidebar-width);
             flex: 1;
             padding: 2.5rem 3rem;
-            max-width: 960px;
+        {#max-width: 960px;#}
         }
 
         .page-header {
@@ -198,12 +228,70 @@
             color: var(--text-secondary);
         }
 
+        .tk-body {
+            font-size: 0.95rem;
+            line-height: 1.75;
+            color: #1a1a2e;
+        }
+
+        .tk-body h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0b3d91;
+            margin: 2.25rem 0 0.6rem;
+        }
+
+        .tk-body h3 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #0b3d91;
+            margin: 1.75rem 0 0.5rem;
+        }
+
+        .tk-body h4 {
+            font-size: 0.95rem;
+            font-style: italic;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin: 1.4rem 0 0.4rem;
+        }
+
+        .tk-body p {
+            margin-bottom: 1rem;
+        }
+
+        .tk-body ul, .tk-body ol {
+            margin: 0.5rem 0 1rem 1.5rem;
+        }
+
+        .tk-body li {
+            margin-bottom: 0.4rem;
+        }
+
+        .tk-body hr {
+            border: none;
+            border-top: 1px solid #d0d7e3;
+            margin: 2rem 0;
+        }
+
         /* ── Responsive ── */
         @media (max-width: 768px) {
-            .site-header .hamburger { display: block; }
-            .sidebar { transform: translateX(-100%); }
-            .sidebar.open { transform: translateX(0); }
-            .main-content { margin-left: 0; padding: 1.5rem 1.25rem; }
+            .site-header .hamburger {
+                display: block;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1.5rem 1.25rem;
+            }
         }
     </style>
 </head>
@@ -212,12 +300,16 @@
 <header class="site-header">
     <button class="hamburger" id="menuToggle" aria-label="Toggle navigation">&#9776;</button>
     <a href="{% url 'webapp:home' %}" class="brand">
-        <span class="brand-badge">NASA</span>
+        <span class="brand-badge"><img src="{% static 'images/nasa-logo.svg' %}" alt="NASA Logo" width="60"
+                                       height="50.58"></span>
         <span>
             <div class="brand-title">Solution Co-Development Toolkit</div>
             <div class="brand-subtitle">NASA Earth Action &mdash; Marshall Space Flight Center</div>
         </span>
     </a>
+    <nav class="header-nav">
+        <a href="{% url 'webapp:authors' %}" class="{% if active_slug == 'authors' %}active{% endif %}">Authors &amp; Contributors</a>
+    </nav>
 </header>
 
 <div class="layout">
@@ -226,11 +318,11 @@
             <div class="sidebar-label">Toolkit Sections</div>
             <nav>
                 {% for section in nav_sections %}
-                <a href="{% url section.url_name %}"
-                   class="{% if section.slug == active_slug %}active{% endif %}">
-                    <span class="step-num">{{ forloop.counter }}</span>
-                    {{ section.name }}
-                </a>
+                    <a href="{% url section.url_name %}"
+                       class="{% if section.slug == active_slug %}active{% endif %}">
+                        <span class="step-num">{{ forloop.counter }}</span>
+                        {{ section.name }}
+                    </a>
                 {% endfor %}
             </nav>
         </div>
