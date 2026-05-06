@@ -178,4 +178,4 @@ python manage.py test webapp     # Run test suite
 ## License and Distribution
 
 SSolution-Co-Development-Toolkit is distributed by EarthRISE under the terms of the MIT License. See
-[LICENSE](https://github.com/NASA-EarthRISE/Solution-Co-Development-Toolkit/blob/master/LICENSE) in this directory for more information.
+[LICENSE](https://github.com/NASA-EarthRISE/Solution-Co-Development-Toolkit/blob/main/LICENSE) in this directory for more information.
