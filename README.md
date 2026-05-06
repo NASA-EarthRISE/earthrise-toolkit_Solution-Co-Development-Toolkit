@@ -100,6 +100,8 @@ pip install -r requirements.txt
 Create a `.env` file (or export directly) with:
 ```env
 OPENAI_API_KEY=sk-...
+OPENAI_BASE_URL=https://....
+MODEL=gemini-2.5-pro
 SECRET_KEY=<django-secret-key>
 DEBUG=True
 ```
@@ -164,14 +166,16 @@ python manage.py test webapp     # Run test suite
 
 ## Environment variables
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `OPENAI_API_KEY` | Yes | API key for OpenAI chat completions |
-| `SECRET_KEY` | Yes | Django secret key |
+| Variable | Required | Description                                    |
+|----------|----------|------------------------------------------------|
+| `OPENAI_API_KEY` | Yes | API key for OpenAI chat completions            |
+| `OPENAI_BASE_URL` | Yes | Base URL for OpenAI chat completions           |
+| `SECRET_KEY` | Yes | Django secret key                              |
 | `DEBUG` | No | `True` for development, `False` for production |
 
 ---
 
-## License
+## License and Distribution
 
-**TODO:** Specify license. No LICENSE file present in repository.
+SSolution-Co-Development-Toolkit is distributed by EarthRISE under the terms of the MIT License. See
+[LICENSE](https://github.com/NASA-EarthRISE/Solution-Co-Development-Toolkit/blob/master/LICENSE) in this directory for more information.
