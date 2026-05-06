@@ -60,7 +60,7 @@
     }
     .phase-table tr:nth-child(odd) td { background: #f5f8fc; }
     .phase-table tr:nth-child(even) td { background: #fff; }
-    .phase-table td:first-child { font-weight: 600; color: #0b3d91; white-space: nowrap; }
+    .phase-table td:first-child { font-weight: 600; color: #0b3d91; }
     .phase-table ol { margin: 0; padding-left: 1.2rem; }
     .phase-table ol li { margin-bottom: 0.4rem; }
 
@@ -173,6 +173,89 @@
         margin-top: 0.5rem;
         font-style: italic;
     }
+
+    /* ── Responsive ── */
+
+    /* Phase grid: 4 → 2 columns at medium width */
+    @media (max-width: 900px) {
+        .phases-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    /* Phase grid: 2 → 1 column at small width */
+    @media (max-width: 500px) {
+        .phases-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* Phase table: flip to stacked cards below 860px */
+    @media (max-width: 860px) {
+        .phase-table thead {
+            display: none;
+        }
+        .phase-table,
+        .phase-table tbody,
+        .phase-table tr,
+        .phase-table td {
+            display: block;
+            width: 100%;
+        }
+        .phase-table tr {
+            margin-bottom: 1rem;
+            border: 1px solid #d0d8e4;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .phase-table tr:nth-child(odd) td,
+        .phase-table tr:nth-child(even) td {
+            background: #fff;
+        }
+        .phase-table td:first-child {
+            background: #0b3d91;
+            color: #fff;
+            padding: 0.65rem 1rem;
+            font-size: 0.88rem;
+        }
+        .phase-table td:last-child {
+            padding: 0.85rem 1rem;
+            background: #f5f8fc;
+        }
+    }
+
+    /* Methods tables: flip to stacked cards below 640px */
+    @media (max-width: 640px) {
+        .methods-table thead {
+            display: none;
+        }
+        .methods-table,
+        .methods-table tbody,
+        .methods-table tr,
+        .methods-table td {
+            display: block;
+            width: 100%;
+        }
+        .methods-table tr {
+            margin-bottom: 0.75rem;
+            border: 1px solid #d0d8e4;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .methods-table td:first-child {
+            background: #1a5276;
+            color: #fff;
+            padding: 0.55rem 1rem;
+            font-size: 0.87rem;
+        }
+        .methods-table td:last-child {
+            background: #f5f8fc;
+        }
+        .methods-table tr:nth-child(odd) td,
+        .methods-table tr:nth-child(even) td {
+            background: inherit;
+        }
+    }
 </style>
 
 <div class="page-header">
@@ -189,7 +272,7 @@
 <div class="subsection">
     <h2>How and When to Use This Tool:</h2>
      <div style="text-align: center;">
-        <img src="{%  static 'images/fig_7.png'  %}" alt="How and when" style="max-width: 600px;" >
+        <img src="{%  static 'images/fig_7.png'  %}" alt="How and when" class="figure" >
     </div>
 
     <p>This tool is first used during Phase 1, to ensure necessary aspects are incorporated in needs assessment. It can be considered alongside Designing for Impact. It can continue to be consulted in Phase 2 to ensure approaches for EIA are included in the Solution Implementation Impact and Monitoring Plan (SIIMP), as appropriate. This tool is most useful when consulted early in the solution co-development process, in order to gather baseline information and set expectations with stakeholders regarding future information collection needs. Experience and a difficult lesson already learned by EO scientists and practitioners is that it is nearly impossible to measure economic impacts and value of information if you only think to do so halfway through a project or near a project's end. While the tool can be reviewed, revisited and aspects incorporated into the solution design and delivery during Phase 3 and Phase 4 as appropriate, it can only be truly accurate and effective when integrated at the start of a project or solution.</p>

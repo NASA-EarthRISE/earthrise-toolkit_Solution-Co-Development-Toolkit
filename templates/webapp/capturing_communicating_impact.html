@@ -3,13 +3,13 @@
 {% block title %}Capturing and Communicating Impact — Solution Co-Development Toolkit{% endblock %}
 {% block content %}
 <style>
-    .tk-body { font-size: 0.95rem; line-height: 1.75; color: #1a1a2e; }
-    .tk-body h2 { font-size: 1.5rem; font-weight: 700; color: #0b3d91; margin: 2.25rem 0 0.6rem; }
-    .tk-body h3 { font-size: 1.15rem; font-weight: 600; color: #0b3d91; margin: 1.75rem 0 0.5rem; }
-    .tk-body p  { margin-bottom: 1rem; }
-    .tk-body ul { margin: 0.5rem 0 1rem 1.5rem; }
-    .tk-body li { margin-bottom: 0.4rem; }
-    .tk-body hr { border: none; border-top: 1px solid #d0d7e3; margin: 2rem 0; }
+    {#.tk-body { font-size: 0.95rem; line-height: 1.75; color: #1a1a2e; }#}
+    {#.tk-body h2 { font-size: 1.5rem; font-weight: 700; color: #0b3d91; margin: 2.25rem 0 0.6rem; }#}
+    {#.tk-body h3 { font-size: 1.15rem; font-weight: 600; color: #0b3d91; margin: 1.75rem 0 0.5rem; }#}
+    {#.tk-body p  { margin-bottom: 1rem; }#}
+    {#.tk-body ul { margin: 0.5rem 0 1rem 1.5rem; }#}
+    {#.tk-body li { margin-bottom: 0.4rem; }#}
+    {#.tk-body hr { border: none; border-top: 1px solid #d0d7e3; margin: 2rem 0; }#}
 
     /* Phases diagram */
     .phases-grid {
@@ -139,7 +139,7 @@
     <h2>How and When to Use This Tool:</h2>
 
     <div style="text-align: center;">
-        <img src="{%  static 'images/fig_5.png'  %}" alt="How and when" style="max-width: 600px;" >
+        <img src="{%  static 'images/fig_5.png'  %}" alt="How and when" class="figure" >
     </div>
 
     <p>This tool can be used at any point in the co-development process, but it is most effective when integrated into early phases of solution planning and co-design. After reviewing the <a href="{% url 'webapp:designing_for_impact' %}">Designing for Impact 101</a> document, use this too to ensure that you are planning to capture and effectively communicate impact in a way that supports your team's strategic goals. This tool should also be used in developing the <a href="{% url 'webapp:implementation_monitoring' %}">Solution Implementation, Impact, and Monitoring Plan (SIIMP Plan)</a>, to outline the qualitative approaches that will be used to capture impact.</p>
@@ -219,7 +219,7 @@
 
     <!-- Fig. 1: Impact scale pyramid -->
     <div style="text-align: center;">
-        <img src="{%  static 'images/fig_6.png'  %}" alt="Impact scale pyramid" style="max-width: 600px;" >
+        <img src="{%  static 'images/fig_6.png'  %}" alt="Impact scale pyramid" class="figure" >
     </div>
     <p class="fig-caption">Fig. 1-Different groups and organizations experience impact at very different scales. When we want to show the breadth of impact, focusing on organizations that work on issues at an administrative or systems level will suffice. When it's important to put a human face to impact, it may be necessary to look for users or beneficiaries who experience impact on a local or personal level to illustrate the depth of impact.</p>
 
