@@ -8,3 +8,5 @@ python-docx>=1.1.0
 pandas>=2.2.1
 torch>=2.2.0
 docx2txt
+dotenv
+sentence_transformers
