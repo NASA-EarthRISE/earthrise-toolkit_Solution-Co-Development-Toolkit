@@ -1,4 +1,18 @@
+from django.conf import settings
 from django.db import models
+
+
+class PageContent(models.Model):
+    slug = models.SlugField(max_length=120, unique=True)
+    html_content = models.TextField()
+    updated_at = models.DateTimeField(auto_now=True)
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL,
+        related_name='page_edits'
+    )
+
+    def __str__(self):
+        return f"PageContent({self.slug})"
 
 
 class NavSection(models.Model):

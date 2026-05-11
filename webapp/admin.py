@@ -1,6 +1,5 @@
 from django.contrib import admin
-from .models import NavSection
-from .models import IngestedDocument
+from .models import NavSection, IngestedDocument, PageContent
 
 
 @admin.register(IngestedDocument)
@@ -34,3 +33,10 @@ class NavSectionAdmin(admin.ModelAdmin):
     list_display_links = ('name',)
     list_editable = ('order',)
     ordering = ('order',)
+
+
+@admin.register(PageContent)
+class PageContentAdmin(admin.ModelAdmin):
+    list_display = ('slug', 'updated_at', 'updated_by')
+    readonly_fields = ('updated_at', 'updated_by')
+    ordering = ('slug',)
