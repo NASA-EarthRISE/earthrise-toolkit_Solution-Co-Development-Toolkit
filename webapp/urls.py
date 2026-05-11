@@ -1,7 +1,7 @@
 from django.urls import path
 
 from . import views
-from .views import api_message, api_message_stream, api_chat_upload
+from .views import api_message, api_message_stream, api_chat_upload, save_page_content
 from .views_upload import upload_page, upload_file
 
 app_name = 'webapp'
@@ -27,6 +27,7 @@ urlpatterns = [
     path("api/message", api_message, name="api_message"),
     path("api/stream", api_message_stream, name="api_message_stream"),
     path("api/chat-upload", api_chat_upload, name="api_chat_upload"),
+    path("api/save-page-content", save_page_content, name="save_page_content"),
 
     # Admin upload GUI (staff only)
     path("upload", upload_page, name="upload"),
