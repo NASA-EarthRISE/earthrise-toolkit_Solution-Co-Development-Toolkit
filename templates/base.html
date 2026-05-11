@@ -497,6 +497,14 @@
             <div class="brand-subtitle">NASA Earth Action &mdash; Marshall Space Flight Center</div>
         </span>
     </a>
+    {% if is_staff %}
+    <div style="margin-left:auto;display:flex;align-items:center;gap:0.5rem;">
+        <button id="edit-page-btn" title="Edit this page" style="background:#0b3d91;color:#fff;border:none;border-radius:4px;padding:0.35rem 0.85rem;font-size:0.8rem;font-weight:600;cursor:pointer;letter-spacing:0.03em;">&#9998; Edit Page</button>
+        <button id="save-page-btn" style="display:none;background:#2e7d32;color:#fff;border:none;border-radius:4px;padding:0.35rem 0.85rem;font-size:0.8rem;font-weight:600;cursor:pointer;">&#10003; Save</button>
+        <button id="cancel-edit-btn" style="display:none;background:#555;color:#fff;border:none;border-radius:4px;padding:0.35rem 0.85rem;font-size:0.8rem;font-weight:600;cursor:pointer;">&#10005; Cancel</button>
+        <span id="editor-status" style="display:none;font-size:0.75rem;color:rgba(255,255,255,0.8);"></span>
+    </div>
+    {% endif %}
 
 </header>
 
@@ -527,8 +535,19 @@
     <div class="watermark-overlay">
         <div class="watermark-text">For Review</div>
     </div>
-    <main class="main-content">
-        {% block content %}{% endblock %}
+    <main class="main-content" id="main-content">
+        <div id="page-content-area">
+            {% if saved_content %}
+                {{ saved_content|safe }}
+            {% else %}
+                {% block content %}{% endblock %}
+            {% endif %}
+        </div>
+        {% if is_staff %}
+        <div id="page-editor-container" style="display:none;margin-top:1rem;">
+            <textarea id="page-editor-textarea"></textarea>
+        </div>
+        {% endif %}
     </main>
 </div>
 
@@ -1403,6 +1422,173 @@
 
     })();
 </script>
+
+{% if is_staff %}
+<!-- ══════════════════════════════════════════════
+     PAGE EDITOR (Staff only)
+══════════════════════════════════════════════ -->
+<script src="{% static 'js/tinymce/tinymce.min.js' %}" referrerpolicy="origin" crossorigin="anonymous"></script>
+<script>
+(function () {
+    const PAGE_SLUG = "{{ active_slug|escapejs }}";
+    const CSRF_TOKEN = "{{ csrf_token }}";
+
+    const editBtn    = document.getElementById('edit-page-btn');
+    const saveBtn    = document.getElementById('save-page-btn');
+    const cancelBtn  = document.getElementById('cancel-edit-btn');
+    const statusEl   = document.getElementById('editor-status');
+    const contentArea  = document.getElementById('page-content-area');
+    const editorContainer = document.getElementById('page-editor-container');
+    const editorTextarea  = document.getElementById('page-editor-textarea');
+
+    let editorActive = false;
+
+    function setStatus(msg, ok) {
+        statusEl.style.display = msg ? 'inline' : 'none';
+        statusEl.textContent = msg;
+        statusEl.style.color = ok ? '#a5d6a7' : '#ef9a9a';
+    }
+
+    // Holds <style> blocks extracted from the page so TinyMCE (which strips
+    // body-level <style> tags) does not lose them on save.
+    let _extractedStyles = '';
+
+    function enterEditMode() {
+        editorActive = true;
+        const rawHtml = contentArea.innerHTML;
+
+        // Pull out every <style>...</style> block before handing to TinyMCE.
+        // Also capture the raw CSS text so we can inject it into the editor iframe.
+        const styleFragments = [];
+        const bodyHtml = rawHtml.replace(/<style[\s\S]*?<\/style>/gi, function (match) {
+            styleFragments.push(match);
+            return '';
+        });
+        _extractedStyles = styleFragments.join('\n');
+
+        // CSS text from page-specific <style> blocks for the editor preview.
+        const pageCss = styleFragments.map(function (s) {
+            return s.replace(/<\/?style[^>]*>/gi, '');
+        }).join('\n');
+
+        // Base site styles so the editor looks like the real page.
+        const baseCss = [
+            ':root { --nasa-blue:#0b3d91; --earth-teal:#00a0b0; --border:#d0d7e3; }',
+            'body { font-family: Inter, sans-serif; font-size: 18px; line-height: 1.75;',
+            '       color: #1a1a2e; padding: 1.5rem 2rem; background: #f5f7fa; }',
+            'h1 { font-size: 2rem; font-weight: 700; color: #0b3d91; line-height: 1.2; }',
+            'h2 { font-size: 1.5rem; font-weight: 700; color: #0b3d91; margin: 2.25rem 0 0.6rem; }',
+            'h3 { font-size: 1.15rem; font-weight: 600; color: #0b3d91; margin: 1.75rem 0 0.5rem; }',
+            'h4 { font-size: 0.95rem; font-style: italic; font-weight: 600; color: #1a1a2e; margin: 1.4rem 0 0.4rem; }',
+            'p { margin-bottom: 1rem; }',
+            'ul, ol { margin: 0.5rem 0 1rem 1.5rem; }',
+            'li { margin-bottom: 0.4rem; }',
+            'a { color: #0b3d91; }',
+            'hr { border: none; border-top: 1px solid #d0d7e3; margin: 2rem 0; }',
+            'strong { font-weight: 700; }',
+            'table { border-collapse: collapse; width: 100%; margin-bottom: 1rem; }',
+            'th, td { border: 1px solid #d0d7e3; padding: 0.5rem 0.75rem; text-align: left; }',
+            'th { background: #e8edf5; font-weight: 600; }',
+            '.page-header { border-bottom: 3px solid #00a0b0; padding-bottom: 1rem; margin-bottom: 2rem; }',
+            '.page-header .section-tag { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;',
+            '    text-transform: uppercase; color: #00a0b0; margin-bottom: 0.4rem; }',
+            '.page-header h1 { font-size: 2rem; font-weight: 700; color: #0b3d91; line-height: 1.2; }',
+            '.tk-body { font-size: 18px; line-height: 1.75; color: #1a1a2e; }',
+            '.tk-body h2 { font-size: 1.5rem; font-weight: 700; color: #0b3d91; margin: 2.25rem 0 0.6rem; }',
+            '.tk-body h3 { font-size: 1.15rem; font-weight: 600; color: #0b3d91; margin: 1.75rem 0 0.5rem; }',
+            '.tk-body h4 { font-size: 0.95rem; font-style: italic; font-weight: 600; color: #1a1a2e; margin: 1.4rem 0 0.4rem; }',
+            '.tk-body p { margin-bottom: 1rem; }',
+            '.tk-body ul, .tk-body ol { margin: 0.5rem 0 1rem 1.5rem; }',
+            '.tk-body li { margin-bottom: 0.4rem; }',
+            '.tk-body hr { border: none; border-top: 1px solid #d0d7e3; margin: 2rem 0; }',
+        ].join('\n');
+
+        editorTextarea.value = bodyHtml;
+
+        contentArea.style.display = 'none';
+        editorContainer.style.display = 'block';
+        editBtn.style.display = 'none';
+        saveBtn.style.display = 'inline-block';
+        cancelBtn.style.display = 'inline-block';
+        setStatus('Editing…', true);
+
+        tinymce.init({
+            target: editorTextarea,
+            license_key: 'gpl',
+            height: Math.max(500, window.innerHeight - 200),
+            menubar: 'file edit view insert format tools',
+            plugins: 'anchor autolink lists link image table code fullscreen searchreplace wordcount',
+            toolbar: 'undo redo | blocks | bold italic underline | forecolor backcolor | alignleft aligncenter alignright | bullist numlist | link image table | code fullscreen',
+            valid_elements: '*[*]',
+            extended_valid_elements: '*[*]',
+            verify_html: false,
+            entity_encoding: 'raw',
+            content_style: baseCss + '\n' + pageCss,
+            setup: function (editor) {
+                editor.on('init', function () {
+                    editor.setContent(bodyHtml);
+                });
+            }
+        });
+    }
+
+    function exitEditMode(restoreContent) {
+        editorActive = false;
+        tinymce.remove('#page-editor-textarea');
+        editorTextarea.value = '';
+
+        editorContainer.style.display = 'none';
+        contentArea.style.display = '';
+        editBtn.style.display = 'inline-block';
+        saveBtn.style.display = 'none';
+        cancelBtn.style.display = 'none';
+        setStatus('', true);
+
+        if (restoreContent) {
+            window.location.reload();
+        }
+    }
+
+    editBtn.addEventListener('click', enterEditMode);
+
+    cancelBtn.addEventListener('click', function () {
+        exitEditMode(false);
+    });
+
+    saveBtn.addEventListener('click', function () {
+        const editor = tinymce.get('page-editor-textarea');
+        if (!editor) return;
+        // Re-attach the <style> blocks TinyMCE stripped during editing.
+        const html = _extractedStyles + editor.getContent();
+        setStatus('Saving…', true);
+        saveBtn.disabled = true;
+
+        fetch('/api/save-page-content', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': CSRF_TOKEN,
+            },
+            body: JSON.stringify({ slug: PAGE_SLUG, html_content: html }),
+        })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+            if (data.ok) {
+                setStatus('Saved!', true);
+                setTimeout(function () { exitEditMode(true); }, 600);
+            } else {
+                setStatus('Error: ' + (data.error || 'unknown'), false);
+                saveBtn.disabled = false;
+            }
+        })
+        .catch(function (err) {
+            setStatus('Network error', false);
+            saveBtn.disabled = false;
+        });
+    });
+})();
+</script>
+{% endif %}
 
 </body>
 </html>

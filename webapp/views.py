@@ -3,13 +3,14 @@ import uuid
 import json
 import mimetypes
 
+from django.contrib.admin.views.decorators import staff_member_required
 from django.http import JsonResponse, HttpResponseBadRequest, StreamingHttpResponse, FileResponse, Http404
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.utils.encoding import smart_str
 from django.conf import settings
-from .models import NavSection
+from .models import NavSection, PageContent
 
 from .openai_client import client, CHAT_MODEL
 from .rag import build_context_snippets, get_store
@@ -25,71 +26,99 @@ def _nav():
     return NavSection.objects.all()
 
 
-def _ctx(active_slug, extra=None):
-    ctx = {'nav_sections': _nav(), 'active_slug': active_slug}
+def _ctx(active_slug, request=None, extra=None):
+    try:
+        page_content = PageContent.objects.get(slug=active_slug)
+        saved_content = page_content.html_content
+    except PageContent.DoesNotExist:
+        saved_content = None
+    ctx = {
+        'nav_sections': _nav(),
+        'active_slug': active_slug,
+        'saved_content': saved_content,
+        'is_staff': request.user.is_staff if (request and request.user.is_authenticated) else False,
+    }
     if extra:
         ctx.update(extra)
     return ctx
 
 
 def home(request):
-    return render(request, 'webapp/home.html', {'nav_sections': _nav(), 'active_slug': ''})
+    return render(request, 'webapp/home.html', _ctx('home', request=request))
 
 
 def introduction(request):
-    return render(request, 'webapp/introduction.html', _ctx('introduction'))
+    return render(request, 'webapp/introduction.html', _ctx('introduction', request=request))
 
 
 def designing_for_impact(request):
-    return render(request, 'webapp/designing_for_impact.html', _ctx('designing-for-impact'))
+    return render(request, 'webapp/designing_for_impact.html', _ctx('designing-for-impact', request=request))
 
 
 def capturing_communicating_impact(request):
-    return render(request, 'webapp/capturing_communicating_impact.html', _ctx('capturing-communicating-impact'))
+    return render(request, 'webapp/capturing_communicating_impact.html', _ctx('capturing-communicating-impact', request=request))
 
 
 def economic_impact_assessments(request):
-    return render(request, 'webapp/economic_impact_assessments.html', _ctx('economic-impact-assessments'))
+    return render(request, 'webapp/economic_impact_assessments.html', _ctx('economic-impact-assessments', request=request))
 
 
 def stakeholder_mapping(request):
-    return render(request, 'webapp/stakeholder_mapping.html', _ctx('stakeholder-mapping'))
+    return render(request, 'webapp/stakeholder_mapping.html', _ctx('stakeholder-mapping', request=request))
 
 
 def needs_assessment(request):
-    return render(request, 'webapp/needs_assessment.html', _ctx('needs-assessment'))
+    return render(request, 'webapp/needs_assessment.html', _ctx('needs-assessment', request=request))
 
 
 def information_chain_analysis(request):
-    return render(request, 'webapp/information_chain_analysis.html', _ctx('information-chain-analysis'))
+    return render(request, 'webapp/information_chain_analysis.html', _ctx('information-chain-analysis', request=request))
 
 
 def user_centered_design(request):
-    return render(request, 'webapp/user_centered_design.html', _ctx('user-centered-design'))
+    return render(request, 'webapp/user_centered_design.html', _ctx('user-centered-design', request=request))
 
 
 def technical_requirements(request):
-    return render(request, 'webapp/technical_requirements.html', _ctx('technical-requirements'))
+    return render(request, 'webapp/technical_requirements.html', _ctx('technical-requirements', request=request))
 
 
 def data_governance(request):
-    return render(request, 'webapp/data_governance.html', _ctx('data-governance'))
+    return render(request, 'webapp/data_governance.html', _ctx('data-governance', request=request))
 
 
 def implementation_monitoring(request):
-    return render(request, 'webapp/implementation_monitoring.html', _ctx('implementation-monitoring'))
+    return render(request, 'webapp/implementation_monitoring.html', _ctx('implementation-monitoring', request=request))
 
 
 def adoption_sustainability(request):
-    return render(request, 'webapp/adoption_sustainability.html', _ctx('adoption-sustainability'))
+    return render(request, 'webapp/adoption_sustainability.html', _ctx('adoption-sustainability', request=request))
 
 
 def meaningful_metrics(request):
-    return render(request, 'webapp/meaningful_metrics.html', _ctx('meaningful-metrics'))
+    return render(request, 'webapp/meaningful_metrics.html', _ctx('meaningful-metrics', request=request))
 
 
 def authors(request):
-    return render(request, 'webapp/authors.html', _ctx('authors'))
+    return render(request, 'webapp/authors.html', _ctx('authors', request=request))
+
+
+@require_POST
+@staff_member_required
+def save_page_content(request):
+    try:
+        data = json.loads(request.body)
+        slug = data.get('slug', '').strip()
+        html_content = data.get('html_content', '')
+        if not slug:
+            return JsonResponse({'error': 'slug required'}, status=400)
+        PageContent.objects.update_or_create(
+            slug=slug,
+            defaults={'html_content': html_content, 'updated_by': request.user}
+        )
+        return JsonResponse({'ok': True})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
 
 @csrf_exempt
 @require_POST
