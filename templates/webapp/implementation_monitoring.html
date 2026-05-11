@@ -3,54 +3,21 @@
 {% block title %}Solution Implementation and Impact Monitoring Plan — Solution Co-Development Toolkit{% endblock %}
 {% block content %}
 <style>
-    .section-intro p { margin-bottom: 0.9rem; line-height: 1.7; }
-
-    /* Phase grid */
-    .phases-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 0.75rem;
-        margin: 1.5rem 0;
-    }
-    .phase-card {
-        border-radius: 6px;
-        padding: 1rem;
-        font-size: 0.88rem;
-    }
-    .phase-card h4 { margin: 0 0 0.6rem 0; font-size: 0.9rem; color: #0b3d91; }
-    .phase-card ul { margin: 0; padding-left: 1.1rem; }
-    .phase-card ul li { margin-bottom: 0.3rem; line-height: 1.5; }
-    .phase-1 { background: #cce0f5; }
-    .phase-2 { background: #c8dff5; outline: 2px solid #c0392b; }
-    .phase-3 { background: #d4edda; outline: 2px dashed #c0392b; }
-    .phase-4 { background: #d5eddf; outline: 2px dashed #c0392b; }
+    /* Phase colours — backgrounds from toolkit.css; page adds outlines */
+    .phase-2 { outline: 2px solid #c0392b; }
+    .phase-3 { outline: 2px dashed #c0392b; }
+    .phase-4 { outline: 2px dashed #c0392b; }
 
     /* Tools reference list */
     .tools-list { margin: 0.5rem 0 1rem 1.5rem; }
     .tools-list li { margin-bottom: 0.35rem; line-height: 1.6; font-size: 0.93rem; }
 
     /* Solution title bar */
-    .solution-title-bar {
-        background: #0b3d91;
-        color: #fff;
-        padding: 0.75rem 1.2rem;
-        border-radius: 4px;
-        font-size: 1.1rem;
-        font-weight: 700;
-        margin: 1.5rem 0 0.5rem 0;
-    }
+    .solution-title-bar { background: #0b3d91; color: #fff; padding: 0.75rem 1.2rem; border-radius: 4px; font-size: 1.1rem; font-weight: 700; margin: 1.5rem 0 0.5rem 0; }
 
     /* SIIMP numbered sections */
-    .siimp-section {
-        margin-top: 2.2rem;
-        padding-top: 0.5rem;
-        border-top: 1px solid #d0dae8;
-    }
-    .siimp-section > h2 {
-        color: #0b3d91;
-        font-size: 1.2rem;
-        margin-bottom: 0.7rem;
-    }
+    .siimp-section { margin-top: 2.2rem; padding-top: 0.5rem; border-top: 1px solid #d0dae8; }
+    .siimp-section > h2 { color: #0b3d91; font-size: 1.2rem; margin-bottom: 0.7rem; }
     .siimp-section p { margin-bottom: 0.8rem; line-height: 1.7; }
 
     /* Sub-section within SIIMP */
@@ -58,128 +25,29 @@
     .siimp-subsection > h3 { color: #1a5276; font-size: 1rem; margin-bottom: 0.6rem; }
     .siimp-subsection p { margin-bottom: 0.8rem; line-height: 1.7; }
 
-    /* Bullet lists */
-    .content-list { margin: 0.4rem 0 1rem 1.5rem; }
-    .content-list li { margin-bottom: 0.4rem; line-height: 1.6; font-size: 0.93rem; }
-
-    /* Cross-ref note */
-    .ref-note {
-        background: #e8f4fb;
-        border: 1px dashed #00a0b0;
-        border-radius: 4px;
-        padding: 0.6rem 1rem;
-        margin: 0.5rem 0 1rem 0;
-        font-size: 0.9rem;
-        font-style: italic;
-        color: #1a5276;
-    }
-
-    /* Tables - shared base */
-    .siimp-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 1rem 0;
-        font-size: 0.87rem;
-    }
-    .siimp-table caption {
-        text-align: center;
-        font-weight: 700;
-        color: #0b3d91;
-        margin-bottom: 0.4rem;
-        font-size: 0.9rem;
-    }
-    .siimp-table th {
-        background: #0b3d91;
-        color: #fff;
-        padding: 0.6rem 0.9rem;
-        text-align: left;
-        font-weight: 600;
-    }
-    .siimp-table td {
-        padding: 0.6rem 0.9rem;
-        border: 1px solid #c0cfe0;
-        vertical-align: top;
-        line-height: 1.55;
-    }
+    /* Tables */
+    .siimp-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.87rem; }
+    .siimp-table caption { text-align: center; font-weight: 700; color: #0b3d91; margin-bottom: 0.4rem; font-size: 0.9rem; }
+    .siimp-table th { background: #0b3d91; color: #fff; padding: 0.6rem 0.9rem; text-align: left; font-weight: 600; }
+    .siimp-table td { padding: 0.6rem 0.9rem; border: 1px solid #c0cfe0; vertical-align: top; line-height: 1.55; }
     .siimp-table tr:nth-child(odd) td { background: #f5f8fc; }
     .siimp-table tr:nth-child(even) td { background: #fff; }
     .siimp-table td.row-label { font-weight: 600; color: #1a3a5c; background: #eaf1fb !important; }
     .siimp-table td.subtotal { font-weight: 600; background: #dce8f5 !important; }
 
     /* Org chart */
-    .org-chart {
-        margin: 1.2rem auto;
-        max-width: 680px;
-        font-size: 0.83rem;
-        text-align: center;
-    }
+    .org-chart { margin: 1.2rem auto; max-width: 680px; font-size: 0.83rem; text-align: center; }
     .org-row { display: flex; justify-content: center; gap: 1rem; margin-bottom: 0; }
-    .org-box {
-        background: #cce0f5;
-        border: 1px solid #7baad0;
-        border-radius: 6px;
-        padding: 0.5rem 0.7rem;
-        font-weight: 600;
-        color: #0b3d91;
-        min-width: 110px;
-        text-align: center;
-        line-height: 1.3;
-        font-size: 0.8rem;
-    }
+    .org-box { background: #cce0f5; border: 1px solid #7baad0; border-radius: 6px; padding: 0.5rem 0.7rem; font-weight: 600; color: #0b3d91; min-width: 110px; text-align: center; line-height: 1.3; font-size: 0.8rem; }
     .org-box.root { background: #0b3d91; color: #fff; min-width: 150px; margin-bottom: 0.4rem; }
-    .org-connector {
-        display: flex;
-        justify-content: center;
-        gap: 1rem;
-        position: relative;
-        margin: 0.3rem 0;
-    }
-    .org-connector::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 2px;
-        height: 0.5rem;
-        background: #7baad0;
-    }
-    .org-branch {
-        display: flex;
-        justify-content: center;
-        gap: 4rem;
-        margin-top: 0.4rem;
-    }
+    .org-connector { display: flex; justify-content: center; gap: 1rem; position: relative; margin: 0.3rem 0; }
+    .org-connector::before { content: ""; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 2px; height: 0.5rem; background: #7baad0; }
+    .org-branch { display: flex; justify-content: center; gap: 4rem; margin-top: 0.4rem; }
     .org-subtree { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
     .org-children { display: flex; gap: 0.7rem; }
-    .org-line-down {
-        width: 2px;
-        height: 0.5rem;
-        background: #7baad0;
-        margin: 0 auto;
-    }
-    .org-line-across {
-        border-top: 2px solid #7baad0;
-        width: 100%;
-        margin-top: 0.3rem;
-    }
-    .org-caption {
-        text-align: center;
-        font-style: italic;
-        font-size: 0.82rem;
-        color: #555;
-        margin-top: 0.5rem;
-    }
-
-    hr.section-rule { border: none; border-top: 1px solid #d0dae8; margin: 2rem 0; }
-
-    .page-note {
-        font-size: 0.8rem;
-        color: #888;
-        text-align: right;
-        margin-top: 0.5rem;
-        font-style: italic;
-    }
+    .org-line-down { width: 2px; height: 0.5rem; background: #7baad0; margin: 0 auto; }
+    .org-line-across { border-top: 2px solid #7baad0; width: 100%; margin-top: 0.3rem; }
+    .org-caption { text-align: center; font-style: italic; font-size: 0.82rem; color: #555; margin-top: 0.5rem; }
 </style>
 
 <div class="page-header">

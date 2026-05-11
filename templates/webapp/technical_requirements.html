@@ -3,114 +3,31 @@
 {% block title %}Technical Requirements Template — Solution Co-Development Toolkit{% endblock %}
 {% block content %}
 <style>
-    .section-intro p { margin-bottom: 0.9rem; line-height: 1.7; }
-
-    /* Subsection styling */
-    .subsection { margin-top: 2.5rem; }
-    .subsection > h2 { color: #0b3d91; border-bottom: 2px solid #00a0b0; padding-bottom: 0.4rem; margin-bottom: 1rem; }
-    .subsection p { margin-bottom: 0.9rem; line-height: 1.7; }
-
-    /* Phase grid */
-    .phases-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 0.75rem;
-        margin: 1.5rem 0;
-    }
-    .phase-card {
-        border-radius: 6px;
-        padding: 1rem;
-        font-size: 0.88rem;
-    }
-    .phase-card h4 { margin: 0 0 0.6rem 0; font-size: 0.9rem; color: #0b3d91; }
-    .phase-card ul { margin: 0; padding-left: 1.1rem; }
-    .phase-card ul li { margin-bottom: 0.3rem; line-height: 1.5; }
-    .phase-1 { background: #cce0f5; }
-    .phase-2 { background: #c8dff5; outline: 2px solid #c0392b; }
-    .phase-3 { background: #d4edda; }
-    .phase-4 { background: #d5eddf; }
+    /* Phase colours — backgrounds from toolkit.css; page adds outline */
+    .phase-2 { outline: 2px solid #c0392b; }
 
     /* Template item rows */
-    .template-section {
-        margin-top: 2rem;
-    }
-    .template-section > h3 {
-        color: #0b3d91;
-        border-bottom: 2px solid #00a0b0;
-        padding-bottom: 0.35rem;
-        margin-bottom: 1rem;
-        font-size: 1.05rem;
-    }
+    .template-section { margin-top: 2rem; }
+    .template-section > h3 { color: #0b3d91; border-bottom: 2px solid #00a0b0; padding-bottom: 0.35rem; margin-bottom: 1rem; font-size: 1.05rem; }
 
-    .template-item {
-        margin-bottom: 1.2rem;
-        border: 1px solid #c0cfe0;
-        border-radius: 4px;
-        overflow: hidden;
-    }
-    .template-item-header {
-        display: flex;
-        align-items: stretch;
-        background: #f0f4f8;
-        border-bottom: 1px solid #c0cfe0;
-        gap: 0;
-    }
-    .template-item-title {
-        font-weight: 700;
-        color: #0b3d91;
-        padding: 0.55rem 1rem;
-        font-size: 0.92rem;
-        flex: 1;
-    }
-    .template-item-ref {
-        background: #dce8f5;
-        color: #1a5276;
-        padding: 0.55rem 1rem;
-        font-size: 0.82rem;
-        font-style: italic;
-        border-left: 1px solid #b0c8e0;
-        display: flex;
-        align-items: center;
-        max-width: 55%;
-        line-height: 1.4;
-    }
-    .template-item-body {
-        padding: 0.8rem 1rem;
-        font-size: 0.9rem;
-        line-height: 1.7;
-        background: #fff;
-    }
+    .template-item { margin-bottom: 1.2rem; border: 1px solid #c0cfe0; border-radius: 4px; overflow: hidden; }
+    .template-item-header { display: flex; align-items: stretch; background: #f0f4f8; border-bottom: 1px solid #c0cfe0; gap: 0; }
+    .template-item-title { font-weight: 700; color: #0b3d91; padding: 0.55rem 1rem; font-size: 0.92rem; flex: 1; }
+    .template-item-ref { background: #dce8f5; color: #1a5276; padding: 0.55rem 1rem; font-size: 0.82rem; font-style: italic; border-left: 1px solid #b0c8e0; display: flex; align-items: center; max-width: 55%; line-height: 1.4; }
+    .template-item-body { padding: 0.8rem 1rem; font-size: 0.9rem; line-height: 1.7; background: #fff; }
     .template-item-body p { margin: 0 0 0.6rem 0; }
     .template-item-body p:last-child { margin-bottom: 0; }
-    .template-item-body ul {
-        margin: 0.3rem 0 0.5rem 1.3rem;
-        padding: 0;
-    }
+    .template-item-body ul { margin: 0.3rem 0 0.5rem 1.3rem; padding: 0; }
     .template-item-body ul li { margin-bottom: 0.3rem; line-height: 1.6; }
-    .template-item-body ol {
-        margin: 0.3rem 0 0.5rem 1.3rem;
-        padding: 0;
-    }
+    .template-item-body ol { margin: 0.3rem 0 0.5rem 1.3rem; padding: 0; }
     .template-item-body ol li { margin-bottom: 0.5rem; line-height: 1.6; }
 
     /* Simple item (no reference) */
-    .template-item-header.no-ref .template-item-title {
-        border-bottom: none;
-    }
+    .template-item-header.no-ref .template-item-title { border-bottom: none; }
 
     /* Data source sub-specs */
-    .data-specs {
-        margin: 0.3rem 0 0.3rem 1.5rem;
-        padding: 0;
-        list-style: none;
-        font-size: 0.87rem;
-        color: #444;
-    }
-    .data-specs li {
-        margin-bottom: 0.2rem;
-        padding-left: 0.8rem;
-        border-left: 2px solid #00a0b0;
-    }
+    .data-specs { margin: 0.3rem 0 0.3rem 1.5rem; padding: 0; list-style: none; font-size: 0.87rem; color: #444; }
+    .data-specs li { margin-bottom: 0.2rem; padding-left: 0.8rem; border-left: 2px solid #00a0b0; }
 
     /* Agreements bullet list */
     .agreements-list { margin: 0.3rem 0 0.5rem 1.3rem; }
@@ -119,20 +36,7 @@
     /* Validation checklist */
     .checklist { margin: 0.3rem 0 0.5rem 1.3rem; list-style: none; padding: 0; }
     .checklist li { margin-bottom: 0.35rem; line-height: 1.6; padding-left: 1.2rem; position: relative; }
-    .checklist li::before {
-        content: "☐";
-        position: absolute;
-        left: 0;
-        color: #0b3d91;
-    }
-
-    .page-note {
-        font-size: 0.8rem;
-        color: #888;
-        text-align: right;
-        margin-top: 0.5rem;
-        font-style: italic;
-    }
+    .checklist li::before { content: "±0"; position: absolute; left: 0; color: #0b3d91; }
 </style>
 
 <div class="page-header">

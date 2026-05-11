@@ -11,20 +11,7 @@
     {#.tk-body li { margin-bottom: 0.4rem; }#}
     {#.tk-body hr { border: none; border-top: 1px solid #d0d7e3; margin: 2rem 0; }#}
 
-    /* Phases diagram */
-    .phases-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 0.75rem;
-        margin: 1.25rem 0 1rem;
-    }
-    .phase-card {
-        border-radius: 6px;
-        padding: 0.9rem;
-        font-size: 0.8rem;
-        line-height: 1.45;
-        color: #1a1a2e;
-    }
+    /* Phase card variant used on this page (arrow-bullet style) */
     .phase-card .phase-title {
         font-weight: 700;
         font-size: 0.8rem;
@@ -35,10 +22,10 @@
     .phase-card ul { list-style: none; padding: 0; margin: 0; }
     .phase-card ul li { padding: 0.2rem 0 0.2rem 1.2rem; position: relative; }
     .phase-card ul li::before { content: "➤"; position: absolute; left: 0; font-size: 0.65rem; top: 0.3rem; }
-    .phase-1  { background: #cce0f5; outline: 2px solid #c0392b; }
+    /* Phase colours – backgrounds come from toolkit.css; page adds outlines & .phase-24 */
+    .phase-1  { outline: 2px solid #c0392b; }
     .phase-24 { background: #c8dff5; outline: 2px dashed #e74c3c; }
-    .phase-3  { background: #d4edda; outline: 2px dashed #e74c3c; }
-    .fig-caption { font-style: italic; font-size: 0.82rem; color: #4a4a6a; margin-top: 0.5rem; }
+    .phase-3  { outline: 2px dashed #e74c3c; }
 
     /* Audience table */
     .audience-table {
@@ -103,7 +90,7 @@
     .comms-table li { margin-bottom: 0.3rem; }
     .comms-table .note { font-style: italic; margin-top: 0.5rem; }
 
-    /* Example box */
+    /* Example box — page-specific variant (italic style) */
     .example-box {
         background: #f0f5fb;
         border-left: 3px solid #00a0b0;
@@ -114,7 +101,6 @@
     }
 
     @media (max-width: 700px) {
-        .phases-grid { grid-template-columns: 1fr 1fr; }
         .audience-table, .comms-table { font-size: 0.8rem; }
         .pr-gov, .pr-high, .pr-front, .pr-indiv { width: 100%; }
     }

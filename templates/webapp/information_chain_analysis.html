@@ -3,17 +3,8 @@
 {% block title %}Information Chain Analysis — Solution Co-Development Toolkit{% endblock %}
 {% block content %}
 <style>
-    .section-intro p { margin-bottom: 0.9rem; line-height: 1.7; }
-
-    /* Subsection styling */
-    .subsection { margin-top: 2.5rem; }
-    .subsection > h2 { color: #0b3d91; border-bottom: 2px solid #00a0b0; padding-bottom: 0.4rem; margin-bottom: 1rem; }
-    .subsection > h3 { color: #1a5276; margin: 1.5rem 0 0.6rem 0; }
-    .subsection p { margin-bottom: 0.9rem; line-height: 1.7; }
-
-    /* Bullet lists */
-    .content-list { margin: 0.4rem 0 1rem 1.5rem; }
-    .content-list li { margin-bottom: 0.4rem; line-height: 1.6; }
+    /* Phase colours — backgrounds from toolkit.css; page adds outline */
+    .phase-1 { outline: 2px solid #c0392b; }
 
     /* Primary outputs callout */
     .outputs-box {
@@ -26,47 +17,10 @@
         line-height: 1.7;
     }
 
-    /* Phase grid */
-    .phases-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 0.75rem;
-        margin: 1.5rem 0;
-    }
-    .phase-card {
-        border-radius: 6px;
-        padding: 1rem;
-        font-size: 0.88rem;
-    }
-    .phase-card h4 { margin: 0 0 0.6rem 0; font-size: 0.9rem; color: #0b3d91; }
-    .phase-card ul { margin: 0; padding-left: 1.1rem; }
-    .phase-card ul li { margin-bottom: 0.3rem; line-height: 1.5; }
-    .phase-1 { background: #cce0f5; outline: 2px solid #c0392b; }
-    .phase-2 { background: #c8dff5; }
-    .phase-3 { background: #d4edda; }
-    .phase-4 { background: #d5eddf; }
-
     /* Lifecycle table */
-    .lifecycle-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 1.2rem 0;
-        font-size: 0.88rem;
-    }
-    .lifecycle-table th {
-        background: #0b3d91;
-        color: #fff;
-        padding: 0.65rem 0.9rem;
-        text-align: left;
-        font-weight: 600;
-        vertical-align: top;
-    }
-    .lifecycle-table td {
-        padding: 0.8rem 0.9rem;
-        border: 1px solid #c0cfe0;
-        vertical-align: top;
-        line-height: 1.6;
-    }
+    .lifecycle-table { width: 100%; border-collapse: collapse; margin: 1.2rem 0; font-size: 0.88rem; }
+    .lifecycle-table th { background: #0b3d91; color: #fff; padding: 0.65rem 0.9rem; text-align: left; font-weight: 600; vertical-align: top; }
+    .lifecycle-table td { padding: 0.8rem 0.9rem; border: 1px solid #c0cfe0; vertical-align: top; line-height: 1.6; }
     .lifecycle-table tr:nth-child(odd) td { background: #f5f8fc; }
     .lifecycle-table tr:nth-child(even) td { background: #fff; }
     .lifecycle-table td:first-child { font-weight: 700; color: #0b3d91; }
@@ -74,243 +28,46 @@
     .lifecycle-table td ul li { margin-bottom: 0.3rem; }
 
     /* Decision pathway chain diagram */
-    .chain-diagram {
-        display: flex;
-        align-items: center;
-        gap: 0;
-        margin: 1.5rem 0;
-        flex-wrap: wrap;
-    }
-    .chain-link {
-        background: #0b3d91;
-        color: #fff;
-        padding: 0.8rem 1rem;
-        border-radius: 4px;
-        text-align: center;
-        font-size: 0.82rem;
-        font-weight: 600;
-        flex: 1;
-        min-width: 100px;
-        line-height: 1.4;
-    }
-    .chain-arrow {
-        color: #0b3d91;
-        font-size: 1.4rem;
-        font-weight: 700;
-        padding: 0 0.3rem;
-        flex-shrink: 0;
-    }
-    .chain-label {
-        font-size: 0.75rem;
-        color: #555;
-        text-align: center;
-        margin-top: 0.4rem;
-    }
-    .chain-wrapper {
-        text-align: center;
-        flex: 1;
-        min-width: 100px;
-    }
-
-    /* Fig caption */
-    .fig-caption {
-        font-size: 0.83rem;
-        color: #555;
-        font-style: italic;
-        text-align: center;
-        margin: 0.4rem 0 1.5rem 0;
-    }
+    .chain-diagram { display: flex; align-items: center; gap: 0; margin: 1.5rem 0; flex-wrap: wrap; }
+    .chain-link { background: #0b3d91; color: #fff; padding: 0.8rem 1rem; border-radius: 4px; text-align: center; font-size: 0.82rem; font-weight: 600; flex: 1; min-width: 100px; line-height: 1.4; }
+    .chain-arrow { color: #0b3d91; font-size: 1.4rem; font-weight: 700; padding: 0 0.3rem; flex-shrink: 0; }
+    .chain-label { font-size: 0.75rem; color: #555; text-align: center; margin-top: 0.4rem; }
+    .chain-wrapper { text-align: center; flex: 1; min-width: 100px; }
 
     /* Multi-ICA diagram */
-    .ica-system {
-        background: #f5f8fc;
-        border: 1px solid #c0cfe0;
-        border-radius: 6px;
-        padding: 1.2rem 1.4rem;
-        margin: 1.2rem 0 0.5rem 0;
-    }
-    .ica-system h5 {
-        color: #0b3d91;
-        margin: 0 0 1rem 0;
-        font-size: 0.9rem;
-        text-align: center;
-        letter-spacing: 0.03em;
-    }
+    .ica-system { background: #f5f8fc; border: 1px solid #c0cfe0; border-radius: 6px; padding: 1.2rem 1.4rem; margin: 1.2rem 0 0.5rem 0; }
+    .ica-system h5 { color: #0b3d91; margin: 0 0 1rem 0; font-size: 0.9rem; text-align: center; letter-spacing: 0.03em; }
     .ica-rows { display: flex; flex-direction: column; gap: 0.6rem; }
-    .ica-row {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-size: 0.84rem;
-    }
-    .ica-label {
-        background: #0b3d91;
-        color: #fff;
-        border-radius: 4px;
-        padding: 0.3rem 0.7rem;
-        font-weight: 700;
-        font-size: 0.8rem;
-        white-space: nowrap;
-    }
+    .ica-row { display: flex; align-items: center; gap: 0.5rem; font-size: 0.84rem; }
+    .ica-label { background: #0b3d91; color: #fff; border-radius: 4px; padding: 0.3rem 0.7rem; font-weight: 700; font-size: 0.8rem; white-space: nowrap; }
     .ica-arrow { color: #0b3d91; font-weight: 700; }
-    .ica-decision {
-        background: #dce8f5;
-        border-radius: 4px;
-        padding: 0.3rem 0.7rem;
-        font-size: 0.82rem;
-        white-space: nowrap;
-    }
-    .ica-pathway {
-        background: #e8f4fb;
-        border: 1px dashed #00a0b0;
-        border-radius: 4px;
-        padding: 0.3rem 0.7rem;
-        font-size: 0.8rem;
-        flex: 1;
-        color: #1a5276;
-    }
-    .ica-note {
-        font-size: 0.82rem;
-        color: #555;
-        font-style: italic;
-        margin-top: 0.8rem;
-        border-top: 1px solid #c0cfe0;
-        padding-top: 0.6rem;
-    }
+    .ica-decision { background: #dce8f5; border-radius: 4px; padding: 0.3rem 0.7rem; font-size: 0.82rem; white-space: nowrap; }
+    .ica-pathway { background: #e8f4fb; border: 1px dashed #00a0b0; border-radius: 4px; padding: 0.3rem 0.7rem; font-size: 0.8rem; flex: 1; color: #1a5276; }
+    .ica-note { font-size: 0.82rem; color: #555; font-style: italic; margin-top: 0.8rem; border-top: 1px solid #c0cfe0; padding-top: 0.6rem; }
 
     /* Channels sections */
-    .channels-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.8rem;
-        margin: 1rem 0 1.5rem 0;
-    }
-    .channel-card {
-        background: #f5f8fc;
-        border: 1px solid #c0cfe0;
-        border-radius: 4px;
-        padding: 0.8rem 1rem;
-        font-size: 0.88rem;
-    }
-    .channel-card h4 {
-        color: #0b3d91;
-        margin: 0 0 0.5rem 0;
-        font-size: 0.88rem;
-        font-weight: 700;
-    }
+    .channels-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.8rem; margin: 1rem 0 1.5rem 0; }
+    .channel-card { background: #f5f8fc; border: 1px solid #c0cfe0; border-radius: 4px; padding: 0.8rem 1rem; font-size: 0.88rem; }
+    .channel-card h4 { color: #0b3d91; margin: 0 0 0.5rem 0; font-size: 0.88rem; font-weight: 700; }
     .channel-card ul { margin: 0; padding-left: 1.1rem; }
     .channel-card ul li { margin-bottom: 0.25rem; line-height: 1.5; }
 
     /* Considerations box */
-    .considerations-box {
-        background: #f0f4f8;
-        border-left: 4px solid #00a0b0;
-        padding: 0.9rem 1.2rem;
-        margin: 1rem 0 1.5rem 0;
-        border-radius: 0 4px 4px 0;
-        font-size: 0.93rem;
-    }
+    .considerations-box { background: #f0f4f8; border-left: 4px solid #00a0b0; padding: 0.9rem 1.2rem; margin: 1rem 0 1.5rem 0; border-radius: 0 4px 4px 0; font-size: 0.93rem; }
     .considerations-box strong { color: #0b3d91; display: block; margin-bottom: 0.4rem; }
     .considerations-box ul { margin: 0; padding-left: 1.3rem; }
     .considerations-box ul li { margin-bottom: 0.35rem; line-height: 1.6; }
 
-    /* Step boxes */
-    .step-header {
-        background: #0b3d91;
-        color: #fff;
-        padding: 0.7rem 1.1rem;
-        border-radius: 4px 4px 0 0;
-        font-size: 1rem;
-        font-weight: 700;
-        margin-top: 2rem;
-        margin-bottom: 0;
-    }
-    .step-body {
-        border: 1px solid #c0cfe0;
-        border-top: none;
-        border-radius: 0 0 4px 4px;
-        padding: 1.2rem 1.4rem;
-        background: #fff;
-    }
-    .step-body p { margin-bottom: 0.8rem; line-height: 1.7; }
-    .step-body p:last-child { margin-bottom: 0; }
-    .step-body h4 { color: #1a5276; margin: 1rem 0 0.4rem 0; font-size: 0.95rem; }
-    .step-body ul, .step-body ol { margin: 0.3rem 0 0.8rem 1.4rem; }
-    .step-body ul li, .step-body ol li { margin-bottom: 0.35rem; line-height: 1.6; }
-
-    /* Purpose sub-label in step */
-    .step-purpose {
-        font-size: 0.82rem;
-        color: #555;
-        font-style: italic;
-        margin: 0 0 0.8rem 0;
-        border-left: 3px solid #00a0b0;
-        padding-left: 0.7rem;
-    }
-
     /* Rule box */
-    .rule-box {
-        background: #fff8e1;
-        border-left: 4px solid #f0a500;
-        padding: 0.6rem 1rem;
-        margin: 0.8rem 0;
-        border-radius: 0 4px 4px 0;
-        font-size: 0.9rem;
-        line-height: 1.6;
-    }
+    .rule-box { background: #fff8e1; border-left: 4px solid #f0a500; padding: 0.6rem 1rem; margin: 0.8rem 0; border-radius: 0 4px 4px 0; font-size: 0.9rem; line-height: 1.6; }
 
-    /* Example box */
-    .example-box {
-        background: #f0f9fb;
-        border: 1px solid #00a0b0;
-        border-left: 5px solid #00a0b0;
-        border-radius: 4px;
-        padding: 1rem 1.2rem;
-        margin: 1rem 0 0.5rem 0;
-        font-size: 0.9rem;
-    }
-    .example-box h5 {
-        margin: 0 0 0.6rem 0;
-        color: #0b3d91;
-        font-size: 0.88rem;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-    }
-    .example-box p { margin-bottom: 0.5rem; line-height: 1.65; }
-    .example-box ul { margin: 0.3rem 0 0.5rem 1.2rem; padding: 0; }
-    .example-box ul li { margin-bottom: 0.45rem; line-height: 1.6; }
-
-    /* Chain link example (flood) */
+    /* Chain link example */
     .chain-example { margin: 0.8rem 0; }
-    .chain-example-item {
-        display: flex;
-        gap: 0.8rem;
-        margin-bottom: 0.7rem;
-        align-items: flex-start;
-        font-size: 0.88rem;
-        line-height: 1.6;
-    }
-    .chain-tag {
-        flex-shrink: 0;
-        background: #0b3d91;
-        color: #fff;
-        border-radius: 4px;
-        padding: 0.2rem 0.6rem;
-        font-weight: 700;
-        font-size: 0.8rem;
-        margin-top: 2px;
-    }
+    .chain-example-item { display: flex; gap: 0.8rem; margin-bottom: 0.7rem; align-items: flex-start; font-size: 0.88rem; line-height: 1.6; }
+    .chain-tag { flex-shrink: 0; background: #0b3d91; color: #fff; border-radius: 4px; padding: 0.2rem 0.6rem; font-weight: 700; font-size: 0.8rem; margin-top: 2px; }
     .chain-content {}
     .chain-content strong { display: block; color: #1a5276; margin-bottom: 0.1rem; }
     .chain-content em { color: #555; font-size: 0.85rem; }
-
-    .page-note {
-        font-size: 0.8rem;
-        color: #888;
-        text-align: right;
-        margin-top: 0.5rem;
-        font-style: italic;
-    }
 </style>
 
 <div class="page-header">

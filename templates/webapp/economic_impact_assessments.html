@@ -3,40 +3,12 @@
 {% block title %}Economic Impact Assessments — Solution Co-Development Toolkit{% endblock %}
 {% block content %}
 <style>
-    .section-intro { margin-bottom: 2rem; }
-    .section-intro p { margin-bottom: 1rem; line-height: 1.7; }
+    /* Phase colours — backgrounds from toolkit.css; page adds outline */
+    .phase-1 { outline: 2px solid #c0392b; }
 
-    /* Phase grid */
-    .phases-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 0.75rem;
-        margin: 1.5rem 0;
-    }
-    .phase-card {
-        border-radius: 6px;
-        padding: 1rem;
-        font-size: 0.88rem;
-    }
-    .phase-card h4 { margin: 0 0 0.6rem 0; font-size: 0.9rem; color: #0b3d91; }
-    .phase-card ul { margin: 0; padding-left: 1.1rem; }
-    .phase-card ul li { margin-bottom: 0.3rem; line-height: 1.5; }
-    .phase-1 { background: #cce0f5; outline: 2px solid #c0392b; }
-    .phase-2 { background: #c8dff5; }
-    .phase-3 { background: #d4edda; }
-    .phase-4 { background: #d5eddf; }
-
-    /* Related tools note */
-    .related-box {
-        background: #f0f4f8;
-        border-left: 4px solid #00a0b0;
-        padding: 1rem 1.2rem;
-        margin: 1.5rem 0;
-        border-radius: 0 4px 4px 0;
-        font-size: 0.95rem;
-        line-height: 1.6;
-    }
-    .related-box strong { color: #0b3d91; }
+    /* Subsection headings — h3 styled as section dividers on this page */
+    .subsection h3 { color: #0b3d91; border-bottom: 2px solid #00a0b0; padding-bottom: 0.4rem; margin-bottom: 1rem; }
+    .subsection h4 { color: #1a5276; margin: 1.2rem 0 0.5rem 0; }
 
     /* Phase implementation table */
     .phase-table {
@@ -115,26 +87,7 @@
     .methods-table tr:nth-child(even) td { background: #fff; }
     .methods-table td:first-child { font-weight: 600; }
 
-    /* Example box */
-    .example-box {
-        background: #f0f9fb;
-        border: 1px solid #00a0b0;
-        border-left: 5px solid #00a0b0;
-        border-radius: 4px;
-        padding: 1.2rem 1.4rem;
-        margin: 1.2rem 0 1.5rem 0;
-        font-size: 0.93rem;
-    }
-    .example-box h4 {
-        margin: 0 0 0.75rem 0;
-        color: #0b3d91;
-        font-size: 0.95rem;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-    }
-    .example-box p { margin-bottom: 0.6rem; line-height: 1.65; }
-    .example-box ul { margin: 0.4rem 0 0.6rem 1.3rem; }
-    .example-box ul li { margin-bottom: 0.3rem; line-height: 1.6; }
+    /* Example box extra elements */
     .example-box .formula {
         background: #fff;
         border: 1px solid #b0d8e0;
@@ -161,100 +114,24 @@
     .references-list { margin: 0.5rem 0 1rem 1.5rem; padding: 0; }
     .references-list li { margin-bottom: 0.6rem; line-height: 1.6; font-size: 0.9rem; }
 
-    /* Sub-section dividers */
-    .subsection { margin-top: 2.5rem; }
-    .subsection h3 { color: #0b3d91; border-bottom: 2px solid #00a0b0; padding-bottom: 0.4rem; margin-bottom: 1rem; }
-    .subsection h4 { color: #1a5276; margin: 1.2rem 0 0.5rem 0; }
-
-    .page-note {
-        font-size: 0.8rem;
-        color: #888;
-        text-align: right;
-        margin-top: 0.5rem;
-        font-style: italic;
-    }
-
-    /* ── Responsive ── */
-
-    /* Phase grid: 4 → 2 columns at medium width */
-    @media (max-width: 900px) {
-        .phases-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
-    }
-
-    /* Phase grid: 2 → 1 column at small width */
-    @media (max-width: 500px) {
-        .phases-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-
     /* Phase table: flip to stacked cards below 860px */
     @media (max-width: 860px) {
-        .phase-table thead {
-            display: none;
-        }
-        .phase-table,
-        .phase-table tbody,
-        .phase-table tr,
-        .phase-table td {
-            display: block;
-            width: 100%;
-        }
-        .phase-table tr {
-            margin-bottom: 1rem;
-            border: 1px solid #d0d8e4;
-            border-radius: 6px;
-            overflow: hidden;
-        }
-        .phase-table tr:nth-child(odd) td,
-        .phase-table tr:nth-child(even) td {
-            background: #fff;
-        }
-        .phase-table td:first-child {
-            background: #0b3d91;
-            color: #fff;
-            padding: 0.65rem 1rem;
-            font-size: 0.88rem;
-        }
-        .phase-table td:last-child {
-            padding: 0.85rem 1rem;
-            background: #f5f8fc;
-        }
+        .phase-table thead { display: none; }
+        .phase-table, .phase-table tbody, .phase-table tr, .phase-table td { display: block; width: 100%; }
+        .phase-table tr { margin-bottom: 1rem; border: 1px solid #d0d8e4; border-radius: 6px; overflow: hidden; }
+        .phase-table tr:nth-child(odd) td, .phase-table tr:nth-child(even) td { background: #fff; }
+        .phase-table td:first-child { background: #0b3d91; color: #fff; padding: 0.65rem 1rem; font-size: 0.88rem; }
+        .phase-table td:last-child { padding: 0.85rem 1rem; background: #f5f8fc; }
     }
 
     /* Methods tables: flip to stacked cards below 640px */
     @media (max-width: 640px) {
-        .methods-table thead {
-            display: none;
-        }
-        .methods-table,
-        .methods-table tbody,
-        .methods-table tr,
-        .methods-table td {
-            display: block;
-            width: 100%;
-        }
-        .methods-table tr {
-            margin-bottom: 0.75rem;
-            border: 1px solid #d0d8e4;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        .methods-table td:first-child {
-            background: #1a5276;
-            color: #fff;
-            padding: 0.55rem 1rem;
-            font-size: 0.87rem;
-        }
-        .methods-table td:last-child {
-            background: #f5f8fc;
-        }
-        .methods-table tr:nth-child(odd) td,
-        .methods-table tr:nth-child(even) td {
-            background: inherit;
-        }
+        .methods-table thead { display: none; }
+        .methods-table, .methods-table tbody, .methods-table tr, .methods-table td { display: block; width: 100%; }
+        .methods-table tr { margin-bottom: 0.75rem; border: 1px solid #d0d8e4; border-radius: 4px; overflow: hidden; }
+        .methods-table td:first-child { background: #1a5276; color: #fff; padding: 0.55rem 1rem; font-size: 0.87rem; }
+        .methods-table td:last-child { background: #f5f8fc; }
+        .methods-table tr:nth-child(odd) td, .methods-table tr:nth-child(even) td { background: inherit; }
     }
 </style>
 

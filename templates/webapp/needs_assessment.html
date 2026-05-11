@@ -3,198 +3,48 @@
 {% block title %}Needs Assessment — Solution Co-Development Toolkit{% endblock %}
 {% block content %}
 <style>
-    .section-intro p { margin-bottom: 0.9rem; line-height: 1.7; }
-
-    /* Subsection styling */
-    .subsection { margin-top: 2.5rem; }
-    .subsection > h2 { color: #0b3d91; border-bottom: 2px solid #00a0b0; padding-bottom: 0.4rem; margin-bottom: 1rem; }
-    .subsection > h3 { color: #1a5276; margin: 1.5rem 0 0.6rem 0; }
-    .subsection p { margin-bottom: 0.9rem; line-height: 1.7; }
-
-    /* Bullet lists */
-    .content-list { margin: 0.4rem 0 1rem 1.5rem; }
-    .content-list li { margin-bottom: 0.4rem; line-height: 1.6; }
-
-    /* Related tools box */
-    .related-box {
-        background: #f0f4f8;
-        border-left: 4px solid #00a0b0;
-        padding: 0.9rem 1.2rem;
-        margin: 1rem 0 1.5rem 0;
-        border-radius: 0 4px 4px 0;
-        font-size: 0.93rem;
-        line-height: 1.7;
-    }
-    .related-box strong { color: #0b3d91; }
-    .related-box ul { margin: 0.4rem 0 0 1.3rem; }
-    .related-box ul li { margin-bottom: 0.3rem; }
-
     /* Workflow table */
-    .workflow-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 1.2rem 0;
-        font-size: 0.85rem;
-    }
-    .workflow-table th {
-        background: #0b3d91;
-        color: #fff;
-        padding: 0.6rem 0.8rem;
-        text-align: left;
-        font-weight: 600;
-        vertical-align: top;
-    }
-    .workflow-table td {
-        padding: 0.7rem 0.8rem;
-        border: 1px solid #c0cfe0;
-        vertical-align: top;
-        line-height: 1.6;
-    }
+    .workflow-table { width: 100%; border-collapse: collapse; margin: 1.2rem 0; font-size: 0.85rem; }
+    .workflow-table th { background: #0b3d91; color: #fff; padding: 0.6rem 0.8rem; text-align: left; font-weight: 600; vertical-align: top; }
+    .workflow-table td { padding: 0.7rem 0.8rem; border: 1px solid #c0cfe0; vertical-align: top; line-height: 1.6; }
     .workflow-table tr:nth-child(odd) td { background: #f5f8fc; }
     .workflow-table tr:nth-child(even) td { background: #fff; }
     .workflow-table td:first-child { font-weight: 700; color: #0b3d91; white-space: nowrap; }
 
     /* Numbered core methods */
     .methods-numbered { margin: 0.5rem 0 1rem 0; padding: 0; list-style: none; }
-    .methods-numbered li {
-        display: flex;
-        gap: 0.9rem;
-        margin-bottom: 1rem;
-        line-height: 1.65;
-    }
-    .methods-numbered li .num {
-        flex-shrink: 0;
-        width: 26px;
-        height: 26px;
-        background: #0b3d91;
-        color: #fff;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 700;
-        font-size: 0.82rem;
-        margin-top: 2px;
-    }
+    .methods-numbered li { display: flex; gap: 0.9rem; margin-bottom: 1rem; line-height: 1.65; }
+    .methods-numbered li .num { flex-shrink: 0; width: 26px; height: 26px; background: #0b3d91; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.82rem; margin-top: 2px; }
 
     /* Optional methods */
     .optional-methods { margin: 0.5rem 0 1rem 0; }
-    .optional-item {
-        border-left: 3px solid #00a0b0;
-        padding: 0.5rem 0 0.5rem 1rem;
-        margin-bottom: 0.8rem;
-        line-height: 1.65;
-    }
+    .optional-item { border-left: 3px solid #00a0b0; padding: 0.5rem 0 0.5rem 1rem; margin-bottom: 0.8rem; line-height: 1.65; }
 
-    /* Methods tables (picking rules) */
-    .methods-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 0.8rem 0 1.5rem 0;
-        font-size: 0.85rem;
-    }
-    .methods-table th {
-        background: #0b3d91;
-        color: #fff;
-        padding: 0.6rem 0.8rem;
-        text-align: left;
-        font-weight: 600;
-        vertical-align: top;
-    }
-    .methods-table td {
-        padding: 0.65rem 0.8rem;
-        border: 1px solid #c0cfe0;
-        vertical-align: top;
-        line-height: 1.6;
-    }
+    /* Methods tables */
+    .methods-table { width: 100%; border-collapse: collapse; margin: 0.8rem 0 1.5rem 0; font-size: 0.85rem; }
+    .methods-table th { background: #0b3d91; color: #fff; padding: 0.6rem 0.8rem; text-align: left; font-weight: 600; vertical-align: top; }
+    .methods-table td { padding: 0.65rem 0.8rem; border: 1px solid #c0cfe0; vertical-align: top; line-height: 1.6; }
     .methods-table tr:nth-child(odd) td { background: #f5f8fc; }
     .methods-table tr:nth-child(even) td { background: #fff; }
     .methods-table td:first-child { font-weight: 600; }
 
     /* Rigor level key */
-    .rigor-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.75rem;
-        margin: 1rem 0 1.5rem 0;
-    }
-    .rigor-card {
-        background: #f5f8fc;
-        border: 1px solid #c0cfe0;
-        border-radius: 4px;
-        padding: 0.75rem 1rem;
-        font-size: 0.88rem;
-        line-height: 1.6;
-    }
+    .rigor-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; margin: 1rem 0 1.5rem 0; }
+    .rigor-card { background: #f5f8fc; border: 1px solid #c0cfe0; border-radius: 4px; padding: 0.75rem 1rem; font-size: 0.88rem; line-height: 1.6; }
     .rigor-card strong { color: #0b3d91; display: block; margin-bottom: 0.2rem; }
 
-    /* Example scenario box */
-    .example-box {
-        background: #f0f9fb;
-        border: 1px solid #00a0b0;
-        border-left: 5px solid #00a0b0;
-        border-radius: 4px;
-        padding: 1rem 1.2rem;
-        margin: 1rem 0 1.5rem 0;
-        font-size: 0.92rem;
-    }
-    .example-box h5 {
-        margin: 0 0 0.6rem 0;
-        color: #0b3d91;
-        font-size: 0.9rem;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-    }
-    .example-box p { margin-bottom: 0.5rem; line-height: 1.65; }
-    .example-box ul { margin: 0.3rem 0 0.5rem 1.2rem; }
-    .example-box ul li { margin-bottom: 0.35rem; line-height: 1.6; }
-
     /* Theme mapping table */
-    .theme-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 0.8rem 0 1.2rem 0;
-        font-size: 0.9rem;
-    }
-    .theme-table th {
-        background: #0b3d91;
-        color: #fff;
-        padding: 0.6rem 0.9rem;
-        text-align: left;
-        font-weight: 600;
-    }
-    .theme-table td {
-        padding: 0.65rem 0.9rem;
-        border: 1px solid #c0cfe0;
-        vertical-align: top;
-        line-height: 1.6;
-    }
+    .theme-table { width: 100%; border-collapse: collapse; margin: 0.8rem 0 1.2rem 0; font-size: 0.9rem; }
+    .theme-table th { background: #0b3d91; color: #fff; padding: 0.6rem 0.9rem; text-align: left; font-weight: 600; }
+    .theme-table td { padding: 0.65rem 0.9rem; border: 1px solid #c0cfe0; vertical-align: top; line-height: 1.6; }
     .theme-table tr:nth-child(odd) td { background: #f5f8fc; }
     .theme-table tr:nth-child(even) td { background: #fff; }
 
     /* Prioritization matrix */
-    .priority-matrix {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 1rem 0 0.5rem 0;
-        font-size: 0.85rem;
-    }
-    .priority-matrix th {
-        background: #0b3d91;
-        color: #fff;
-        padding: 0.6rem 0.8rem;
-        text-align: center;
-        font-weight: 600;
-        border: 1px solid #8090a8;
-    }
+    .priority-matrix { width: 100%; border-collapse: collapse; margin: 1rem 0 0.5rem 0; font-size: 0.85rem; }
+    .priority-matrix th { background: #0b3d91; color: #fff; padding: 0.6rem 0.8rem; text-align: center; font-weight: 600; border: 1px solid #8090a8; }
     .priority-matrix th:first-child { text-align: left; }
-    .priority-matrix td {
-        padding: 0.7rem 0.8rem;
-        border: 1px solid #8090a8;
-        vertical-align: middle;
-        line-height: 1.55;
-        font-size: 0.83rem;
-    }
+    .priority-matrix td { padding: 0.7rem 0.8rem; border: 1px solid #8090a8; vertical-align: middle; line-height: 1.55; font-size: 0.83rem; }
     .priority-matrix td:first-child { font-weight: 700; background: #e8eef5; color: #0b3d91; }
     .cell-dark-green { background: #1a7a3a !important; color: #fff; }
     .cell-green { background: #2ecc71 !important; color: #fff; }
@@ -206,70 +56,26 @@
     .cell-red { background: #e74c3c !important; color: #fff; }
     .cell-red-light { background: #f1948a !important; color: #fff; }
 
-    .priority-legend {
-        display: flex;
-        gap: 1.5rem;
-        margin: 0.5rem 0 1.5rem 0;
-        flex-wrap: wrap;
-        font-size: 0.85rem;
-    }
+    .priority-legend { display: flex; gap: 1.5rem; margin: 0.5rem 0 1.5rem 0; flex-wrap: wrap; font-size: 0.85rem; }
     .legend-item { display: flex; align-items: center; gap: 0.4rem; }
-    .legend-swatch {
-        width: 16px;
-        height: 16px;
-        border-radius: 3px;
-        flex-shrink: 0;
-    }
+    .legend-swatch { width: 16px; height: 16px; border-radius: 3px; flex-shrink: 0; }
 
     /* Interview guide subsections */
-    .guide-principle {
-        margin-bottom: 1.4rem;
-    }
-    .guide-principle h4 {
-        color: #0b3d91;
-        margin: 0 0 0.5rem 0;
-        font-size: 0.95rem;
-        border-left: 3px solid #00a0b0;
-        padding-left: 0.6rem;
-    }
+    .guide-principle { margin-bottom: 1.4rem; }
+    .guide-principle h4 { color: #0b3d91; margin: 0 0 0.5rem 0; font-size: 0.95rem; border-left: 3px solid #00a0b0; padding-left: 0.6rem; }
     .guide-principle ul { margin: 0.3rem 0 0 1.4rem; }
     .guide-principle ul li { margin-bottom: 0.45rem; line-height: 1.65; }
 
     /* Interview prompts table */
-    .prompts-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 1rem 0 1.5rem 0;
-        font-size: 0.84rem;
-    }
-    .prompts-table th {
-        background: #0b3d91;
-        color: #fff;
-        padding: 0.6rem 0.8rem;
-        text-align: left;
-        font-weight: 600;
-        vertical-align: top;
-    }
-    .prompts-table td {
-        padding: 0.7rem 0.8rem;
-        border: 1px solid #c0cfe0;
-        vertical-align: top;
-        line-height: 1.6;
-    }
+    .prompts-table { width: 100%; border-collapse: collapse; margin: 1rem 0 1.5rem 0; font-size: 0.84rem; }
+    .prompts-table th { background: #0b3d91; color: #fff; padding: 0.6rem 0.8rem; text-align: left; font-weight: 600; vertical-align: top; }
+    .prompts-table td { padding: 0.7rem 0.8rem; border: 1px solid #c0cfe0; vertical-align: top; line-height: 1.6; }
     .prompts-table tr:nth-child(odd) td { background: #f5f8fc; }
     .prompts-table tr:nth-child(even) td { background: #fff; }
     .prompts-table td:first-child { font-weight: 600; color: #0b3d91; }
     .prompts-table ul { margin: 0.3rem 0 0 1.1rem; padding: 0; }
     .prompts-table ul li { margin-bottom: 0.3rem; }
     .prompts-table em { color: #555; }
-
-    .page-note {
-        font-size: 0.8rem;
-        color: #888;
-        text-align: right;
-        margin-top: 0.5rem;
-        font-style: italic;
-    }
 </style>
 
 <div class="page-header">

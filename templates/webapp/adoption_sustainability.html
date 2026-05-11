@@ -3,113 +3,32 @@
 {% block title %}Solution Adoption and Sustainability Plan — Solution Co-Development Toolkit{% endblock %}
 {% block content %}
 <style>
-    .section-intro p { margin-bottom: 0.9rem; line-height: 1.7; }
+    /* Phase colours — backgrounds from toolkit.css; page adds outlines */
 
-    /* Phase grid */
-    .phases-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 0.75rem;
-        margin: 1.5rem 0;
-    }
-    .phase-card {
-        border-radius: 6px;
-        padding: 1rem;
-        font-size: 0.88rem;
-    }
-    .phase-card h4 { margin: 0 0 0.6rem 0; font-size: 0.9rem; color: #0b3d91; }
-    .phase-card ul { margin: 0; padding-left: 1.1rem; }
-    .phase-card ul li { margin-bottom: 0.3rem; line-height: 1.5; }
-    .phase-1 { background: #cce0f5; }
-    .phase-2 { background: #c8dff5; outline: 2px solid #c0392b; }
-    .phase-3 { background: #d4edda; outline: 2px dashed #c0392b; }
-    .phase-4 { background: #d5eddf; outline: 2px dashed #c0392b; }
 
-    /* Numbered plan sections */
-    .plan-section {
-        margin-top: 2.2rem;
-        padding-top: 0.5rem;
-        border-top: 1px solid #d0dae8;
-    }
-    .plan-section > h2 {
-        color: #0b3d91;
-        font-size: 1.2rem;
-        margin-bottom: 0.7rem;
-    }
-    .plan-section p { margin-bottom: 0.8rem; line-height: 1.7; }
-
-    /* Sub-sections */
-    .plan-subsection { margin-top: 1.4rem; }
-    .plan-subsection > h3 { color: #1a5276; font-size: 1rem; margin-bottom: 0.6rem; }
-    .plan-subsection p { margin-bottom: 0.8rem; line-height: 1.7; }
-
-    /* Bullet lists */
-    .content-list { margin: 0.4rem 0 1rem 1.5rem; }
-    .content-list li { margin-bottom: 0.4rem; line-height: 1.6; font-size: 0.93rem; }
 
     /* Solution info labels */
-    .info-label {
-        font-weight: 700;
-        color: #0b3d91;
-        font-size: 0.93rem;
-    }
+    .info-label { font-weight: 700; color: #0b3d91; font-size: 0.93rem; }
 
     /* Italic table instruction */
-    .table-note {
-        font-style: italic;
-        font-size: 0.88rem;
-        color: #555;
-        margin-bottom: 0.5rem;
-    }
+    .table-note { font-style: italic; font-size: 0.88rem; color: #555; margin-bottom: 0.5rem; }
 
     /* Fillable tables */
-    .fill-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 0.5rem 0 1.2rem 0;
-        font-size: 0.86rem;
-    }
-    .fill-table th {
-        background: #0b3d91;
-        color: #fff;
-        padding: 0.6rem 0.9rem;
-        text-align: left;
-        font-weight: 600;
-    }
-    .fill-table td {
-        padding: 0.6rem 0.9rem;
-        border: 1px solid #c0cfe0;
-        vertical-align: top;
-        line-height: 1.55;
-        min-height: 2rem;
-    }
+    .fill-table { width: 100%; border-collapse: collapse; margin: 0.5rem 0 1.2rem 0; font-size: 0.86rem; }
+    .fill-table th { background: #0b3d91; color: #fff; padding: 0.6rem 0.9rem; text-align: left; font-weight: 600; }
+    .fill-table td { padding: 0.6rem 0.9rem; border: 1px solid #c0cfe0; vertical-align: top; line-height: 1.55; min-height: 2rem; }
     .fill-table tr:nth-child(odd) td { background: #f5f8fc; }
     .fill-table tr:nth-child(even) td { background: #fff; }
     .fill-table td:first-child { font-weight: 500; color: #1a3a5c; }
 
-    /* Risk table – pre-filled example rows */
+    /* Risk table */
     .risk-table td { font-size: 0.85rem; }
     .risk-high { color: #c0392b; font-weight: 600; }
     .risk-med { color: #e67e22; font-weight: 600; }
     .risk-low { color: #27ae60; font-weight: 600; }
 
     /* Gantt note */
-    .gantt-note {
-        font-style: italic;
-        font-size: 0.88rem;
-        color: #555;
-        margin-top: 0.4rem;
-    }
-
-    hr.section-rule { border: none; border-top: 1px solid #d0dae8; margin: 2rem 0; }
-
-    .page-note {
-        font-size: 0.8rem;
-        color: #888;
-        text-align: right;
-        margin-top: 0.5rem;
-        font-style: italic;
-    }
+    .gantt-note { font-style: italic; font-size: 0.88rem; color: #555; margin-top: 0.4rem; }
 </style>
 
 <div class="page-header">
