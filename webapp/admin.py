@@ -29,9 +29,10 @@ class IngestedDocumentAdmin(admin.ModelAdmin):
 
 @admin.register(NavSection)
 class NavSectionAdmin(admin.ModelAdmin):
-    list_display = ('name', 'order', 'slug', 'url_name')
+    list_display = ('name', 'order', 'slug', 'is_dynamic', 'is_published', 'url_name')
     list_display_links = ('name',)
-    list_editable = ('order',)
+    list_editable = ('order', 'is_published')
+    list_filter = ('is_dynamic', 'is_published')
     ordering = ('order',)
 
 

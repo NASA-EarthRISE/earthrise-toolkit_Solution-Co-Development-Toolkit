@@ -4,6 +4,7 @@ import json
 import mimetypes
 
 from django.contrib.admin.views.decorators import staff_member_required
+from django.db.models import F
 from django.http import JsonResponse, HttpResponseBadRequest, StreamingHttpResponse, FileResponse, Http404
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
@@ -119,6 +120,95 @@ def save_page_content(request):
         return JsonResponse({'ok': True})
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+
+def dynamic_page(request, slug):
+    try:
+        nav_section = NavSection.objects.get(slug=slug, is_dynamic=True)
+    except NavSection.DoesNotExist:
+        raise Http404
+    is_staff = request.user.is_staff if (request and request.user.is_authenticated) else False
+    if not nav_section.is_published and not is_staff:
+        raise Http404
+    ctx = _ctx(slug, request=request, extra={
+        'nav_section': nav_section,
+        'is_dynamic': True,
+        'is_published': nav_section.is_published,
+    })
+    return render(request, 'webapp/dynamic_page.html', ctx)
+
+
+@require_POST
+@staff_member_required
+def api_create_page(request):
+    try:
+        data = json.loads(request.body)
+        name = data.get('name', '').strip()
+        slug = data.get('slug', '').strip()
+        desc = data.get('desc', '').strip()
+        insert_after_slug = data.get('insert_after_slug', '').strip()
+
+        if not name or not slug:
+            return JsonResponse({'error': 'name and slug are required'}, status=400)
+
+        # Validate slug format
+        import re as _re
+        if not _re.match(r'^[a-z0-9]+(?:-[a-z0-9]+)*$', slug):
+            return JsonResponse({'error': 'Slug must be lowercase letters, numbers and hyphens only'}, status=400)
+
+        if NavSection.objects.filter(slug=slug).exists():
+            return JsonResponse({'error': f'Slug "{slug}" is already in use'}, status=400)
+
+        # Determine insertion order
+        if insert_after_slug:
+            try:
+                after = NavSection.objects.get(slug=insert_after_slug)
+                new_order = after.order + 1
+                # Shift existing sections up to make room
+                NavSection.objects.filter(order__gte=new_order).update(order=F('order') + 1)
+            except NavSection.DoesNotExist:
+                new_order = (NavSection.objects.order_by('-order').values_list('order', flat=True).first() or 0) + 1
+        else:
+            new_order = (NavSection.objects.order_by('-order').values_list('order', flat=True).first() or 0) + 1
+
+        NavSection.objects.create(
+            name=name,
+            slug=slug,
+            desc=desc,
+            url_name='',
+            order=new_order,
+            is_dynamic=True,
+            is_published=False,
+        )
+        return JsonResponse({'ok': True, 'slug': slug, 'redirect_url': f'/tools/{slug}/'})
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON'}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+
+@require_POST
+@staff_member_required
+def api_publish_page(request, slug):
+    try:
+        nav_section = NavSection.objects.get(slug=slug, is_dynamic=True)
+    except NavSection.DoesNotExist:
+        return JsonResponse({'error': 'Page not found'}, status=404)
+    nav_section.is_published = True
+    nav_section.save()
+    return JsonResponse({'ok': True})
+
+
+@require_POST
+@staff_member_required
+def api_delete_page(request, slug):
+    try:
+        nav_section = NavSection.objects.get(slug=slug, is_dynamic=True)
+    except NavSection.DoesNotExist:
+        return JsonResponse({'error': 'Page not found'}, status=404)
+    PageContent.objects.filter(slug=slug).delete()
+    nav_section.delete()
+    return JsonResponse({'ok': True, 'redirect': '/'})
+
 
 @csrf_exempt
 @require_POST

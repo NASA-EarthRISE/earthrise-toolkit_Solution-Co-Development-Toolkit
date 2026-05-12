@@ -331,54 +331,21 @@
         and tools for every stage of co-developed solution design — ensuring Earth observation data translates into
         real-world decisions and measurable outcomes.
     </div>
-
-    <!-- Phase lifecycle -->
-{#    <div class="home-section-label">Co-Development Lifecycle</div>#}
-{#    <div class="phase-row">#}
-{#        <div class="phase-item" style="--pc: #2980b9;">#}
-{#            <div class="p-num">Phase 1</div>#}
-{#            <div class="p-name">Assessing Needs &amp; Potential Impact</div>#}
-{#            <div class="p-desc">Identify stakeholders, assess decision contexts, and define the problem and opportunity#}
-{#                for impact.#}
-{#            </div>#}
-{#        </div>#}
-{#        <div class="phase-item" style="--pc: #0b3d91;">#}
-{#            <div class="p-num">Phase 2</div>#}
-{#            <div class="p-name">Solution Co-Design</div>#}
-{#            <div class="p-desc">Co-design solution concepts, define requirements and success metrics, and plan for#}
-{#                implementation.#}
-{#            </div>#}
-{#        </div>#}
-{#        <div class="phase-item" style="--pc: #16a085;">#}
-{#            <div class="p-num">Phase 3</div>#}
-{#            <div class="p-name">Prototyping &amp; Co-Development</div>#}
-{#            <div class="p-desc">Build and test prototypes, conduct user testing and iteration, and prepare workflows and#}
-{#                training.#}
-{#            </div>#}
-{#        </div>#}
-{#        <div class="phase-item" style="--pc: #27ae60;">#}
-{#            <div class="p-num">Phase 4</div>#}
-{#            <div class="p-name">Transition &amp; Impact Assessment</div>#}
-{#            <div class="p-desc">Deploy solutions, transfer ownership, collect evidence of use, and plan for scaling and#}
-{#                replication.#}
-{#            </div>#}
-{#        </div>#}
-{#    </div>#}
-
-
-
+    
     <!-- Section cards -->
     <div class="home-section-label">Toolkit Sections</div>
     <div class="section-grid">
         {% for section in nav_sections %}
-            <a href="{% url section.url_name %}" class="section-card">
+            {% if section.is_published or is_staff %}
+            <a href="{% if section.is_dynamic %}/tools/{{ section.slug }}/{% else %}{% url section.url_name %}{% endif %}" class="section-card">
                 <div class="card-num">{{ forloop.counter }}</div>
                 <div>
-                    <div class="card-title">{{ section.name }}</div>
+                    <div class="card-title">{{ section.name }}{% if section.is_dynamic and not section.is_published %} <span style="font-size:0.7rem;font-weight:400;opacity:0.6;">(draft)</span>{% endif %}</div>
                     {% if section.desc %}
                         <div class="card-desc">{{ section.desc }}</div>{% endif %}
                 </div>
             </a>
+            {% endif %}
         {% endfor %}
     </div>
 {% endblock %}
