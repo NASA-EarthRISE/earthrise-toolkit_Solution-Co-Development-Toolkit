@@ -16,11 +16,13 @@ class PageContent(models.Model):
 
 
 class NavSection(models.Model):
-    order = models.PositiveSmallIntegerField(default=0)
-    name = models.CharField(max_length=120)
-    url_name = models.CharField(max_length=120)
-    slug = models.SlugField(max_length=120, unique=True)
-    desc = models.TextField(blank=True)
+    order        = models.PositiveSmallIntegerField(default=0)
+    name         = models.CharField(max_length=120)
+    url_name     = models.CharField(max_length=120, blank=True)
+    slug         = models.SlugField(max_length=120, unique=True)
+    desc         = models.TextField(blank=True)
+    is_dynamic   = models.BooleanField(default=False)
+    is_published = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['order']

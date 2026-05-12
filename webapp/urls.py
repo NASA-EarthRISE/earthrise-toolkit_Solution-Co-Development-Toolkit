@@ -24,10 +24,16 @@ urlpatterns = [
     path('meaningful-metrics/', views.meaningful_metrics, name='meaningful_metrics'),
     path('authors-and-contributors/', views.authors, name='authors'),
 
+    # Dynamic pages (staff-created)
+    path('tools/<slug:slug>/', views.dynamic_page, name='dynamic_page'),
+
     path("api/message", api_message, name="api_message"),
     path("api/stream", api_message_stream, name="api_message_stream"),
     path("api/chat-upload", api_chat_upload, name="api_chat_upload"),
     path("api/save-page-content", save_page_content, name="save_page_content"),
+    path("api/create-page", views.api_create_page, name="api_create_page"),
+    path("api/publish-page/<slug:slug>", views.api_publish_page, name="api_publish_page"),
+    path("api/delete-page/<slug:slug>", views.api_delete_page, name="api_delete_page"),
 
     # Admin upload GUI (staff only)
     path("upload", upload_page, name="upload"),

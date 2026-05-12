@@ -12,19 +12,7 @@
     {#.tk-body li { margin-bottom: 0.4rem; }#}
     {#.tk-body hr { border: none; border-top: 1px solid #d0d7e3; margin: 2rem 0; }#}
 
-    /* Phases diagram */
-    .phases-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 0.75rem;
-        margin: 1.25rem 0 0.5rem;
-    }
-    .phase-card {
-        border-radius: 6px;
-        padding: 0.9rem;
-        font-size: 0.8rem;
-        line-height: 1.45;
-    }
+    /* Phase card variant used on this page (arrow-bullet style) */
     .phase-card .phase-title {
         font-weight: 700;
         font-size: 0.8rem;
@@ -35,11 +23,10 @@
     .phase-card ul { list-style: none; padding: 0; margin: 0; }
     .phase-card ul li { padding: 0.2rem 0 0.2rem 1.2rem; position: relative; }
     .phase-card ul li::before { content: "➤"; position: absolute; left: 0; font-size: 0.65rem; top: 0.3rem; }
-    .phase-1 { background: #cce0f5; color: #1a1a2e; outline: 2px solid #c0392b; }
-    .phase-2 { background: #c8dff5; color: #1a1a2e; }
-    .phase-3 { background: #d4edda; color: #1a1a2e; }
-    .phase-4 { background: #d5eddf; color: #1a1a2e; }
-    .fig-caption { font-style: italic; font-size: 0.82rem; color: #4a4a6a; margin-top: 0.4rem; }
+    .phase-1 { color: #1a1a2e; outline: 2px solid #c0392b; }
+    .phase-2 { color: #1a1a2e; }
+    .phase-3 { color: #1a1a2e; }
+    .phase-4 { color: #1a1a2e; }
 
     /* Results pyramid diagram */
     .results-pyramid {
@@ -134,7 +121,7 @@
         border-top: 1px solid #d0dce8;
     }
 
-    /* Step boxes */
+    /* Step boxes (scoped to .step-box to avoid conflict with toolkit .step-header) */
     .step-box {
         border: 1px solid #d0d7e3;
         border-radius: 8px;
@@ -188,7 +175,6 @@
     .resource-box a { color: #0b3d91; font-weight: 600; }
 
     @media (max-width: 700px) {
-        .phases-grid { grid-template-columns: 1fr 1fr; }
         .logic-chain .lc-outcomes-row { grid-template-columns: 1fr; }
         .logic-chain .lc-outputs-row  { grid-template-columns: 1fr; }
     }

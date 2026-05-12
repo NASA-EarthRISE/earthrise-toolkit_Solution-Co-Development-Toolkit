@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ nav_section.name }} — Solution Co-Development Toolkit{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>{{ nav_section.name }}</h1>
+    {% if nav_section.desc %}<p style="margin:0.5rem 0 0;color:#1a5276;font-size:0.95rem;">{{ nav_section.desc }}</p>{% endif %}
+</div>
+<div class="tk-body">
+    <p style="color:#888;font-style:italic;">This page has no content yet. Use the <strong>Edit Page</strong> button above to add content.</p>
+</div>
+{% endblock %}

@@ -3,35 +3,11 @@
 {% block title %}Data Governance and Storage Plan — Solution Co-Development Toolkit{% endblock %}
 {% block content %}
 <style>
-    .section-intro p { margin-bottom: 0.9rem; line-height: 1.7; }
-
-    /* Phase grid */
-    .phases-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 0.75rem;
-        margin: 1.5rem 0;
-    }
-    .phase-card {
-        border-radius: 6px;
-        padding: 1rem;
-        font-size: 0.88rem;
-    }
-    .phase-card h4 { margin: 0 0 0.6rem 0; font-size: 0.9rem; color: #0b3d91; }
-    .phase-card ul { margin: 0; padding-left: 1.1rem; }
-    .phase-card ul li { margin-bottom: 0.3rem; line-height: 1.5; }
-    .phase-1 { background: #cce0f5; }
-    .phase-2 { background: #c8dff5; outline: 2px solid #c0392b; }
-    .phase-3 { background: #d4edda; }
-    .phase-4 { background: #d5eddf; }
-
-    /* Subsection headers */
-    .subsection > h2 { color: #0b3d91; border-bottom: 2px solid #00a0b0; padding-bottom: 0.4rem; margin-bottom: 1rem; margin-top: 2.5rem; }
+    /* Phase colours — backgrounds from toolkit.css; page adds outline */
+    .phase-2 { outline: 2px solid #c0392b; }
 
     /* Numbered top-level sections (1–10) */
-    .gov-section {
-        margin-top: 2.5rem;
-    }
+    .gov-section { margin-top: 2.5rem; }
     .gov-section > h2 {
         color: #0b3d91;
         font-size: 1.2rem;
@@ -41,49 +17,25 @@
     }
     .gov-section p { margin-bottom: 0.9rem; line-height: 1.7; }
 
-    /* Sub-sections (1.1, 1.2, 2.1, etc.) */
-    .gov-subsection {
-        margin-top: 1.4rem;
-    }
-    .gov-subsection > h3 {
-        color: #1a5276;
-        font-style: italic;
-        font-size: 1rem;
-        margin: 0 0 0.6rem 0;
-    }
+    /* Sub-sections (1.1, 1.2, etc.) */
+    .gov-subsection { margin-top: 1.4rem; }
+    .gov-subsection > h3 { color: #1a5276; font-style: italic; font-size: 1rem; margin: 0 0 0.6rem 0; }
     .gov-subsection p { margin-bottom: 0.8rem; line-height: 1.7; }
 
     /* Data entries (1.1.1, 1.1.2, etc.) */
-    .data-item {
-        margin: 1.1rem 0 0.8rem 0;
-        padding-left: 1rem;
-        border-left: 3px solid #c8dff5;
-    }
-    .data-item > h4 {
-        color: #1a5276;
-        font-style: italic;
-        font-size: 0.93rem;
-        margin: 0 0 0.5rem 0;
-    }
+    .data-item { margin: 1.1rem 0 0.8rem 0; padding-left: 1rem; border-left: 3px solid #c8dff5; }
+    .data-item > h4 { color: #1a5276; font-style: italic; font-size: 0.93rem; margin: 0 0 0.5rem 0; }
     .data-item p { margin-bottom: 0.5rem; line-height: 1.65; font-size: 0.93rem; }
 
     /* Source / Access inline labels */
-    .source-line {
-        font-size: 0.9rem;
-        line-height: 1.6;
-        margin-bottom: 0.3rem;
-    }
+    .source-line { font-size: 0.9rem; line-height: 1.6; margin-bottom: 0.3rem; }
     .source-line strong { color: #0b3d91; }
 
-    /* Standard bullet lists */
-    .content-list { margin: 0.4rem 0 1rem 1.5rem; }
-    .content-list li { margin-bottom: 0.4rem; line-height: 1.6; font-size: 0.93rem; }
-
-    /* Bold-item bullet lists (format key) */
+    /* Bold-item bullet lists */
     .bold-list { margin: 0.4rem 0 1rem 1.5rem; }
     .bold-list li { margin-bottom: 0.4rem; line-height: 1.6; font-size: 0.93rem; }
 
-    /* Nested sub-list (o items) */
+    /* Nested sub-list */
     .sub-list { margin: 0.3rem 0 0.3rem 1.2rem; list-style: circle; }
     .sub-list li { margin-bottom: 0.3rem; line-height: 1.55; font-size: 0.9rem; }
 
@@ -110,44 +62,13 @@
         line-height: 1.7;
     }
 
-    /* Section divider */
-    hr.section-rule {
-        border: none;
-        border-top: 1px solid #d0dae8;
-        margin: 2.5rem 0;
-    }
-
     /* Section 2 checklist table */
-    .checklist-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 1.2rem 0 1rem 0;
-        font-size: 0.88rem;
-    }
-    .checklist-table th {
-        background: #0b3d91;
-        color: #fff;
-        padding: 0.65rem 1rem;
-        text-align: left;
-        font-weight: 600;
-    }
-    .checklist-table td {
-        padding: 0.65rem 1rem;
-        border: 1px solid #c0cfe0;
-        vertical-align: top;
-        line-height: 1.6;
-    }
+    .checklist-table { width: 100%; border-collapse: collapse; margin: 1.2rem 0 1rem 0; font-size: 0.88rem; }
+    .checklist-table th { background: #0b3d91; color: #fff; padding: 0.65rem 1rem; text-align: left; font-weight: 600; }
+    .checklist-table td { padding: 0.65rem 1rem; border: 1px solid #c0cfe0; vertical-align: top; line-height: 1.6; }
     .checklist-table tr:nth-child(odd) td { background: #f5f8fc; }
     .checklist-table tr:nth-child(even) td { background: #fff; }
     .checklist-table td:first-child { font-weight: 600; color: #1a3a5c; }
-
-    .page-note {
-        font-size: 0.8rem;
-        color: #888;
-        text-align: right;
-        margin-top: 0.5rem;
-        font-style: italic;
-    }
 </style>
 
 <div class="page-header">

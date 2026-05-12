@@ -4,7 +4,6 @@
 {% block content %}
 <style>
 
-
     .workflow-box {
         background: #dce8f5;
         border-left: 4px solid #0b3d91;
@@ -24,18 +23,7 @@
     .workflow-box ol li { padding: 0.2rem 0 0.2rem 1.5rem; position: relative; }
     .workflow-box ol li::before { content: "➔"; position: absolute; left: 0; color: #0b3d91; }
 
-    .phases-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 0.75rem;
-        margin: 1.25rem 0 0.5rem;
-    }
-    .phase-card {
-        border-radius: 6px;
-        padding: 0.9rem;
-        font-size: 0.8rem;
-        line-height: 1.45;
-    }
+    /* Phase card variant used on this page (arrow-bullet style) */
     .phase-card .phase-title {
         font-weight: 700;
         font-size: 0.8rem;
@@ -46,17 +34,11 @@
     .phase-card ul { list-style: none; padding: 0; margin: 0; }
     .phase-card ul li { padding: 0.2rem 0 0.2rem 1.2rem; position: relative; }
     .phase-card ul li::before { content: "➤"; position: absolute; left: 0; font-size: 0.65rem; top: 0.3rem; }
-    .phase-1 { background: #cce0f5; color: #1a1a2e; }
-    .phase-2 { background: #c8dff5; color: #1a1a2e; }
-    .phase-3 { background: #d4edda; color: #1a1a2e; }
-    .phase-4 { background: #d5eddf; color: #1a1a2e; }
+    .phase-1 { color: #1a1a2e; }
+    .phase-2 { color: #1a1a2e; }
+    .phase-3 { color: #1a1a2e; }
+    .phase-4 { color: #1a1a2e; }
     .phase-card.highlighted { outline: 2px solid #c0392b; }
-
-    .fig-caption { font-style: italic; font-size: 0.82rem; color: #4a4a6a; margin-top: 0.4rem; }
-
-    @media (max-width: 700px) {
-        .phases-grid { grid-template-columns: 1fr 1fr; }
-    }
 </style>
 
 <div class="page-header">
