@@ -41,3 +41,5 @@ chroma_db/
 
 # Uploads
 uploads/
+
+django_integration.md
