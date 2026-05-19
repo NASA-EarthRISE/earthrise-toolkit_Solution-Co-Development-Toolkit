@@ -125,5 +125,12 @@ RAG_MODE        = os.getenv("RAG_MODE","local")
 RAG_EMBEDDINGS_PROVIDER = os.getenv("RAG_EMBEDDINGS_PROVIDER","openai").lower()
 LOCAL_EMBEDDING_MODEL   = os.getenv("LOCAL_EMBEDDING_MODEL","sentence-transformers/all-MiniLM-L6-v2")
 
+CHROMA_PERSIST_DIR = os.getenv("CHROMA_PERSIST_DIR", "chroma_db")
+CHROMA_COLLECTION  = os.getenv("CHROMA_COLLECTION", "pi_assist_docs")
+
 LITELLM_RAG_SEARCH = os.getenv("LITELLM_RAG_SEARCH","/rag/search")
 LITELLM_RAG_UPSERT = os.getenv("LITELLM_RAG_UPSERT","/rag/upsert")
+
+# Shared Embedding Service
+SHARED_EMBEDDING_SERVICE_URL     = os.getenv("SHARED_EMBEDDING_SERVICE_URL", "http://localhost:8000")
+SHARED_EMBEDDING_SERVICE_API_KEY = os.getenv("SHARED_EMBEDDING_SERVICE_API_KEY", "")
