@@ -35,8 +35,6 @@ def _resolve_persist_dir() -> str:
     p = Path(user_dir) if user_dir else (base_dir / "chroma_db")
     if not p.is_absolute():
         p = base_dir / p
-    os.makedirs(p, exist_ok=True)
-    print(f"[RAG] PERSIST DIR: {p}")  # diagnostic
     return str(p)
 
 CHROMA_PERSIST_DIR = _resolve_persist_dir()
@@ -65,6 +63,7 @@ class ChromaVectorStore:
     """
     def __init__(self):
         import chromadb
+        os.makedirs(CHROMA_PERSIST_DIR, exist_ok=True)
         # PersistentClient writes to disk and loads across processes
         self.chroma = chromadb.PersistentClient(path=CHROMA_PERSIST_DIR)
         self.embedding_function = _build_local_embedding_function()
@@ -178,6 +177,131 @@ class LiteLLMRagClient:
         LOG.info(f"[RAG] Proxy search returned {len(results)} result(s).")
         return results
 
+# ---------- Shared Embedding Service store ----------
+class SharedEmbeddingServiceStore:
+    """
+    Drop-in replacement for ChromaVectorStore that delegates embedding
+    generation and vector storage to the Shared Embedding Service.
+
+    The public interface is identical: upsert / search / delete_session_docs.
+    """
+
+    def __init__(self):
+        self.base = (
+            getattr(settings, "SHARED_EMBEDDING_SERVICE_URL", "http://localhost:8000")
+        ).rstrip("/")
+        self.api_key = getattr(settings, "SHARED_EMBEDDING_SERVICE_API_KEY", "")
+        self.collection = getattr(settings, "CHROMA_COLLECTION", "pi_assist_docs")
+        self._headers = {
+            "X-API-Key": self.api_key,
+            "Content-Type": "application/json",
+        }
+        LOG.info(
+            f"[RAG] Shared Embedding Service: {self.base}  "
+            f"collection: {self.collection}"
+        )
+
+    def upsert(self, docs: List[Dict[str, Any]]):
+        if not docs:
+            return
+        payload = {
+            "documents": [d["text"] for d in docs],
+            "ids":       [d["id"]   for d in docs],
+            "metadatas": [d.get("metadata", {}) for d in docs],
+        }
+        resp = requests.put(
+            f"{self.base}/collections/{self.collection}/documents",
+            json=payload,
+            headers=self._headers,
+            timeout=120,
+        )
+        resp.raise_for_status()
+        LOG.info(f"[RAG] Upserted {len(docs)} doc chunks via shared service.")
+
+    def search(
+        self, query: str, top_k: int = DEFAULT_TOP_K, session_id: str = None
+    ) -> List[Dict[str, Any]]:
+        where = None
+        if session_id:
+            where = {"$or": [{"session_id": session_id}, {"is_global": True}]}
+        else:
+            where = {"is_global": True}
+
+        payload = {
+            "query_texts": [query],
+            "n_results": top_k,
+            "where": where,
+        }
+        resp = requests.post(
+            f"{self.base}/collections/{self.collection}/query",
+            json=payload,
+            headers=self._headers,
+            timeout=30,
+        )
+        resp.raise_for_status()
+        res = resp.json()
+
+        ids       = res.get("ids",       [[]])[0]
+        docs      = res.get("documents", [[]])[0]
+        metadatas = res.get("metadatas", [[]])[0]
+        distances = res.get("distances", [[]])[0] if "distances" in res else [None] * len(ids)
+
+        results = [
+            {"id": ids[i], "text": docs[i], "metadata": metadatas[i], "distance": distances[i]}
+            for i in range(len(ids))
+        ]
+        LOG.info(
+            f"[RAG] Shared-service search (session={session_id}) returned "
+            f"{len(results)} result(s) for query='{query[:80]}...'"
+        )
+        return results
+
+    def delete_session_docs(self, session_id: str):
+        """
+        Delete all chunks for a session.
+
+        The service's DELETE endpoint takes explicit IDs, so we first fetch
+        all documents for this collection and filter by session_id locally,
+        then delete the matching IDs in one call.
+        """
+        if not session_id:
+            return
+        try:
+            # Fetch all IDs + metadata (paginate if collection is large)
+            resp = requests.get(
+                f"{self.base}/collections/{self.collection}/documents",
+                params={"limit": 1000},
+                headers=self._headers,
+                timeout=30,
+            )
+            resp.raise_for_status()
+            data = resp.json()
+
+            ids       = data.get("ids", [])
+            metadatas = data.get("metadatas", [])
+
+            to_delete = [
+                doc_id
+                for doc_id, meta in zip(ids, metadatas)
+                if (meta or {}).get("session_id") == session_id
+            ]
+
+            if not to_delete:
+                return
+
+            del_resp = requests.delete(
+                f"{self.base}/collections/{self.collection}/documents",
+                json={"ids": to_delete},
+                headers=self._headers,
+                timeout=30,
+            )
+            del_resp.raise_for_status()
+            LOG.info(
+                f"[RAG] Deleted {len(to_delete)} session docs for session {session_id}"
+            )
+        except Exception as e:
+            LOG.error(f"[RAG] Error deleting session docs via shared service: {e}")
+
 # ---------- Singleton factory ----------
 # One store instance per process — avoids reloading the embedding model on
 # every request and prevents multiple PersistentClient handles to the same dir.
@@ -189,6 +313,8 @@ def get_store():
         mode = (getattr(settings, "RAG_MODE", "local") or "local").lower()
         if mode == "proxy":
             _store_instance = LiteLLMRagClient()
+        elif mode == "shared":
+            _store_instance = SharedEmbeddingServiceStore()
         else:
             _store_instance = ChromaVectorStore()
     return _store_instance
@@ -252,8 +378,9 @@ def build_context_snippets(query: str, top_k: int = DEFAULT_TOP_K, session_id: s
 
 # ---------- Optional diagnostics ----------
 def diag_info() -> dict:
+    mode = (getattr(settings, "RAG_MODE", "local") or "local").lower()
     info = {
-        "mode": (getattr(settings, "RAG_MODE", "local") or "local").lower(),
+        "mode": mode,
         "persist_dir": CHROMA_PERSIST_DIR,
         "collection": CHROMA_COLLECTION,
         "exists_on_disk": os.path.isdir(CHROMA_PERSIST_DIR),
@@ -263,6 +390,17 @@ def diag_info() -> dict:
         store = get_store()
         if isinstance(store, ChromaVectorStore):
             info["count"] = store.collection.count()
+        elif isinstance(store, SharedEmbeddingServiceStore):
+            resp = requests.get(
+                f"{store.base}/collections",
+                headers=store._headers,
+                timeout=10,
+            )
+            resp.raise_for_status()
+            for col in resp.json():
+                if col["name"] == store.collection:
+                    info["count"] = col["count"]
+                    break
     except Exception as e:
         info["error"] = str(e)
     return info
