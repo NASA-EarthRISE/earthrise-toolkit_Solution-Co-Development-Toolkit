@@ -41,11 +41,11 @@ def _resolve_persist_dir() -> str:
 
 CHROMA_PERSIST_DIR = _resolve_persist_dir()
 CHROMA_COLLECTION  = getattr(settings, "CHROMA_COLLECTION", "pi_assist_docs")
-DEFAULT_TOP_K      = 15
+DEFAULT_TOP_K      = 20
 
 # Cosine distance threshold: chunks with distance >= this value are considered
 # too dissimilar and are filtered out. (distance = 1 - cosine_similarity)
-DISTANCE_THRESHOLD = 0.65
+DISTANCE_THRESHOLD = 0.75
 
 # ---------- Local embeddings ----------
 def _build_local_embedding_function():

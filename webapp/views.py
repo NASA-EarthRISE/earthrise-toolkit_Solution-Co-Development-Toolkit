@@ -323,7 +323,7 @@ def api_message_stream(request):
     session_id = request.session.get("session_id")
 
     try:
-        context = build_context_snippets(user_text, top_k=15, session_id=session_id)
+        context = build_context_snippets(user_text, top_k=20, session_id=session_id)
     except Exception:
         context = ""
 
