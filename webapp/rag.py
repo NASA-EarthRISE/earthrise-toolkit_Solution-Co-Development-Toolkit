@@ -136,6 +136,23 @@ class ChromaVectorStore:
         LOG.info(f"[RAG] Search (session={session_id}) returned {len(results)} result(s) for query='{query[:80]}...'")
         return results
 
+    def get_by_ids(self, ids: List[str]) -> List[Dict[str, Any]]:
+        """Fetch specific documents by their IDs (used for parent chunk expansion)."""
+        if not ids:
+            return []
+        try:
+            result = self.collection.get(ids=ids)
+            ret_ids   = result.get("ids", [])
+            ret_docs  = result.get("documents", [])
+            ret_metas = result.get("metadatas", [])
+            return [
+                {"id": ret_ids[i], "text": ret_docs[i], "metadata": ret_metas[i] or {}}
+                for i in range(len(ret_ids))
+            ]
+        except Exception as e:
+            LOG.warning(f"[RAG] get_by_ids failed: {e}")
+            return []
+
     def delete_session_docs(self, session_id: str):
         """Delete all chunks associated with a specific session."""
         if not session_id:
@@ -256,6 +273,39 @@ class SharedEmbeddingServiceStore:
         )
         return results
 
+    def get_by_ids(self, ids: List[str]) -> List[Dict[str, Any]]:
+        """
+        Fetch specific documents by ID (used for parent chunk expansion).
+
+        Uses a metadata where-filter on the query endpoint so only the
+        requested parent chunks are returned without a semantic similarity
+        requirement.
+        """
+        if not ids:
+            return []
+        try:
+            payload = {
+                "ids": ids,
+            }
+            resp = requests.post(
+                f"{self.base}/collections/{self.collection}/get",
+                json=payload,
+                headers=self._headers,
+                timeout=30,
+            )
+            resp.raise_for_status()
+            res = resp.json()
+            ret_ids   = res.get("ids",       [])
+            ret_docs  = res.get("documents", [])
+            ret_metas = res.get("metadatas", [])
+            return [
+                {"id": ret_ids[i], "text": ret_docs[i], "metadata": ret_metas[i] or {}}
+                for i in range(len(ret_ids))
+            ]
+        except Exception as e:
+            LOG.warning(f"[RAG] get_by_ids (shared service) failed: {e}")
+            return []
+
     def delete_session_docs(self, session_id: str):
         """
         Delete all chunks for a session.
@@ -322,12 +372,19 @@ def get_store():
 # ---------- Build snippets for grounding ----------
 def build_context_snippets(query: str, top_k: int = DEFAULT_TOP_K, session_id: str = None) -> str:
     """
-    Retrieve relevant chunks via multi-query expansion then format them as
-    attributed context snippets for the LLM system message.
+    Retrieve relevant chunks via multi-query expansion, then optionally expand
+    each child chunk to its parent document for richer LLM context.
 
-    Multi-query: runs the raw query plus two domain-specific sub-queries so
-    that questions spanning multiple framework topics (e.g. RL criteria AND
-    transition templates) get adequate coverage from both document types.
+    Pipeline:
+      1. Multi-query expansion (base + 2 domain sub-queries).
+      2. Drop parent-type chunks from search results (they are stored for
+         expansion only, not for direct retrieval).
+      3. Distance filtering + sort; keep top_k child chunks.
+      4. Deduplicate by parent_id — keep the closest child per parent so the
+         LLM receives distinct passages rather than overlapping fragments.
+      5. Parent expansion — fetch the larger parent chunk for each hit and use
+         that as the context passage (gracefully falls back to child text when
+         the store does not support get_by_ids or the parent is missing).
     """
     store = get_store()
 
@@ -347,34 +404,107 @@ def build_context_snippets(query: str, top_k: int = DEFAULT_TOP_K, session_id: s
                 seen_ids.add(r["id"])
                 all_results.append(r)
 
+    # Drop parent-type chunks — they are stored for expansion, not retrieval
+    child_results = [
+        r for r in all_results
+        if r.get("metadata", {}).get("chunk_type", "child") != "parent"
+    ]
+
     # Filter out chunks that are too dissimilar to any sub-query
-    filtered = [r for r in all_results if (r.get("distance") or 0.0) < DISTANCE_THRESHOLD]
+    filtered = [r for r in child_results if (r.get("distance") or 0.0) < DISTANCE_THRESHOLD]
     if not filtered:
-        # Fallback: if everything exceeds threshold, use all retrieved results
-        # rather than returning nothing (avoids leaving LLM with zero context)
-        filtered = all_results
+        # Fallback: avoid returning zero context
+        filtered = child_results
 
     # Best matches first; limit to top_k overall
     filtered.sort(key=lambda x: x.get("distance") or 1.0)
     filtered = filtered[:top_k]
 
-    lines = []
+    # Deduplicate by parent_id: keep the closest child per parent.
+    # Chunks without a parent_id (legacy ingestions) are kept as-is.
+    seen_parents: set = set()
+    deduped: List[Dict] = []
     for r in filtered:
+        pid = r.get("metadata", {}).get("parent_id")
+        if pid:
+            if pid not in seen_parents:
+                seen_parents.add(pid)
+                deduped.append(r)
+        else:
+            deduped.append(r)
+
+    # Parent expansion: swap child text for the fuller parent passage
+    context_docs = _expand_to_parents(store, deduped)
+
+    lines = []
+    for r in context_docs:
         meta      = r.get("metadata", {})
         src       = meta.get("source", "doc")
         page      = meta.get("page")
+        section   = meta.get("section", "")
         chunk_idx = meta.get("chunk_idx", "?")
         dist      = r.get("distance")
         score     = round(1.0 - dist, 2) if dist is not None else "?"
 
-        page_info = f" | Page {page}" if page else ""
-        header    = f"[Source: {src}{page_info} | Chunk: {chunk_idx} | Relevance: {score}]"
+        page_info    = f" | Page {page}" if page else ""
+        section_info = f" | Section: {section}" if section else ""
+        header       = f"[Source: {src}{page_info}{section_info} | Chunk: {chunk_idx} | Relevance: {score}]"
         lines.append(f"{header}\n{r.get('text', '')}")
 
     context = "\n\n---\n\n".join(lines)
     if not context:
         LOG.info("[RAG] No context snippets retrieved for the query.")
     return context
+
+
+def _expand_to_parents(store, child_hits: List[Dict]) -> List[Dict]:
+    """
+    Given a list of child chunk hits, attempt to replace each hit's text with
+    its parent chunk text (fuller context window).
+
+    Falls back to the original child hit when:
+      • the store does not expose get_by_ids
+      • the parent chunk is not found (e.g. old ingestion without hierarchy)
+    """
+    if not hasattr(store, "get_by_ids"):
+        return child_hits
+
+    # Build parent chunk IDs from child metadata
+    parent_id_map: Dict[str, Dict] = {}  # parent_doc_id -> child_hit
+    for r in child_hits:
+        meta = r.get("metadata", {})
+        pid  = meta.get("parent_id")
+        src  = meta.get("source", "")
+        if pid and src:
+            parent_doc_id = f"{src}-parent-{pid}"
+            # Only keep the closest child hit per parent doc
+            if parent_doc_id not in parent_id_map:
+                parent_id_map[parent_doc_id] = r
+
+    if not parent_id_map:
+        return child_hits
+
+    # Fetch all parent chunks in one call
+    fetched = store.get_by_ids(list(parent_id_map.keys()))
+    parent_texts: Dict[str, str] = {p["id"]: p["text"] for p in fetched}
+
+    results = []
+    for r in child_hits:
+        meta = r.get("metadata", {})
+        pid  = meta.get("parent_id")
+        src  = meta.get("source", "")
+        parent_doc_id = f"{src}-parent-{pid}" if pid and src else None
+
+        if parent_doc_id and parent_doc_id in parent_texts:
+            # Use parent text; keep child's metadata (has section/page info)
+            results.append({**r, "text": parent_texts[parent_doc_id]})
+        else:
+            results.append(r)
+
+    LOG.info(
+        f"[RAG] Parent expansion: {len(parent_texts)}/{len(parent_id_map)} parents fetched."
+    )
+    return results
 
 # ---------- Optional diagnostics ----------
 def diag_info() -> dict:
