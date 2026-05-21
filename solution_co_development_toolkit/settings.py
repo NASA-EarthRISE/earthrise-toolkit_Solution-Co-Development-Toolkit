@@ -120,7 +120,7 @@ OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL")
 OPENAI_API_KEY  = os.getenv("OPENAI_API_KEY")
 MODEL           = os.getenv("MODEL","gpt-4o-mini")
 EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL","text-embedding-3-large")
-RAG_MODE        = os.getenv("RAG_MODE","local")
+RAG_MODE        = os.getenv("RAG_MODE","shared")
 
 RAG_EMBEDDINGS_PROVIDER = os.getenv("RAG_EMBEDDINGS_PROVIDER","openai").lower()
 LOCAL_EMBEDDING_MODEL   = os.getenv("LOCAL_EMBEDDING_MODEL","sentence-transformers/all-MiniLM-L6-v2")
@@ -134,3 +134,20 @@ LITELLM_RAG_UPSERT = os.getenv("LITELLM_RAG_UPSERT","/rag/upsert")
 # Shared Embedding Service
 SHARED_EMBEDDING_SERVICE_URL     = os.getenv("SHARED_EMBEDDING_SERVICE_URL", "http://localhost:8000")
 SHARED_EMBEDDING_SERVICE_API_KEY = os.getenv("SHARED_EMBEDDING_SERVICE_API_KEY", "")
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "loggers": {
+        "webapp": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+    },
+}
