@@ -21,6 +21,7 @@ from .document_registry import get_document_list_prompt
 
 UPLOAD_DIR = os.path.join(settings.BASE_DIR, "uploads")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
+static_version = 1.0
 
 
 def _nav():
@@ -38,6 +39,7 @@ def _ctx(active_slug, request=None, extra=None):
         'active_slug': active_slug,
         'saved_content': saved_content,
         'is_staff': request.user.is_staff if (request and request.user.is_authenticated) else False,
+        'static_version': static_version
     }
     if extra:
         ctx.update(extra)
