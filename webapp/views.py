@@ -253,6 +253,33 @@ def api_chat_upload(request):
 
 @csrf_exempt
 @require_POST
+def api_clear_chat(request):
+    """
+    Clear the server-side chat history and session-uploaded documents,
+    then issue a fresh session_id so the next conversation starts clean.
+    """
+    old_session_id = request.session.get("session_id")
+
+    # Remove session-specific RAG documents from the vector store
+    if old_session_id:
+        try:
+            get_store().delete_session_docs(old_session_id)
+        except Exception:
+            pass  # best-effort — don't block the clear on store errors
+
+    # Wipe conversation history and uploaded-file tracking
+    request.session["history"] = []
+    request.session["uploaded_files"] = []
+
+    # Fresh session_id so future uploads are isolated from this new chat
+    request.session["session_id"] = str(uuid.uuid4())
+    request.session.modified = True
+
+    return JsonResponse({"ok": True})
+
+
+@csrf_exempt
+@require_POST
 def api_message(request):
     try:
         raw = request.body.decode("utf-8") or "{}"
