@@ -77,6 +77,14 @@ body {
     font-weight: 400;
 }
 
+.staff-header-actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
 .header-nav {
     margin-left: auto;
     display: flex;
@@ -776,9 +784,50 @@ hr.section-rule {
 }
 
 /* ── Responsive ── */
+
+/*
+ * When the staff action bar is present, bump --header-height so the
+ * sidebar top and content padding-top still clear the now-taller header.
+ * Uses :has() which is supported in all modern browsers (Chrome 105+,
+ * Safari 15.4+, Firefox 121+).  Falls back gracefully — older browsers
+ * just see a slightly shorter header offset.
+ */
+@media (max-width: 768px) {
+    :root:has(.staff-header-actions) {
+        --header-height: 108px;
+    }
+}
+
 @media (max-width: 768px) {
     .site-header .hamburger {
         display: block;
+    }
+
+    /* Allow the header to grow to two rows when staff buttons are present */
+    .site-header {
+        flex-wrap: wrap;
+        height: auto;
+        min-height: var(--header-height);
+        padding: 0.3rem 0.75rem;
+        align-content: center;
+        row-gap: 0;
+    }
+
+    /* Hide subtitle to keep the brand compact on the first row */
+    .site-header .brand-subtitle {
+        display: none;
+    }
+
+    /* Staff buttons move to their own full-width second row */
+    .staff-header-actions {
+        width: 100%;
+        margin-left: 0;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+        padding-top: 0.3rem;
+        padding-bottom: 0.2rem;
     }
 
     .sidebar {

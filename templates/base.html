@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}NASA Earth Action — Solution Co-Development Toolkit{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/toolkit.css' %}">
+    <link rel="stylesheet" href="{% static 'css/toolkit.css' %}?version={{ static_version }}">
 
 </head>
 <body>
@@ -21,7 +21,7 @@
         </span>
     </a>
     {% if is_staff %}
-    <div style="margin-left:auto;display:flex;align-items:center;gap:0.5rem;">
+    <div class="staff-header-actions">
         <button id="new-page-btn" title="Create a new tool page" style="background:#00a0b0;color:#fff;border:none;border-radius:4px;padding:0.35rem 0.85rem;font-size:0.8rem;font-weight:600;cursor:pointer;letter-spacing:0.03em;">+ New Page</button>
         {% if is_dynamic %}
             {% if not is_published %}
@@ -692,6 +692,45 @@
         background: #a0aec0;
         cursor: not-allowed;
     }
+
+    /* ── Mobile: bottom-sheet layout ── */
+    @media (max-width: 520px) {
+        .chat-fab {
+            right: 1rem;
+            bottom: 1rem;
+        }
+
+        /* Full-width sheet anchored to the bottom of the viewport */
+        .chat-window {
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 72vh;
+            max-height: 100vh;
+            border-radius: 16px 16px 0 0;
+            border-bottom: none;
+            /* Override the desktop right/bottom offsets */
+            top: auto;
+        }
+
+        /* Medium size has no meaning on mobile — keep the same as small */
+        .chat-window[data-size="medium"] {
+            width: 100%;
+            height: 72vh;
+        }
+
+        /* Fullscreen: cover the whole viewport */
+        .chat-window[data-size="fullscreen"] {
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 0;
+        }
+    }
 </style>
 
 <!-- FAB -->
@@ -1249,7 +1288,7 @@
             extended_valid_elements: '*[*]',
             verify_html: false,
             entity_encoding: 'raw',
-            content_css: '{% static "css/toolkit.css" %}',
+            content_css: '{% static "css/toolkit.css" %}?version={{ static_version }}',
             content_style: baseCss + '\n' + pageCss,
             setup: function (editor) {
                 editor.on('init', function () {
