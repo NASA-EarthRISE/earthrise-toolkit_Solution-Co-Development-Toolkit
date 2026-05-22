@@ -730,6 +730,11 @@
             height: 100%;
             border-radius: 0;
         }
+
+        /* Hide FAB while the chat sheet is open so it doesn't cover the send button */
+        body:has(.chat-window:not(.hidden)) .chat-fab {
+            display: none;
+        }
     }
 </style>
 
