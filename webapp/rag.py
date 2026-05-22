@@ -218,22 +218,33 @@ class SharedEmbeddingServiceStore:
             f"collection: {self.collection}"
         )
 
+    # Max docs per PUT request.  Smaller batches keep individual requests
+    # well under timeout even on a cold-start (model loading from disk).
+    UPSERT_BATCH_SIZE = 20
+
     def upsert(self, docs: List[Dict[str, Any]]):
         if not docs:
             return
-        payload = {
-            "documents": [d["text"] for d in docs],
-            "ids":       [d["id"]   for d in docs],
-            "metadatas": [d.get("metadata", {}) for d in docs],
-        }
-        resp = requests.put(
-            f"{self.base}/collections/{self.collection}/documents",
-            json=payload,
-            headers=self._headers,
-            timeout=120,
-        )
-        resp.raise_for_status()
-        LOG.info(f"[RAG] Upserted {len(docs)} doc chunks via shared service.")
+        url = f"{self.base}/collections/{self.collection}/documents"
+        total = len(docs)
+        for batch_start in range(0, total, self.UPSERT_BATCH_SIZE):
+            batch = docs[batch_start: batch_start + self.UPSERT_BATCH_SIZE]
+            payload = {
+                "documents": [d["text"]              for d in batch],
+                "ids":       [d["id"]                for d in batch],
+                "metadatas": [d.get("metadata", {})  for d in batch],
+            }
+            resp = requests.put(
+                url,
+                json=payload,
+                headers=self._headers,
+                timeout=300,   # generous — first batch triggers model cold-start
+            )
+            resp.raise_for_status()
+            LOG.info(
+                f"[RAG] Upserted batch {batch_start + len(batch)}/{total} "
+                f"chunks via shared service."
+            )
 
     def search(
         self, query: str, top_k: int = DEFAULT_TOP_K, session_id: str = None
