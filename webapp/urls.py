@@ -23,6 +23,7 @@ urlpatterns = [
     path('adoption-sustainability/', views.adoption_sustainability, name='adoption_sustainability'),
     path('meaningful-metrics/', views.meaningful_metrics, name='meaningful_metrics'),
     path('authors-and-contributors/', views.authors, name='authors'),
+    path('trust-marker/', views.trust_marker, name='trust_marker'),
 
     # Dynamic pages (staff-created)
     path('tools/<slug:slug>/', views.dynamic_page, name='dynamic_page'),

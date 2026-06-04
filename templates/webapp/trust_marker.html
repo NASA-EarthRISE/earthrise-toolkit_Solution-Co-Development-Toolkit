@@ -1,0 +1,318 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}TRUST Marker for Co-development — Solution Co-Development Toolkit{% endblock %}
+{% block content %}
+<style>
+    /* TRUST acronym table */
+    .trust-acronym-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1.5rem 0 2rem;
+        font-size: 0.93rem;
+    }
+    .trust-acronym-table th {
+        background: #0b3d91;
+        color: #fff;
+        padding: 0.7rem 1rem;
+        text-align: left;
+        font-weight: 600;
+    }
+    .trust-acronym-table td {
+        padding: 0.75rem 1rem;
+        border: 1px solid #c0cfe0;
+        vertical-align: middle;
+        line-height: 1.6;
+    }
+    .trust-acronym-table tr:nth-child(odd) td { background: #f5f8fc; }
+    .trust-acronym-table tr:nth-child(even) td { background: #fff; }
+    .trust-acronym-table td:first-child {
+        font-weight: 700;
+        color: #0b3d91;
+        white-space: nowrap;
+    }
+
+    /* TRUST level cards */
+    .trust-levels {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 1rem;
+        margin: 1.5rem 0 2rem;
+    }
+    .trust-level-card {
+        background: #fff;
+        border: 1px solid #c0cfe0;
+        border-radius: 6px;
+        padding: 1rem 1.2rem;
+    }
+    .trust-level-card .level-badge {
+        display: inline-block;
+        background: #0b3d91;
+        color: #fff;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        border-radius: 4px;
+        padding: 0.15rem 0.55rem;
+        margin-bottom: 0.55rem;
+    }
+    .trust-level-card.level-0 .level-badge { background: #6b7280; }
+    .trust-level-card.level-1 .level-badge { background: #0b3d91; }
+    .trust-level-card.level-2 .level-badge { background: #1a6fa8; }
+    .trust-level-card.level-3 .level-badge { background: #00809b; }
+    .trust-level-card.level-4 .level-badge { background: #00a0b0; }
+    .trust-level-card .level-title {
+        font-size: 0.97rem;
+        font-weight: 700;
+        color: #1a1a2e;
+        margin-bottom: 0.4rem;
+    }
+    .trust-level-card p {
+        font-size: 0.875rem;
+        line-height: 1.65;
+        color: #4a4a6a;
+        margin: 0;
+    }
+
+    /* TRUST matrix table */
+    .trust-matrix {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1.5rem 0 2rem;
+        font-size: 0.83rem;
+    }
+    .trust-matrix th {
+        padding: 0.7rem 0.85rem;
+        text-align: center;
+        font-weight: 700;
+        border: 1px solid #b0b8c8;
+        color: #1a1a2e;
+        vertical-align: bottom;
+    }
+    .trust-matrix th:first-child {
+        text-align: left;
+        min-width: 130px;
+    }
+    .trust-matrix td {
+        padding: 0.75rem 0.85rem;
+        border: 1px solid #b0b8c8;
+        vertical-align: top;
+        line-height: 1.6;
+    }
+    .trust-matrix td:first-child {
+        font-weight: 700;
+        color: #0b3d91;
+        white-space: nowrap;
+    }
+
+    /* Column colors — applied to both header and body cells */
+    .trust-matrix th:nth-child(1), .trust-matrix td:nth-child(1) { background: #a5c4e7; }
+    .trust-matrix th:nth-child(2), .trust-matrix td:nth-child(2) { background: #efefef; }
+    .trust-matrix th:nth-child(3), .trust-matrix td:nth-child(3) { background: #d9d9d9; }
+    .trust-matrix th:nth-child(4), .trust-matrix td:nth-child(4) { background: #cccccc; }
+    .trust-matrix th:nth-child(5), .trust-matrix td:nth-child(5) { background: #b8d6aa; }
+    .trust-matrix th:nth-child(6), .trust-matrix td:nth-child(6) { background: #97c380; }
+
+    /* Checkboxes in data cells */
+    .trust-matrix td input[type="checkbox"] {
+        display: block;
+        width: 15px;
+        height: 15px;
+        margin-bottom: 0.4rem;
+        cursor: pointer;
+        flex-shrink: 0;
+    }
+
+    /* Usage boxes */
+    .usage-box {
+        background: #f0f4f8;
+        border-left: 4px solid #00a0b0;
+        padding: 0.9rem 1.2rem;
+        margin: 0 0 1rem 0;
+        border-radius: 0 4px 4px 0;
+        font-size: 0.93rem;
+        line-height: 1.65;
+    }
+    .usage-box strong { color: #0b3d91; }
+
+    /* Info callout */
+    .info-callout {
+        background: #e6f7f9;
+        border: 1px solid #b2dfe5;
+        border-radius: 6px;
+        padding: 1rem 1.25rem;
+        margin: 1.5rem 0;
+        font-size: 0.93rem;
+        line-height: 1.65;
+    }
+    .info-callout strong { color: #0b3d91; }
+</style>
+
+<div class="page-header">
+    <div class="section-tag">Additional Resources</div>
+    <h1>TRUST Marker for Co-development</h1>
+    <p style="margin-top:0.6rem;font-size:0.95rem;color:#4a4a6a;font-style:italic;">A Framework for Assessing Co-Development Readiness and Depth</p>
+</div>
+
+<div class="tk-body">
+
+    <p>The TRUST Marker is an assessment of co-development practices designed in conjunction with the NASA Earth Action Solution Co-Development Toolkit. The marker complements — but is distinct from — NASA's Application Readiness Levels (ARLs) by evaluating the co-development, partnership, adoption, and sustainability conditions that support successful operational transition and long-term societal value. While ARLs primarily assess technical and application maturity, the TRUST Marker focuses on the relational, operational, and institutional dimensions that influence whether Earth science solutions are trusted, relevant, adoptable, and sustained. The Co-Development Toolkit provides the framework and tools by which applications can address all components of the TRUST Marker.</p>
+
+    <p>TRUST represents <strong>T</strong>rust-building, <strong>R</strong>elevance, <strong>U</strong>ser Partnership, <strong>S</strong>ustainability, and <strong>T</strong>ransition &amp; Impact. The framework helps teams assess and strengthen the depth, quality, and continuity of co-development across different project contexts and dimensions of development. The TRUST Marker is intended to support realistic planning, reflection, and continuous improvement by helping teams identify opportunities to strengthen stakeholder engagement, collaborative design, operational integration, and long-term implementation.</p>
+
+    <p>Importantly, the TRUST Marker is not intended to function as a parallel readiness-level scale nor to prescribe a fixed sequence of co-development phases. TRUST dimensions may be present to varying degrees at any ARL or stage of development, and teams may revisit stakeholder needs, workflows, governance structures, and implementation approaches throughout the lifecycle of a project. Rather than measuring technical readiness, the TRUST Marker evaluates the depth and integration of co-development practices that support successful operational use and sustained societal value.</p>
+
+    <h2>TRUST Dimensions</h2>
+
+    <table class="trust-acronym-table">
+        <thead>
+            <tr>
+                <th>Dimension</th>
+                <th>Meaning</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>T &mdash; Trust-building</td>
+                <td>Relationships, credibility, continuity of engagement</td>
+            </tr>
+            <tr>
+                <td>R &mdash; Relevance</td>
+                <td>Alignment with operational realities and stakeholder workflows and priorities</td>
+            </tr>
+            <tr>
+                <td>U &mdash; User Partnership</td>
+                <td>Degree of co-ownership and collaborative influence on design</td>
+            </tr>
+            <tr>
+                <td>S &mdash; Sustainability</td>
+                <td>Institutionalization, continued use, commence transition to end user</td>
+            </tr>
+            <tr>
+                <td>T &mdash; Transition &amp; Impact</td>
+                <td>Transition success, evidence of improved decisions, resilience, efficiency, or societal outcomes</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>TRUST Levels</h2>
+
+    <p>The TRUST Levels describe a continuum of co-development maturity and depth across the five TRUST Marker dimensions. The levels are intended to support reflection, engagement, readjustment, planning, communication, and realistic steps toward integration of stronger and more sustained co-development in applied science. Projects may operate at different levels across different dimensions simultaneously.</p>
+
+    <div class="trust-levels">
+        <div class="trust-level-card level-0">
+            <div class="level-badge">Level 0</div>
+            <div class="level-title">Internally Defined</div>
+            <p>Activities are primarily internally driven, with limited or informal consideration of stakeholder perspectives, operational contexts, or long-term use. Co-development practices may be minimal, exploratory, or not intentionally structured.</p>
+        </div>
+        <div class="trust-level-card level-1">
+            <div class="level-badge">Level 1</div>
+            <div class="level-title">Stakeholder-Informed</div>
+            <p>Stakeholder perspectives, needs, or feedback inform project direction, priorities, or design decisions, typically through intermittent consultation, outreach, or targeted engagement activities.</p>
+        </div>
+        <div class="trust-level-card level-2">
+            <div class="level-badge">Level 2</div>
+            <div class="level-title">Collaborative</div>
+            <p>Stakeholders are active partners who regularly participate in co-design, iterative development, planning, or evaluation processes, helping shape project activities, workflows, and outputs.</p>
+        </div>
+        <div class="trust-level-card level-3">
+            <div class="level-badge">Level 3</div>
+            <div class="level-title">Operationally Integrated</div>
+            <p>Co-development practices are fully integrated into all aspects of project implementation, and the transition plan is supporting usability, adoption, continuity, and sustained engagement.</p>
+        </div>
+        <div class="trust-level-card level-4">
+            <div class="level-badge">Level 4</div>
+            <div class="level-title">Sustained &amp; Transformative</div>
+            <p>Stakeholders have shared stewardship or transition to full ownership of solutions and demonstrate sustained use, institutional integration, or evidence of long-term organizational, community, or societal value appropriate to the project context.</p>
+        </div>
+    </div>
+
+    <h2>TRUST Marker Matrix</h2>
+
+    <div style="overflow-x: auto;">
+        <table class="trust-matrix">
+            <thead>
+                <tr>
+                    <th>TRUST Dimension</th>
+                    <th>0<br><span style="font-size:0.78rem;">Internally Defined</span></th>
+                    <th>1<br><span style="font-size:0.78rem;">Stakeholder-Informed</span></th>
+                    <th>2<br><span style="font-size:0.78rem;">Collaborative</span></th>
+                    <th>3<br><span style="font-size:0.78rem;">Operationally Integrated</span></th>
+                    <th>4<br><span style="font-size:0.78rem;">Sustained &amp; Transformative</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Trust-building</td>
+                    <td><input type="checkbox">Internal assumptions about stakeholder needs and priorities</td>
+                    <td><input type="checkbox">Initial or intermittent stakeholder consultation and relationship-building</td>
+                    <td><input type="checkbox">Ongoing regular engagement and iterative communication</td>
+                    <td><input type="checkbox">Shared accountability and joint decision-making</td>
+                    <td><input type="checkbox">Long-term trusted partnerships and sustained collaboration</td>
+                </tr>
+                <tr>
+                    <td>Relevance</td>
+                    <td><input type="checkbox">Generalized or internally defined problem framing without stakeholder input</td>
+                    <td><input type="checkbox">Stakeholder needs and decision contexts identified</td>
+                    <td><input type="checkbox">User workflows and operational realities incorporated into solution design</td>
+                    <td><input type="checkbox">Solutions aligned with operational implementation needs and constraints</td>
+                    <td><input type="checkbox">Solutions continuously adapted to evolving stakeholder needs</td>
+                </tr>
+                <tr>
+                    <td>User Partnership</td>
+                    <td><input type="checkbox">Users primarily informed about activities or outputs</td>
+                    <td><input type="checkbox">Stakeholder feedback solicited periodically</td>
+                    <td><input type="checkbox">Stakeholders actively participate in co-design and iterative development</td>
+                    <td><input type="checkbox">Shared implementation, planning, and adaptation processes</td>
+                    <td><input type="checkbox">Shared ownership, governance, or long-term stewardship of solutions</td>
+                </tr>
+                <tr>
+                    <td>Sustainability</td>
+                    <td><input type="checkbox">Long-term use and support not yet considered</td>
+                    <td><input type="checkbox">Initial discussions of adoption, maintenance, or continuity</td>
+                    <td><input type="checkbox">Transition planning and capacity-building activities initiated</td>
+                    <td><input type="checkbox">Institutional integration and operational support structures established</td>
+                    <td><input type="checkbox">Sustained operational support, continuity, and long-term institutional commitment</td>
+                </tr>
+                <tr>
+                    <td>Transition &amp; Impact</td>
+                    <td><input type="checkbox">Anticipated benefits or intended applications identified</td>
+                    <td><input type="checkbox">Intended operational use cases and pathways documented</td>
+                    <td><input type="checkbox">Early evidence of adoption, usability, or stakeholder value</td>
+                    <td><input type="checkbox">Operational use and implementation outcomes documented</td>
+                    <td><input type="checkbox">Full transition and ongoing stewardship, with demonstrated long-term value</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h2>Using the TRUST Marker with the Co-Development Toolkit</h2>
+
+    <p>The TRUST Marker is intended to be used alongside the Co-Development Toolkit as both a planning and reflection framework. While the toolkit provides practical methods, activities, and resources for conducting co-development, the TRUST Marker helps teams assess the depth, maturity, and operational integration of those practices over time.</p>
+
+    <p>Teams can use the TRUST Marker at the beginning of a project to identify realistic starting points and targets across the TRUST dimensions and to clarify where additional effort, engagement, or partnership-building may be needed. During project implementation, the framework can support periodic reflection and adaptive planning by helping teams identify gaps, track progress, and prioritize next steps appropriate to their project stage, stakeholder relationships, and operational context.</p>
+
+    <p>Rather than attempting to advance uniformly across all dimensions, teams are encouraged to focus on the areas most relevant to their project goals and stakeholder needs. For example:</p>
+
+    <div class="usage-box">
+        <strong>Early-stage teams</strong> operating at early TRUST levels may prioritize toolkit activities focused on stakeholder mapping, needs assessment, relationship-building, and understanding decision contexts.
+    </div>
+
+    <div class="usage-box">
+        <strong>Teams seeking to strengthen collaboration</strong> may emphasize co-design workshops, iterative feedback processes, participatory evaluation, or workflow integration activities.
+    </div>
+
+    <div class="usage-box">
+        <strong>Teams preparing for operational transition</strong> may focus on implementation planning, training, governance discussions, sustainability planning, or documenting evidence of usability and impact.
+    </div>
+
+    <div class="usage-box">
+        <strong>Teams working toward sustained and transformative outcomes</strong> may prioritize long-term impacts monitoring, institutional integration strategies, and approaches for measuring societal and/or economic value over time.
+    </div>
+
+    <div class="info-callout">
+        <strong>Note:</strong> The TRUST Marker is not intended as a compliance checklist or scoring system. Instead, it is designed to help teams intentionally align co-development activities with project context, stakeholder priorities, operational realities, and pathways toward sustained use and impact — the ultimate goal of incorporating co-development practices.
+    </div>
+
+</div>
+{% endblock %}

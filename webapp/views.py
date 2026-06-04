@@ -106,6 +106,10 @@ def authors(request):
     return render(request, 'webapp/authors.html', _ctx('authors', request=request))
 
 
+def trust_marker(request):
+    return render(request, 'webapp/trust_marker.html', _ctx('trust-marker', request=request))
+
+
 @require_POST
 @staff_member_required
 def save_page_content(request):

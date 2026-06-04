@@ -61,7 +61,12 @@
                     </a>
                     {% endif %}
                 {% endfor %}
+                <hr>
             </nav>
+        <div class="sidebar-label">Additional Resources</div>
+        <nav>
+           <a href="{% url 'webapp:trust_marker' %}" class="{% if active_slug == 'trust-marker' %}active{% endif %}"><span style="margin-left: 30px;">TRUST Marker for Co-development</span></a>
+        </nav>
         </div>
     </aside>
     <div class="watermark-overlay">
