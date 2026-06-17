@@ -9,7 +9,7 @@
     /* Metric level blocks */
     .metric-levels { margin: 1.2rem 0 1.5rem 0; }
     .metric-level {
-        border-left: 4px solid #0b3d91;
+        border-left: 4px solid #0170B9;
         background: #f0f4fb;
         padding: 0.85rem 1.1rem;
         margin-bottom: 1rem;
@@ -17,7 +17,7 @@
         font-size: 0.93rem;
         line-height: 1.7;
     }
-    .metric-level .level-header { font-weight: 700; font-style: italic; color: #0b3d91; display: block; margin-bottom: 0.4rem; }
+    .metric-level .level-header { font-weight: 700; font-style: italic; color: #0170B9; display: block; margin-bottom: 0.4rem; }
     .metric-level .level-examples { margin: 0.3rem 0 0 1rem; color: #2c3e50; font-style: normal; }
     .metric-level:nth-child(1) { border-left-color: #2980b9; background: #eaf2fb; }
     .metric-level:nth-child(2) { border-left-color: #16a085; background: #e8f6f3; }
@@ -34,13 +34,13 @@
     .rf-level { display: flex; justify-content: center; align-items: flex-start; gap: 0.5rem; margin-bottom: 0; }
     .rf-impact-row { margin-bottom: 0.3rem; }
     .rf-connectors { display: flex; justify-content: center; gap: 0; margin: 0; }
-    .rf-box { border-radius: 6px; padding: 0.55rem 0.7rem; text-align: center; line-height: 1.35; }
+    .rf-box { border-radius: 4px; padding: 0.55rem 0.7rem; text-align: center; line-height: 1.35; }
     .rf-box .rf-label { font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 0.2rem; letter-spacing: 0.03em; }
     .rf-box .rf-text { font-size: 0.76rem; }
     .rf-impact { background: #5b9bd5; color: #fff; min-width: 340px; max-width: 420px; }
     .rf-outcome { background: #7ab3e0; color: #fff; width: 190px; min-height: 60px; }
     .rf-output { background: #a0c8ec; color: #1a3a5c; width: 110px; min-height: 68px; }
-    .rf-inputs { background: #3c78b5; color: #fff; text-align: left; padding: 0.55rem 0.8rem; border-radius: 6px; font-size: 0.76rem; line-height: 1.45; }
+    .rf-inputs { background: #3c78b5; color: #fff; text-align: left; padding: 0.55rem 0.8rem; border-radius: 4px; font-size: 0.76rem; line-height: 1.45; }
     .rf-inputs .rf-label { color: #fff; }
     .rf-inputs ol { margin: 0.2rem 0 0 1rem; padding: 0; }
     .rf-inputs ol li { margin-bottom: 0.15rem; }
@@ -58,7 +58,7 @@
     /* Examples section */
     .examples-list { margin: 0.5rem 0 1rem 1rem; padding: 0; list-style: none; }
     .examples-list > li { margin-bottom: 1.2rem; line-height: 1.65; font-size: 0.93rem; }
-    .examples-list > li::before { content: "●"; color: #0b3d91; margin-right: 0.5rem; font-size: 0.7rem; vertical-align: middle; }
+    .examples-list > li::before { content: "●"; color: #0170B9; margin-right: 0.5rem; font-size: 0.7rem; vertical-align: middle; }
     .example-sub { display: block; margin-left: 1.2rem; font-style: italic; color: #2c3e50; line-height: 1.6; margin-top: 0.2rem; }
 </style>
 
@@ -76,7 +76,7 @@
     <h2>How and When to Use This Tool:</h2>
 
     <div style="text-align: center;">
-        <img src="{%  static 'images/fig_14.png'  %}" alt="How and when" class="figure" >
+        <img src="{% static 'images/fig_14.png' %}" alt="Phase timeline diagram showing Meaningful Metrics development occurs primarily in Phase 2 when creating the Solution Implementation and Impact Monitoring Plan, with metrics used throughout Phases 3 and 4." class="figure">
     </div>
 
     <p>Use this tool during Phase 2 when developing a <a href="{% url 'webapp:implementation_monitoring' %}">Solution Implementation and Impact Monitoring Plan</a> (SIIMP). It can also be used to inform broader program and project plans as part of requirements to measure project success criteria. The SIIMP plan template includes a <a href="https://docs.google.com/spreadsheets/d/1VGShXy_S_h8P5l0_Lh2ltbeq2Z423EpB/edit?gid=427899109#gid=427899109">fillable sample table</a> for metrics.</p>
@@ -157,7 +157,7 @@
     <h2>Fig. 1 — Sample Results Framework with Example Metrics</h2>
 
     <div style="text-align: center;">
-        <img src="{%  static 'images/fig_17.png'  %}" alt="How and when" class="figure" >
+        <img src="{% static 'images/fig_17.png' %}" alt="Sample results framework table with example metrics organized across four tiers: Level 1 Input metrics, Level 2 Output metrics, Level 3 Outcome metrics, and Level 4 Impact metrics, with example indicators for each level." class="figure">
     </div>
     <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 109</p>
 </div>

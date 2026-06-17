@@ -11,7 +11,7 @@
         font-size: 0.93rem;
     }
     .trust-acronym-table th {
-        background: #0b3d91;
+        background: #0170B9;
         color: #fff;
         padding: 0.7rem 1rem;
         text-align: left;
@@ -19,7 +19,7 @@
     }
     .trust-acronym-table td {
         padding: 0.75rem 1rem;
-        border: 1px solid #c0cfe0;
+        border: 1px solid #dddddd;
         vertical-align: middle;
         line-height: 1.6;
     }
@@ -27,7 +27,7 @@
     .trust-acronym-table tr:nth-child(even) td { background: #fff; }
     .trust-acronym-table td:first-child {
         font-weight: 700;
-        color: #0b3d91;
+        color: #0170B9;
         white-space: nowrap;
     }
 
@@ -40,13 +40,13 @@
     }
     .trust-level-card {
         background: #fff;
-        border: 1px solid #c0cfe0;
-        border-radius: 6px;
+        border: 1px solid #dddddd;
+        border-radius: 4px;
         padding: 1rem 1.2rem;
     }
     .trust-level-card .level-badge {
         display: inline-block;
-        background: #0b3d91;
+        background: #0170B9;
         color: #fff;
         font-size: 0.72rem;
         font-weight: 700;
@@ -57,20 +57,20 @@
         margin-bottom: 0.55rem;
     }
     .trust-level-card.level-0 .level-badge { background: #6b7280; }
-    .trust-level-card.level-1 .level-badge { background: #0b3d91; }
+    .trust-level-card.level-1 .level-badge { background: #0170B9; }
     .trust-level-card.level-2 .level-badge { background: #1a6fa8; }
     .trust-level-card.level-3 .level-badge { background: #00809b; }
-    .trust-level-card.level-4 .level-badge { background: #00a0b0; }
+    .trust-level-card.level-4 .level-badge { background: #1c67e3; }
     .trust-level-card .level-title {
         font-size: 0.97rem;
         font-weight: 700;
-        color: #1a1a2e;
+        color: #3a3a3a;
         margin-bottom: 0.4rem;
     }
     .trust-level-card p {
         font-size: 0.875rem;
         line-height: 1.65;
-        color: #4a4a6a;
+        color: #58585b;
         margin: 0;
     }
 
@@ -86,7 +86,7 @@
         text-align: center;
         font-weight: 700;
         border: 1px solid #b0b8c8;
-        color: #1a1a2e;
+        color: #3a3a3a;
         vertical-align: bottom;
     }
     .trust-matrix th:first-child {
@@ -101,7 +101,7 @@
     }
     .trust-matrix td:first-child {
         font-weight: 700;
-        color: #0b3d91;
+        color: #1d3a6b; /* 6.7:1 on col-1 bg #a5c4e7 — WCAG AA ✓ */
         white-space: nowrap;
     }
 
@@ -126,32 +126,32 @@
     /* Usage boxes */
     .usage-box {
         background: #f0f4f8;
-        border-left: 4px solid #00a0b0;
+        border-left: 4px solid #1c67e3;
         padding: 0.9rem 1.2rem;
         margin: 0 0 1rem 0;
         border-radius: 0 4px 4px 0;
         font-size: 0.93rem;
         line-height: 1.65;
     }
-    .usage-box strong { color: #0b3d91; }
+    .usage-box strong { color: #0170B9; }
 
     /* Info callout */
     .info-callout {
         background: #e6f7f9;
         border: 1px solid #b2dfe5;
-        border-radius: 6px;
+        border-radius: 4px;
         padding: 1rem 1.25rem;
         margin: 1.5rem 0;
         font-size: 0.93rem;
         line-height: 1.65;
     }
-    .info-callout strong { color: #0b3d91; }
+    .info-callout strong { color: #0170B9; }
 </style>
 
 <div class="page-header">
     <div class="section-tag">Additional Resources</div>
     <h1>TRUST Marker for Co-development</h1>
-    <p style="margin-top:0.6rem;font-size:0.95rem;color:#4a4a6a;font-style:italic;">A Framework for Assessing Co-Development Readiness and Depth</p>
+    <p style="margin-top:0.6rem;font-size:0.95rem;color:#58585b;font-style:italic;">A Framework for Assessing Co-Development Readiness and Depth</p>
 </div>
 
 <div class="tk-body">
@@ -244,43 +244,43 @@
             <tbody>
                 <tr>
                     <td>Trust-building</td>
-                    <td><input type="checkbox">Internal assumptions about stakeholder needs and priorities</td>
-                    <td><input type="checkbox">Initial or intermittent stakeholder consultation and relationship-building</td>
-                    <td><input type="checkbox">Ongoing regular engagement and iterative communication</td>
-                    <td><input type="checkbox">Shared accountability and joint decision-making</td>
-                    <td><input type="checkbox">Long-term trusted partnerships and sustained collaboration</td>
+                    <td><label><input type="checkbox"> Internal assumptions about stakeholder needs and priorities</label></td>
+                    <td><label><input type="checkbox"> Initial or intermittent stakeholder consultation and relationship-building</label></td>
+                    <td><label><input type="checkbox"> Ongoing regular engagement and iterative communication</label></td>
+                    <td><label><input type="checkbox"> Shared accountability and joint decision-making</label></td>
+                    <td><label><input type="checkbox"> Long-term trusted partnerships and sustained collaboration</label></td>
                 </tr>
                 <tr>
                     <td>Relevance</td>
-                    <td><input type="checkbox">Generalized or internally defined problem framing without stakeholder input</td>
-                    <td><input type="checkbox">Stakeholder needs and decision contexts identified</td>
-                    <td><input type="checkbox">User workflows and operational realities incorporated into solution design</td>
-                    <td><input type="checkbox">Solutions aligned with operational implementation needs and constraints</td>
-                    <td><input type="checkbox">Solutions continuously adapted to evolving stakeholder needs</td>
+                    <td><label><input type="checkbox"> Generalized or internally defined problem framing without stakeholder input</label></td>
+                    <td><label><input type="checkbox"> Stakeholder needs and decision contexts identified</label></td>
+                    <td><label><input type="checkbox"> User workflows and operational realities incorporated into solution design</label></td>
+                    <td><label><input type="checkbox"> Solutions aligned with operational implementation needs and constraints</label></td>
+                    <td><label><input type="checkbox"> Solutions continuously adapted to evolving stakeholder needs</label></td>
                 </tr>
                 <tr>
                     <td>User Partnership</td>
-                    <td><input type="checkbox">Users primarily informed about activities or outputs</td>
-                    <td><input type="checkbox">Stakeholder feedback solicited periodically</td>
-                    <td><input type="checkbox">Stakeholders actively participate in co-design and iterative development</td>
-                    <td><input type="checkbox">Shared implementation, planning, and adaptation processes</td>
-                    <td><input type="checkbox">Shared ownership, governance, or long-term stewardship of solutions</td>
+                    <td><label><input type="checkbox"> Users primarily informed about activities or outputs</label></td>
+                    <td><label><input type="checkbox"> Stakeholder feedback solicited periodically</label></td>
+                    <td><label><input type="checkbox"> Stakeholders actively participate in co-design and iterative development</label></td>
+                    <td><label><input type="checkbox"> Shared implementation, planning, and adaptation processes</label></td>
+                    <td><label><input type="checkbox"> Shared ownership, governance, or long-term stewardship of solutions</label></td>
                 </tr>
                 <tr>
                     <td>Sustainability</td>
-                    <td><input type="checkbox">Long-term use and support not yet considered</td>
-                    <td><input type="checkbox">Initial discussions of adoption, maintenance, or continuity</td>
-                    <td><input type="checkbox">Transition planning and capacity-building activities initiated</td>
-                    <td><input type="checkbox">Institutional integration and operational support structures established</td>
-                    <td><input type="checkbox">Sustained operational support, continuity, and long-term institutional commitment</td>
+                    <td><label><input type="checkbox"> Long-term use and support not yet considered</label></td>
+                    <td><label><input type="checkbox"> Initial discussions of adoption, maintenance, or continuity</label></td>
+                    <td><label><input type="checkbox"> Transition planning and capacity-building activities initiated</label></td>
+                    <td><label><input type="checkbox"> Institutional integration and operational support structures established</label></td>
+                    <td><label><input type="checkbox"> Sustained operational support, continuity, and long-term institutional commitment</label></td>
                 </tr>
                 <tr>
                     <td>Transition &amp; Impact</td>
-                    <td><input type="checkbox">Anticipated benefits or intended applications identified</td>
-                    <td><input type="checkbox">Intended operational use cases and pathways documented</td>
-                    <td><input type="checkbox">Early evidence of adoption, usability, or stakeholder value</td>
-                    <td><input type="checkbox">Operational use and implementation outcomes documented</td>
-                    <td><input type="checkbox">Full transition and ongoing stewardship, with demonstrated long-term value</td>
+                    <td><label><input type="checkbox"> Anticipated benefits or intended applications identified</label></td>
+                    <td><label><input type="checkbox"> Intended operational use cases and pathways documented</label></td>
+                    <td><label><input type="checkbox"> Early evidence of adoption, usability, or stakeholder value</label></td>
+                    <td><label><input type="checkbox"> Operational use and implementation outcomes documented</label></td>
+                    <td><label><input type="checkbox"> Full transition and ongoing stewardship, with demonstrated long-term value</label></td>
                 </tr>
             </tbody>
         </table>

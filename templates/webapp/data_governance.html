@@ -9,9 +9,9 @@
     /* Numbered top-level sections (1–10) */
     .gov-section { margin-top: 2.5rem; }
     .gov-section > h2 {
-        color: #0b3d91;
+        color: #0170B9;
         font-size: 1.2rem;
-        border-bottom: 2px solid #00a0b0;
+        border-bottom: 2px solid #1c67e3;
         padding-bottom: 0.4rem;
         margin-bottom: 1rem;
     }
@@ -19,17 +19,17 @@
 
     /* Sub-sections (1.1, 1.2, etc.) */
     .gov-subsection { margin-top: 1.4rem; }
-    .gov-subsection > h3 { color: #1a5276; font-style: italic; font-size: 1rem; margin: 0 0 0.6rem 0; }
+    .gov-subsection > h3 { color: #0170B9; font-style: italic; font-size: 1rem; margin: 0 0 0.6rem 0; }
     .gov-subsection p { margin-bottom: 0.8rem; line-height: 1.7; }
 
     /* Data entries (1.1.1, 1.1.2, etc.) */
     .data-item { margin: 1.1rem 0 0.8rem 0; padding-left: 1rem; border-left: 3px solid #c8dff5; }
-    .data-item > h4 { color: #1a5276; font-style: italic; font-size: 0.93rem; margin: 0 0 0.5rem 0; }
+    .data-item > h4 { color: #0170B9; font-style: italic; font-size: 0.93rem; margin: 0 0 0.5rem 0; }
     .data-item p { margin-bottom: 0.5rem; line-height: 1.65; font-size: 0.93rem; }
 
     /* Source / Access inline labels */
     .source-line { font-size: 0.9rem; line-height: 1.6; margin-bottom: 0.3rem; }
-    .source-line strong { color: #0b3d91; }
+    .source-line strong { color: #0170B9; }
 
     /* Bold-item bullet lists */
     .bold-list { margin: 0.4rem 0 1rem 1.5rem; }
@@ -42,7 +42,7 @@
     /* Open Science callout */
     .open-science-note {
         background: #e8f4fb;
-        border-left: 4px solid #0b3d91;
+        border-left: 4px solid #0170B9;
         padding: 0.7rem 1.1rem;
         margin: 0.8rem 0 1rem 0;
         border-radius: 0 4px 4px 0;
@@ -54,7 +54,7 @@
     .compliance-box {
         background: #f0f4f8;
         border: 1px solid #b0c8e8;
-        border-left: 5px solid #0b3d91;
+        border-left: 5px solid #0170B9;
         border-radius: 4px;
         padding: 1rem 1.2rem;
         margin: 1rem 0 1.2rem 0;
@@ -64,8 +64,8 @@
 
     /* Section 2 checklist table */
     .checklist-table { width: 100%; border-collapse: collapse; margin: 1.2rem 0 1rem 0; font-size: 0.88rem; }
-    .checklist-table th { background: #0b3d91; color: #fff; padding: 0.65rem 1rem; text-align: left; font-weight: 600; }
-    .checklist-table td { padding: 0.65rem 1rem; border: 1px solid #c0cfe0; vertical-align: top; line-height: 1.6; }
+    .checklist-table th { background: #0170B9; color: #fff; padding: 0.65rem 1rem; text-align: left; font-weight: 600; }
+    .checklist-table td { padding: 0.65rem 1rem; border: 1px solid #dddddd; vertical-align: top; line-height: 1.6; }
     .checklist-table tr:nth-child(odd) td { background: #f5f8fc; }
     .checklist-table tr:nth-child(even) td { background: #fff; }
     .checklist-table td:first-child { font-weight: 600; color: #1a3a5c; }
@@ -86,7 +86,7 @@
     <h2>How and When to Use This Tool:</h2>
 
    <div style="text-align: center;">
-        <img src="{%  static 'images/fig_13.png'  %}" alt="How and when" class="figure" >
+        <img src="{% static 'images/fig_13.png' %}" alt="Phase timeline diagram showing the Data Governance and Storage Plan is established at the beginning of Phase 2 alongside the Technical Requirements Plan and Solution Implementation and Impact Monitoring Plan." class="figure">
     </div>
 
     <p>The Data Governance and Storage Plan is used in the beginning of Phase 2, as soon as stakeholders begin making decisions on co-development and approaches to be used in solution design. This plan is used alongside the <a href="{% url 'webapp:technical_requirements' %}">Technical Requirements Plan</a> and the <a href="{% url 'webapp:implementation_monitoring' %}">Solution Implementation and Impact Monitoring Plan</a></p>
@@ -95,7 +95,7 @@
 
 <hr class="section-rule">
 
-<h2 style="color:#0b3d91; font-size:1.35rem; margin-bottom:0.5rem; display: flex; justify-content: space-between; align-items: center;">Section 1: Guidance on Data Governance and Storage <a href="{%  static 'toolkit_documents/Data_Governance_and_Storage_Template.docx'  %}" title="Data Governance and Storage Template">open editable template</a></h2>
+<h2 style="color:#0170B9; font-size:1.35rem; margin-bottom:0.5rem; display: flex; justify-content: space-between; align-items: center;">Section 1: Guidance on Data Governance and Storage <a href="{%  static 'toolkit_documents/Data_Governance_and_Storage_Template.docx'  %}" title="Data Governance and Storage Template">open editable template</a></h2>
 
 <!-- 1. Data Inputs -->
 <div class="gov-section">
@@ -388,7 +388,7 @@
 <hr class="section-rule">
 
 <!-- Section 2: Checklist -->
-<h2 style="color:#0b3d91; font-size:1.35rem; margin-bottom:1rem;">Section 2: Data Governance and Plan Checklist</h2>
+<h2 style="color:#0170B9; font-size:1.35rem; margin-bottom:1rem;">Section 2: Data Governance and Plan Checklist</h2>
 
 <table class="checklist-table">
     <thead>

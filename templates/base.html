@@ -6,9 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}NASA Earth Action — Solution Co-Development Toolkit{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/toolkit.css' %}?version={{ static_version }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 </head>
 <body>
+<a href="#main-content" class="skip-link">Skip to main content</a>
 
 <header class="site-header">
     <button class="hamburger" id="menuToggle" aria-label="Toggle navigation">&#9776;</button>
@@ -22,16 +26,16 @@
     </a>
     {% if is_staff %}
     <div class="staff-header-actions">
-        <button id="new-page-btn" title="Create a new tool page" style="background:#00a0b0;color:#fff;border:none;border-radius:4px;padding:0.35rem 0.85rem;font-size:0.8rem;font-weight:600;cursor:pointer;letter-spacing:0.03em;">+ New Page</button>
+        <button id="new-page-btn" title="Create a new tool page" style="background:#3a3a3a;color:#fff;border:none;border-radius:4px;padding:0.35rem 0.85rem;font-size:0.8rem;font-weight:600;cursor:pointer;letter-spacing:0.03em;">+ New Page</button>
         {% if is_dynamic %}
             {% if not is_published %}
-            <button id="publish-page-btn" title="Publish this page to all users" style="background:#2e7d32;color:#fff;border:none;border-radius:4px;padding:0.35rem 0.85rem;font-size:0.8rem;font-weight:600;cursor:pointer;">&#10003; Publish</button>
+            <button id="publish-page-btn" title="Publish this page to all users" style="background:#2e7d32;color:#fff;border:none;border-radius:4px;padding:0.35rem 0.85rem;font-size:0.8rem;font-weight:600;cursor:pointer;"><span aria-hidden="true">&#10003;</span> Publish</button>
             {% endif %}
-            <button id="delete-page-btn" title="Delete this page" style="background:#c0392b;color:#fff;border:none;border-radius:4px;padding:0.35rem 0.85rem;font-size:0.8rem;font-weight:600;cursor:pointer;">&#128465; Delete Page</button>
+            <button id="delete-page-btn" title="Delete this page" style="background:#c0392b;color:#fff;border:none;border-radius:4px;padding:0.35rem 0.85rem;font-size:0.8rem;font-weight:600;cursor:pointer;"><span aria-hidden="true">&#128465;</span> Delete Page</button>
         {% endif %}
-        <button id="edit-page-btn" title="Edit this page" style="background:#0b3d91;color:#fff;border:none;border-radius:4px;padding:0.35rem 0.85rem;font-size:0.8rem;font-weight:600;cursor:pointer;letter-spacing:0.03em;">&#9998; Edit Page</button>
-        <button id="save-page-btn" style="display:none;background:#2e7d32;color:#fff;border:none;border-radius:4px;padding:0.35rem 0.85rem;font-size:0.8rem;font-weight:600;cursor:pointer;">&#10003; Save</button>
-        <button id="cancel-edit-btn" style="display:none;background:#555;color:#fff;border:none;border-radius:4px;padding:0.35rem 0.85rem;font-size:0.8rem;font-weight:600;cursor:pointer;">&#10005; Cancel</button>
+        <button id="edit-page-btn" title="Edit this page" style="background:#3a3a3a;color:#fff;border:none;border-radius:4px;padding:0.35rem 0.85rem;font-size:0.8rem;font-weight:600;cursor:pointer;letter-spacing:0.03em;"><span aria-hidden="true">&#9998;</span> Edit Page</button>
+        <button id="save-page-btn" style="display:none;background:#2e7d32;color:#fff;border:none;border-radius:4px;padding:0.35rem 0.85rem;font-size:0.8rem;font-weight:600;cursor:pointer;"><span aria-hidden="true">&#10003;</span> Save</button>
+        <button id="cancel-edit-btn" style="display:none;background:#58585b;color:#fff;border:none;border-radius:4px;padding:0.35rem 0.85rem;font-size:0.8rem;font-weight:600;cursor:pointer;"><span aria-hidden="true">&#10005;</span> Cancel</button>
         <span id="editor-status" style="display:none;font-size:0.75rem;color:rgba(255,255,255,0.8);"></span>
     </div>
     {% endif %}
@@ -41,17 +45,17 @@
 <div class="layout">
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-inner">
-            <nav>
+            <nav aria-label="Primary">
                 <a href="{% url 'webapp:introduction' %}"
                    class="{% if 'introduction' == active_slug %}active{% endif %}"><span style="margin-left: 30px;">Introduction</span></a>
 
                 <a href="{% url 'webapp:authors' %}" class="{% if active_slug == 'authors' %}active{% endif %}"><span
                         style="margin-left: 30px;">Authors &amp;
                 Contributors</span></a>
-                <hr>
+                <hr aria-hidden="true">
             </nav>
-            <div class="sidebar-label">Tools</div>
-            <nav>
+            <div class="sidebar-label" aria-hidden="true">Tools</div>
+            <nav aria-label="Tools">
                 {% for section in nav_sections %}
                     {% if section.is_published or is_staff %}
                     <a href="{% if section.is_dynamic %}/tools/{{ section.slug }}/{% else %}{% url section.url_name %}{% endif %}"
@@ -61,15 +65,15 @@
                     </a>
                     {% endif %}
                 {% endfor %}
-                <hr>
+                <hr aria-hidden="true">
             </nav>
-        <div class="sidebar-label">Additional Resources</div>
-        <nav>
+        <div class="sidebar-label" aria-hidden="true">Additional Resources</div>
+        <nav aria-label="Additional Resources">
            <a href="{% url 'webapp:trust_marker' %}" class="{% if active_slug == 'trust-marker' %}active{% endif %}"><span style="margin-left: 30px;">TRUST Marker for Co-development</span></a>
         </nav>
         </div>
     </aside>
-    <div class="watermark-overlay">
+    <div class="watermark-overlay" aria-hidden="true">
         <div class="watermark-text">For Review</div>
     </div>
     <main class="main-content" id="main-content">
@@ -89,26 +93,34 @@
 </div>
 
 {% if is_staff %}
-<div id="new-page-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9000;align-items:center;justify-content:center;">
-    <div style="background:#fff;border-radius:8px;padding:2rem;width:min(480px,90vw);box-shadow:0 8px 32px rgba(0,0,0,0.25);">
-        <h2 style="margin:0 0 1.25rem;font-size:1.15rem;color:#0b3d91;">Create New Page</h2>
-        <div id="new-page-error" style="display:none;background:#fde8e8;border:1px solid #e74c3c;border-radius:4px;padding:0.5rem 0.75rem;margin-bottom:1rem;font-size:0.85rem;color:#c0392b;"></div>
+<div id="new-page-modal"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="new-page-modal-title"
+     style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9000;align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:4px;width:min(480px,90vw);box-shadow:0 8px 32px rgba(0,0,0,0.25);overflow:hidden;">
+        <div style="background:#2e2e32;padding:1rem 1.5rem;">
+            <h2 id="new-page-modal-title" style="margin:0;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:#fff;">Create New Page</h2>
+        </div>
+        <div style="padding:1.5rem 1.5rem 1.25rem;">
+        <div id="new-page-error" role="alert" aria-live="assertive" style="display:none;background:#fde8e8;border:1px solid #e74c3c;border-radius:4px;padding:0.5rem 0.75rem;margin-bottom:1rem;font-size:0.85rem;color:#c0392b;"></div>
+        <p style="font-size:0.78rem;color:#767676;margin-bottom:1rem;">Fields marked <span aria-hidden="true">*</span><span class="sr-only">with an asterisk</span> are required.</p>
         <label style="display:block;margin-bottom:0.9rem;">
-            <span style="font-size:0.82rem;font-weight:600;color:#1a1a2e;display:block;margin-bottom:0.3rem;">Page Name <span style="color:#c0392b;">*</span></span>
-            <input id="new-page-name" type="text" placeholder="e.g. Equity Framework" style="width:100%;box-sizing:border-box;padding:0.45rem 0.7rem;border:1px solid #c0cfe0;border-radius:4px;font-size:0.9rem;">
+            <span style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:#58585b;display:block;margin-bottom:0.3rem;">Page Name <span aria-hidden="true" style="color:#c0392b;">*</span></span>
+            <input id="new-page-name" type="text" required aria-required="true" aria-describedby="new-page-error" placeholder="e.g. Equity Framework" style="width:100%;box-sizing:border-box;padding:0.45rem 0.7rem;border:1px solid #dddddd;border-radius:4px;font-size:0.9rem;background:#F5F5F5;">
         </label>
         <label style="display:block;margin-bottom:0.9rem;">
-            <span style="font-size:0.82rem;font-weight:600;color:#1a1a2e;display:block;margin-bottom:0.3rem;">Slug (URL path) <span style="color:#c0392b;">*</span></span>
-            <input id="new-page-slug" type="text" placeholder="e.g. equity-framework" style="width:100%;box-sizing:border-box;padding:0.45rem 0.7rem;border:1px solid #c0cfe0;border-radius:4px;font-size:0.9rem;font-family:monospace;">
-            <span style="font-size:0.75rem;color:#888;">Will be available at <code>/tools/&lt;slug&gt;/</code></span>
+            <span style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:#58585b;display:block;margin-bottom:0.3rem;">Slug (URL path) <span aria-hidden="true" style="color:#c0392b;">*</span></span>
+            <input id="new-page-slug" type="text" required aria-required="true" aria-describedby="new-page-error" placeholder="e.g. equity-framework" style="width:100%;box-sizing:border-box;padding:0.45rem 0.7rem;border:1px solid #dddddd;border-radius:4px;font-size:0.9rem;font-family:monospace;background:#F5F5F5;">
+            <span style="font-size:0.75rem;color:#767676;">Will be available at <code>/tools/&lt;slug&gt;/</code></span>
         </label>
         <label style="display:block;margin-bottom:0.9rem;">
-            <span style="font-size:0.82rem;font-weight:600;color:#1a1a2e;display:block;margin-bottom:0.3rem;">Description <span style="font-weight:400;color:#888;">(optional)</span></span>
-            <textarea id="new-page-desc" rows="2" placeholder="Brief description shown on the home page..." style="width:100%;box-sizing:border-box;padding:0.45rem 0.7rem;border:1px solid #c0cfe0;border-radius:4px;font-size:0.9rem;resize:vertical;"></textarea>
+            <span style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:#58585b;display:block;margin-bottom:0.3rem;">Description <span style="font-weight:400;color:#888;">(optional)</span></span>
+            <textarea id="new-page-desc" rows="2" placeholder="Brief description shown on the home page..." style="width:100%;box-sizing:border-box;padding:0.45rem 0.7rem;border:1px solid #dddddd;border-radius:4px;font-size:0.9rem;resize:vertical;background:#F5F5F5;"></textarea>
         </label>
         <label style="display:block;margin-bottom:1.5rem;">
-            <span style="font-size:0.82rem;font-weight:600;color:#1a1a2e;display:block;margin-bottom:0.3rem;">Insert after</span>
-            <select id="new-page-after" style="width:100%;box-sizing:border-box;padding:0.45rem 0.7rem;border:1px solid #c0cfe0;border-radius:4px;font-size:0.9rem;">
+            <span style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:#58585b;display:block;margin-bottom:0.3rem;">Insert after</span>
+            <select id="new-page-after" style="width:100%;box-sizing:border-box;padding:0.45rem 0.7rem;border:1px solid #dddddd;border-radius:4px;font-size:0.9rem;background:#F5F5F5;">
                 <option value="">— Add at end of list —</option>
                 {% for section in nav_sections %}
                 <option value="{{ section.slug }}">{{ forloop.counter }}. {{ section.name }}</option>
@@ -116,8 +128,9 @@
             </select>
         </label>
         <div style="display:flex;gap:0.6rem;justify-content:flex-end;">
-            <button id="new-page-cancel" style="background:#f0f0f0;color:#333;border:none;border-radius:4px;padding:0.45rem 1rem;font-size:0.88rem;font-weight:600;cursor:pointer;">Cancel</button>
-            <button id="new-page-submit" style="background:#00a0b0;color:#fff;border:none;border-radius:4px;padding:0.45rem 1rem;font-size:0.88rem;font-weight:600;cursor:pointer;">Create Page</button>
+            <button id="new-page-cancel" style="background:#F5F5F5;color:#3a3a3a;border:1px solid #dddddd;border-radius:4px;padding:0.45rem 1rem;font-size:0.88rem;font-weight:600;cursor:pointer;">Cancel</button>
+            <button id="new-page-submit" style="background:#3a3a3a;color:#fff;border:none;border-radius:4px;padding:0.45rem 1rem;font-size:0.88rem;font-weight:600;cursor:pointer;">Create Page</button>
+        </div>
         </div>
     </div>
 </div>
@@ -131,13 +144,12 @@
     <div class="footer-links">
 
 
-        <a href="https://www.nasa.gov/nasa-web-privacy-policy-and-important-notices/" target="_blank" rel="noopener">Privacy
-            Policy</a>
+        <a href="https://www.nasa.gov/nasa-web-privacy-policy-and-important-notices/" target="_blank" rel="noopener">Privacy Policy<span class="sr-only"> (opens in a new tab)</span></a>
     </div>
 </footer>
 
 <a href="https://docs.google.com/forms/d/1P6NCt4raogKqdfqUrOiac4rO_3IgQo1ONkTPYnClvdw/edit?usp=drive_web&ouid=117699359864161579268"
-   target="_blank" rel="noopener" class="review-btn">Provide your review</a>
+   target="_blank" rel="noopener" class="review-btn">Provide your review<span class="sr-only"> (opens in a new tab)</span></a>
 
 <script>
     const toggle = document.getElementById('menuToggle');
@@ -161,6 +173,25 @@
     var afterSelect  = document.getElementById('new-page-after');
     var errorBox     = document.getElementById('new-page-error');
 
+    function getFocusable() {
+        return Array.from(modal.querySelectorAll(
+            'button, input, textarea, select, [tabindex]:not([tabindex="-1"])'
+        )).filter(function (el) { return !el.disabled && el.offsetParent !== null; });
+    }
+
+    function trapFocus(e) {
+        if (e.key === 'Escape') { closeModal(); return; }
+        if (e.key !== 'Tab') return;
+        var focusable = getFocusable();
+        var first = focusable[0];
+        var last  = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault(); last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault(); first.focus();
+        }
+    }
+
     function openModal() {
         nameInput.value = '';
         slugInput.value = '';
@@ -169,10 +200,13 @@
         errorBox.style.display = 'none';
         modal.style.display = 'flex';
         nameInput.focus();
+        modal.addEventListener('keydown', trapFocus);
     }
 
     function closeModal() {
         modal.style.display = 'none';
+        modal.removeEventListener('keydown', trapFocus);
+        newPageBtn.focus();
     }
 
     function toSlug(str) {
@@ -303,7 +337,7 @@
     }
 
     .chat-fab:hover {
-        background: #1756c8;
+        background: #f64137;
         transform: scale(1.07);
         box-shadow: 0 6px 22px rgba(0, 0, 0, 0.32);
     }
@@ -323,8 +357,8 @@
         flex-direction: column;
         background: #fff;
         border: 1px solid var(--border);
-        border-radius: 12px;
-        box-shadow: 0 10px 44px rgba(0, 0, 0, 0.2);
+        border-radius: 4px;
+        box-shadow: var(--shadow-menu);
         overflow: hidden;
         width: 360px;
         height: 480px;
@@ -349,7 +383,7 @@
         right: 8px;
         width: auto;
         height: auto;
-        border-radius: 8px;
+        border-radius: 4px;
     }
 
     /* ── Header ── */
@@ -357,7 +391,7 @@
         display: flex;
         align-items: center;
         padding: 0.6rem 0.85rem;
-        background: var(--nasa-blue);
+        background: var(--color-dark);
         color: #fff;
         flex-shrink: 0;
         gap: 0.5rem;
@@ -370,14 +404,17 @@
     }
 
     .chat-hdr-title {
-        font-size: 0.87rem;
-        font-weight: 700;
+        font-family: 'Inter', sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 1.8px;
+        text-transform: uppercase;
         display: block;
     }
 
     .chat-hdr-sub {
         font-size: 0.68rem;
-        opacity: 0.72;
+        color: rgba(255, 255, 255, 0.87); /* explicit color; ratio ≈ 4.6:1 — WCAG AA */
         display: block;
     }
 
@@ -390,7 +427,7 @@
     .chat-hbtn {
         background: none;
         border: none;
-        color: rgba(255, 255, 255, 0.78);
+        color: rgba(255, 255, 255, 0.9); /* was 0.78; 0.9 ≈ 4.5:1 — WCAG AA */
         cursor: pointer;
         padding: 0.28rem;
         border-radius: 4px;
@@ -613,7 +650,7 @@
         gap: 0.25rem;
         padding: 0.18rem 0.55rem;
         border: 1px dashed var(--border);
-        border-radius: 5px;
+        border-radius: 4px;
         transition: border-color 0.15s, color 0.15s;
         white-space: nowrap;
     }
@@ -669,7 +706,9 @@
     }
 
     #chatInput:focus {
-        border-color: var(--earth-teal);
+        border-color: var(--color-focus);
+        outline: 1px dotted var(--color-focus);
+        background: #fff;
     }
 
     #chatSend {
@@ -690,7 +729,7 @@
     }
 
     #chatSend:hover:not(:disabled) {
-        background: #1756c8;
+        background: #f64137;
     }
 
     #chatSend:disabled {
@@ -744,48 +783,56 @@
 </style>
 
 <!-- FAB -->
-<button class="chat-fab" id="chatFab" aria-label="Open AI Assistant" title="Ask the AI Assistant">
-    <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+<button class="chat-fab" id="chatFab"
+        aria-label="Open AI Assistant"
+        aria-expanded="false"
+        aria-controls="chatWindow"
+        title="Ask the AI Assistant">
+    <svg aria-hidden="true" focusable="false" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
          stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
     </svg>
 </button>
 
 <!-- Chat window -->
-<div class="chat-window hidden" id="chatWindow" data-size="small">
+<div class="chat-window hidden" id="chatWindow"
+     role="dialog"
+     aria-modal="false"
+     aria-labelledby="chatWindowTitle"
+     data-size="small">
 
     <!-- Header -->
     <div class="chat-hdr">
         <div class="chat-hdr-info">
-            <span class="chat-hdr-title">AI Assistant</span>
+            <span class="chat-hdr-title" id="chatWindowTitle">AI Assistant</span>
             <span class="chat-hdr-sub">Toolkit Q&amp;A</span>
         </div>
         <div class="chat-hdr-btns">
             <!-- Expand / compress -->
-            <button class="chat-hbtn" id="chatExpandBtn" title="Expand">
-                <svg id="chatExpandIcon" width="14" height="14" viewBox="0 0 24 24" fill="none"
+            <button class="chat-hbtn" id="chatExpandBtn" aria-label="Expand chat" title="Expand">
+                <svg aria-hidden="true" focusable="false" id="chatExpandIcon" width="14" height="14" viewBox="0 0 24 24" fill="none"
                      stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
                 </svg>
             </button>
             <!-- Fullscreen -->
-            <button class="chat-hbtn" id="chatFsBtn" title="Fullscreen">
-                <svg id="chatFsIcon" width="14" height="14" viewBox="0 0 24 24" fill="none"
+            <button class="chat-hbtn" id="chatFsBtn" aria-label="Enter fullscreen" title="Fullscreen">
+                <svg aria-hidden="true" focusable="false" id="chatFsIcon" width="14" height="14" viewBox="0 0 24 24" fill="none"
                      stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
                 </svg>
             </button>
             <!-- New chat -->
-            <button class="chat-hbtn" id="chatNewBtn" title="New chat">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            <button class="chat-hbtn" id="chatNewBtn" aria-label="Start new chat" title="New chat">
+                <svg aria-hidden="true" focusable="false" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                      stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
                 </svg>
             </button>
             <!-- Close -->
-            <button class="chat-hbtn" id="chatCloseBtn" title="Close">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            <button class="chat-hbtn" id="chatCloseBtn" aria-label="Close chat" title="Close">
+                <svg aria-hidden="true" focusable="false" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                      stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="18" y1="6" x2="6" y2="18"/>
                     <line x1="6" y1="6" x2="18" y2="18"/>
@@ -795,7 +842,10 @@
     </div>
 
     <!-- Messages -->
-    <div class="chat-msgs" id="chatMsgs">
+    <div class="chat-msgs" id="chatMsgs"
+         aria-live="polite"
+         aria-relevant="additions"
+         aria-label="Chat messages">
         <div class="chat-welcome">
             <strong>Ask me anything about the toolkit</strong>
             I can answer questions about co-development methods, tools, concepts, and best practices.
@@ -805,13 +855,14 @@
     <!-- File upload bar -->
     <div class="chat-upload-bar">
         <label class="chat-upload-lbl" for="chatFileInput">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            <svg aria-hidden="true" focusable="false" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                 <polyline points="17 8 12 3 7 8"/>
                 <line x1="12" y1="3" x2="12" y2="15"/>
             </svg>
             Attach file
+            <span class="sr-only">Accepted formats: PDF, TXT, DOCX, CSV, XLSX</span>
         </label>
         <span class="chat-file-badge" id="chatFileBadge"></span>
         <input type="file" id="chatFileInput" accept=".pdf,.txt,.docx,.csv,.xlsx">
@@ -819,9 +870,10 @@
 
     <!-- Input -->
     <div class="chat-input-row">
-        <textarea id="chatInput" placeholder="Ask about the toolkit…" rows="1"></textarea>
-        <button id="chatSend">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        <label for="chatInput" class="sr-only">Message to AI Assistant</label>
+        <textarea id="chatInput" placeholder="Ask about the toolkit…" rows="1" aria-label="Message to AI Assistant"></textarea>
+        <button id="chatSend" aria-label="Send message">
+            <svg aria-hidden="true" focusable="false" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                  stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="22" y1="2" x2="11" y2="13"/>
                 <polygon points="22 2 15 22 11 13 2 9 22 2"/>
@@ -889,7 +941,11 @@
                     fileBadge.textContent = saved.fileBadge;
                     fileBadge.style.display = 'inline';
                 }
-                if (saved.open) win.classList.remove('hidden');
+                if (saved.open) {
+                    win.classList.remove('hidden');
+                    fab.setAttribute('aria-expanded', 'true');
+                    fab.setAttribute('aria-label', 'Close AI Assistant');
+                }
                 if (messages.length > 0) {
                     const welcome = msgsList.querySelector('.chat-welcome');
                     if (welcome) welcome.remove();
@@ -904,25 +960,37 @@
         function applySize() {
             win.setAttribute('data-size', fullscreen ? 'fullscreen' : SIZES[sizeIdx]);
             expandIco.innerHTML = (sizeIdx === 0 && !fullscreen) ? ICON_EXPAND : ICON_COMPRESS;
+            expandBtn.setAttribute('aria-label', (sizeIdx === 0 && !fullscreen) ? 'Expand chat' : 'Compress chat');
             expandBtn.style.visibility = fullscreen ? 'hidden' : 'visible';
             fsIco.innerHTML = fullscreen ? ICON_FS_EXIT : ICON_FS_ENTER;
+            fsBtn.setAttribute('aria-label', fullscreen ? 'Exit fullscreen' : 'Enter fullscreen');
             input.placeholder = (sizeIdx === 0 && !fullscreen)
                 ? 'Ask about the toolkit\u2026'
                 : 'Ask about the toolkit\u2026 (Enter to send)';
         }
 
-        fab.addEventListener('click', () => {
-            win.classList.toggle('hidden');
-            if (!win.classList.contains('hidden')) {
+        function setChatOpen(open) {
+            if (open) {
+                win.classList.remove('hidden');
+                fab.setAttribute('aria-expanded', 'true');
+                fab.setAttribute('aria-label', 'Close AI Assistant');
                 input.focus();
                 scrollBottom();
+            } else {
+                win.classList.add('hidden');
+                fab.setAttribute('aria-expanded', 'false');
+                fab.setAttribute('aria-label', 'Open AI Assistant');
             }
             saveState();
+        }
+
+        fab.addEventListener('click', () => {
+            setChatOpen(win.classList.contains('hidden'));
         });
 
         closeBtn.addEventListener('click', () => {
-            win.classList.add('hidden');
-            saveState();
+            setChatOpen(false);
+            fab.focus();
         });
 
         newChatBtn.addEventListener('click', () => {
@@ -1039,13 +1107,13 @@
         }
 
         function copyBtnHtml() {
-            return '<button class="chat-copy-btn" title="Copy to clipboard">' +
-                '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor"' +
+            return '<button class="chat-copy-btn" aria-label="Copy response to clipboard" title="Copy to clipboard">' +
+                '<svg aria-hidden="true" focusable="false" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor"' +
                 ' stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
                 '<rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>' +
                 '<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>' +
                 '</svg>' +
-                '<span class="chat-copy-lbl">Copy</span>' +
+                '<span class="chat-copy-lbl" aria-hidden="true">Copy</span>' +
                 '</button>';
         }
 
@@ -1095,6 +1163,8 @@
             // Assistant placeholder (not added to messages[] until complete)
             const assistantDiv = document.createElement('div');
             assistantDiv.className = 'chat-msg assistant streaming';
+            assistantDiv.setAttribute('aria-live', 'off'); // suppress char-by-char announcements
+            assistantDiv.setAttribute('aria-label', 'AI is responding…');
             msgsList.appendChild(assistantDiv);
             scrollBottom();
 
@@ -1138,6 +1208,8 @@
 
             function finaliseAssistant(content) {
                 assistantDiv.classList.remove('streaming');
+                assistantDiv.removeAttribute('aria-live');
+                assistantDiv.removeAttribute('aria-label');
                 assistantDiv.dataset.raw = content;
                 assistantDiv.innerHTML = mdToHtml(content) + copyBtnHtml();
                 messages.push({role: 'assistant', content});
@@ -1251,34 +1323,35 @@
 
         // Base site styles so the editor looks like the real page.
         const baseCss = [
-            ':root { --nasa-blue:#0b3d91; --earth-teal:#00a0b0; --border:#d0d7e3; }',
-            'body { font-family: Inter, sans-serif; font-size: 18px; line-height: 1.75;',
-            '       color: #1a1a2e; padding: 1.5rem 2rem; background: #f5f7fa; }',
-            'h1 { font-size: 2rem; font-weight: 700; color: #0b3d91; line-height: 1.2; }',
-            'h2 { font-size: 1.5rem; font-weight: 700; color: #0b3d91; margin: 2.25rem 0 0.6rem; }',
-            'h3 { font-size: 1.15rem; font-weight: 600; color: #0b3d91; margin: 1.75rem 0 0.5rem; }',
-            'h4 { font-size: 0.95rem; font-style: italic; font-weight: 600; color: #1a1a2e; margin: 1.4rem 0 0.4rem; }',
+            ':root { --nasa-blue:#0170B9; --earth-teal:#1c67e3; --border:#dddddd; }',
+            'body { font-family: "Public Sans", sans-serif; font-size: 16px; line-height: 1.65;',
+            '       color: #3a3a3a; padding: 1.5rem 2rem; background: #F5F5F5; }',
+            'h1, h2, h3, h4, h5, h6 { font-family: "Inter", sans-serif; }',
+            'h1 { font-size: 2rem; font-weight: 700; color: #0170B9; line-height: 1.2; }',
+            'h2 { font-size: 1.5rem; font-weight: 500; color: #0170B9; margin: 2.25rem 0 0.6rem; }',
+            'h3 { font-size: 1.15rem; font-weight: 500; color: #0170B9; margin: 1.75rem 0 0.5rem; }',
+            'h4 { font-size: 0.95rem; font-style: italic; font-weight: 600; color: #3a3a3a; margin: 1.4rem 0 0.4rem; }',
             'p { margin-bottom: 1rem; }',
             'ul, ol { margin: 0.5rem 0 1rem 1.5rem; }',
             'li { margin-bottom: 0.4rem; }',
-            'a { color: #0b3d91; }',
-            'hr { border: none; border-top: 1px solid #d0d7e3; margin: 2rem 0; }',
+            'a { color: #0170B9; }',
+            'hr { border: none; border-top: 1px solid #dddddd; margin: 2rem 0; }',
             'strong { font-weight: 700; }',
             'table { border-collapse: collapse; width: 100%; margin-bottom: 1rem; }',
-            'th, td { border: 1px solid #d0d7e3; padding: 0.5rem 0.75rem; text-align: left; }',
-            'th { background: #e8edf5; font-weight: 600; }',
-            '.page-header { border-bottom: 3px solid #00a0b0; padding-bottom: 1rem; margin-bottom: 2rem; }',
+            'th, td { border: 1px solid #dddddd; padding: 0.5rem 0.75rem; text-align: left; }',
+            'th { background: #F5F5F5; font-weight: 600; }',
+            '.page-header { border-bottom: 3px solid #1c67e3; padding-bottom: 1rem; margin-bottom: 2rem; }',
             '.page-header .section-tag { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;',
-            '    text-transform: uppercase; color: #00a0b0; margin-bottom: 0.4rem; }',
-            '.page-header h1 { font-size: 2rem; font-weight: 700; color: #0b3d91; line-height: 1.2; }',
-            '.tk-body { font-size: 18px; line-height: 1.75; color: #1a1a2e; }',
-            '.tk-body h2 { font-size: 1.5rem; font-weight: 700; color: #0b3d91; margin: 2.25rem 0 0.6rem; }',
-            '.tk-body h3 { font-size: 1.15rem; font-weight: 600; color: #0b3d91; margin: 1.75rem 0 0.5rem; }',
-            '.tk-body h4 { font-size: 0.95rem; font-style: italic; font-weight: 600; color: #1a1a2e; margin: 1.4rem 0 0.4rem; }',
+            '    text-transform: uppercase; color: #1c67e3; margin-bottom: 0.4rem; }',
+            '.page-header h1 { font-size: 2rem; font-weight: 700; color: #0170B9; line-height: 1.2; }',
+            '.tk-body { font-size: 16px; line-height: 1.65; color: #3a3a3a; }',
+            '.tk-body h2 { font-size: 1.5rem; font-weight: 500; color: #0170B9; margin: 2.25rem 0 0.6rem; }',
+            '.tk-body h3 { font-size: 1.15rem; font-weight: 500; color: #0170B9; margin: 1.75rem 0 0.5rem; }',
+            '.tk-body h4 { font-size: 0.95rem; font-style: italic; font-weight: 600; color: #3a3a3a; margin: 1.4rem 0 0.4rem; }',
             '.tk-body p { margin-bottom: 1rem; }',
             '.tk-body ul, .tk-body ol { margin: 0.5rem 0 1rem 1.5rem; }',
             '.tk-body li { margin-bottom: 0.4rem; }',
-            '.tk-body hr { border: none; border-top: 1px solid #d0d7e3; margin: 2rem 0; }',
+            '.tk-body hr { border: none; border-top: 1px solid #dddddd; margin: 2rem 0; }',
         ].join('\n');
 
         editorTextarea.value = bodyHtml;

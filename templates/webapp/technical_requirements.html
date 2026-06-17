@@ -8,12 +8,12 @@
 
     /* Template item rows */
     .template-section { margin-top: 2rem; }
-    .template-section > h3 { color: #0b3d91; border-bottom: 2px solid #00a0b0; padding-bottom: 0.35rem; margin-bottom: 1rem; font-size: 1.05rem; }
+    .template-section > h3 { color: #0170B9; border-bottom: 2px solid #1c67e3; padding-bottom: 0.35rem; margin-bottom: 1rem; font-size: 1.05rem; }
 
-    .template-item { margin-bottom: 1.2rem; border: 1px solid #c0cfe0; border-radius: 4px; overflow: hidden; }
-    .template-item-header { display: flex; align-items: stretch; background: #f0f4f8; border-bottom: 1px solid #c0cfe0; gap: 0; }
-    .template-item-title { font-weight: 700; color: #0b3d91; padding: 0.55rem 1rem; font-size: 0.92rem; flex: 1; }
-    .template-item-ref { background: #dce8f5; color: #1a5276; padding: 0.55rem 1rem; font-size: 0.82rem; font-style: italic; border-left: 1px solid #b0c8e0; display: flex; align-items: center; max-width: 55%; line-height: 1.4; }
+    .template-item { margin-bottom: 1.2rem; border: 1px solid #dddddd; border-radius: 4px; overflow: hidden; }
+    .template-item-header { display: flex; align-items: stretch; background: #f0f4f8; border-bottom: 1px solid #dddddd; gap: 0; }
+    .template-item-title { font-weight: 700; color: #0170B9; padding: 0.55rem 1rem; font-size: 0.92rem; flex: 1; }
+    .template-item-ref { background: #dce8f5; color: #005fa3; padding: 0.55rem 1rem; font-size: 0.82rem; font-style: italic; border-left: 1px solid #b0c8e0; display: flex; align-items: center; max-width: 55%; line-height: 1.4; } /* #005fa3 on #dce8f5 ≈ 4.96:1 — WCAG AA ✓ */
     .template-item-body { padding: 0.8rem 1rem; font-size: 0.9rem; line-height: 1.7; background: #fff; }
     .template-item-body p { margin: 0 0 0.6rem 0; }
     .template-item-body p:last-child { margin-bottom: 0; }
@@ -27,7 +27,7 @@
 
     /* Data source sub-specs */
     .data-specs { margin: 0.3rem 0 0.3rem 1.5rem; padding: 0; list-style: none; font-size: 0.87rem; color: #444; }
-    .data-specs li { margin-bottom: 0.2rem; padding-left: 0.8rem; border-left: 2px solid #00a0b0; }
+    .data-specs li { margin-bottom: 0.2rem; padding-left: 0.8rem; border-left: 2px solid #1c67e3; }
 
     /* Agreements bullet list */
     .agreements-list { margin: 0.3rem 0 0.5rem 1.3rem; }
@@ -36,7 +36,7 @@
     /* Validation checklist */
     .checklist { margin: 0.3rem 0 0.5rem 1.3rem; list-style: disc; padding: 0; }
     .checklist li { margin-bottom: 0.35rem; line-height: 1.6; padding-left: 1.2rem; position: relative; }
-    {#.checklist li::before { content: "±0"; position: absolute; left: 0; color: #0b3d91; }#}
+    {#.checklist li::before { content: "±0"; position: absolute; left: 0; color: #0170B9; }#}
 </style>
 
 <div class="page-header">
@@ -56,7 +56,7 @@
     <h2>How and When to Use This Template:</h2>
 
     <div style="text-align: center;">
-        <img src="{%  static 'images/fig_14.png'  %}" alt="How and when" class="figure" >
+        <img src="{% static 'images/fig_14.png' %}" alt="Phase timeline diagram showing the Technical Requirements template is used at the beginning of Phase 2 of the co-development framework, once the solution team starts designing the solution." class="figure">
     </div>
 
     <p>This template is used at the beginning of Phase 2 of the co-development framework once a solution team starts designing the solution. Referencing the Stakeholder mapping, Needs Assessment, and the Design for Impact tools provides understanding of the needs and the objectives of the solution, it documents who the stakeholders are, the beneficiaries and the deliverables.</p>

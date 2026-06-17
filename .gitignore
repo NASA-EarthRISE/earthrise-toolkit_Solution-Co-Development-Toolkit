@@ -39,7 +39,15 @@ Thumbs.db
 # ChromaDB
 chroma_db/
 
+django_cache
+
 # Uploads
 uploads/
+
+nul
+
+*.docx
+
+chatbot_requirements.txt
 
 django_integration.md

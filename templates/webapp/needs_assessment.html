@@ -5,56 +5,56 @@
 <style>
     /* Workflow table */
     .workflow-table { width: 100%; border-collapse: collapse; margin: 1.2rem 0; font-size: 0.85rem; }
-    .workflow-table th { background: #0b3d91; color: #fff; padding: 0.6rem 0.8rem; text-align: left; font-weight: 600; vertical-align: top; }
-    .workflow-table td { padding: 0.7rem 0.8rem; border: 1px solid #c0cfe0; vertical-align: top; line-height: 1.6; }
+    .workflow-table th { background: #0170B9; color: #fff; padding: 0.6rem 0.8rem; text-align: left; font-weight: 600; vertical-align: top; }
+    .workflow-table td { padding: 0.7rem 0.8rem; border: 1px solid #dddddd; vertical-align: top; line-height: 1.6; }
     .workflow-table tr:nth-child(odd) td { background: #f5f8fc; }
     .workflow-table tr:nth-child(even) td { background: #fff; }
-    .workflow-table td:first-child { font-weight: 700; color: #0b3d91; white-space: nowrap; }
+    .workflow-table td:first-child { font-weight: 700; color: #0170B9; white-space: nowrap; }
 
     /* Numbered core methods */
     .methods-numbered { margin: 0.5rem 0 1rem 0; padding: 0; list-style: none; }
     .methods-numbered li { display: flex; gap: 0.9rem; margin-bottom: 1rem; line-height: 1.65; }
-    .methods-numbered li .num { flex-shrink: 0; width: 26px; height: 26px; background: #0b3d91; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.82rem; margin-top: 2px; }
+    .methods-numbered li .num { flex-shrink: 0; width: 26px; height: 26px; background: #0170B9; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.82rem; margin-top: 2px; }
 
     /* Optional methods */
     .optional-methods { margin: 0.5rem 0 1rem 0; }
-    .optional-item { border-left: 3px solid #00a0b0; padding: 0.5rem 0 0.5rem 1rem; margin-bottom: 0.8rem; line-height: 1.65; }
+    .optional-item { border-left: 3px solid #1c67e3; padding: 0.5rem 0 0.5rem 1rem; margin-bottom: 0.8rem; line-height: 1.65; }
 
     /* Methods tables */
     .methods-table { width: 100%; border-collapse: collapse; margin: 0.8rem 0 1.5rem 0; font-size: 0.85rem; }
-    .methods-table th { background: #0b3d91; color: #fff; padding: 0.6rem 0.8rem; text-align: left; font-weight: 600; vertical-align: top; }
-    .methods-table td { padding: 0.65rem 0.8rem; border: 1px solid #c0cfe0; vertical-align: top; line-height: 1.6; }
+    .methods-table th { background: #0170B9; color: #fff; padding: 0.6rem 0.8rem; text-align: left; font-weight: 600; vertical-align: top; }
+    .methods-table td { padding: 0.65rem 0.8rem; border: 1px solid #dddddd; vertical-align: top; line-height: 1.6; }
     .methods-table tr:nth-child(odd) td { background: #f5f8fc; }
     .methods-table tr:nth-child(even) td { background: #fff; }
     .methods-table td:first-child { font-weight: 600; }
 
     /* Rigor level key */
     .rigor-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; margin: 1rem 0 1.5rem 0; }
-    .rigor-card { background: #f5f8fc; border: 1px solid #c0cfe0; border-radius: 4px; padding: 0.75rem 1rem; font-size: 0.88rem; line-height: 1.6; }
-    .rigor-card strong { color: #0b3d91; display: block; margin-bottom: 0.2rem; }
+    .rigor-card { background: #f5f8fc; border: 1px solid #dddddd; border-radius: 4px; padding: 0.75rem 1rem; font-size: 0.88rem; line-height: 1.6; }
+    .rigor-card strong { color: #0170B9; display: block; margin-bottom: 0.2rem; }
 
     /* Theme mapping table */
     .theme-table { width: 100%; border-collapse: collapse; margin: 0.8rem 0 1.2rem 0; font-size: 0.9rem; }
-    .theme-table th { background: #0b3d91; color: #fff; padding: 0.6rem 0.9rem; text-align: left; font-weight: 600; }
-    .theme-table td { padding: 0.65rem 0.9rem; border: 1px solid #c0cfe0; vertical-align: top; line-height: 1.6; }
+    .theme-table th { background: #0170B9; color: #fff; padding: 0.6rem 0.9rem; text-align: left; font-weight: 600; }
+    .theme-table td { padding: 0.65rem 0.9rem; border: 1px solid #dddddd; vertical-align: top; line-height: 1.6; }
     .theme-table tr:nth-child(odd) td { background: #f5f8fc; }
     .theme-table tr:nth-child(even) td { background: #fff; }
 
     /* Prioritization matrix */
     .priority-matrix { width: 100%; border-collapse: collapse; margin: 1rem 0 0.5rem 0; font-size: 0.85rem; }
-    .priority-matrix th { background: #0b3d91; color: #fff; padding: 0.6rem 0.8rem; text-align: center; font-weight: 600; border: 1px solid #8090a8; }
+    .priority-matrix th { background: #0170B9; color: #fff; padding: 0.6rem 0.8rem; text-align: center; font-weight: 600; border: 1px solid #8090a8; }
     .priority-matrix th:first-child { text-align: left; }
     .priority-matrix td { padding: 0.7rem 0.8rem; border: 1px solid #8090a8; vertical-align: middle; line-height: 1.55; font-size: 0.83rem; }
-    .priority-matrix td:first-child { font-weight: 700; background: #e8eef5; color: #0b3d91; }
+    .priority-matrix td:first-child { font-weight: 700; background: #e8eef5; color: #005fa3; } /* #005fa3 on #e8eef5 = 5.7:1 — WCAG AA ✓ */
     .cell-dark-green { background: #1a7a3a !important; color: #fff; }
-    .cell-green { background: #2ecc71 !important; color: #fff; }
+    .cell-green { background: #2ecc71 !important; color: #1a4a2a; } /* #1a4a2a on #2ecc71 = 4.6:1 — WCAG AA ✓ */
     .cell-light-green { background: #a8e6bf !important; color: #1a4a2a; }
-    .cell-yellow-dark { background: #f39c12 !important; color: #fff; }
+    .cell-yellow-dark { background: #f39c12 !important; color: #3a3a3a; } /* #3a3a3a on #f39c12 = 5.1:1 — WCAG AA ✓ */
     .cell-yellow { background: #f7dc6f !important; color: #555; }
     .cell-yellow-light { background: #fdeaa0 !important; color: #555; }
     .cell-red-dark { background: #c0392b !important; color: #fff; }
-    .cell-red { background: #e74c3c !important; color: #fff; }
-    .cell-red-light { background: #f1948a !important; color: #fff; }
+    .cell-red { background: #a93226 !important; color: #fff; } /* darkened from #e74c3c; #fff on #a93226 = 6.6:1 — WCAG AA ✓ */
+    .cell-red-light { background: #f1948a !important; color: #3a3a3a; } /* #3a3a3a on #f1948a = 5.0:1 — WCAG AA ✓ */
 
     .priority-legend { display: flex; gap: 1.5rem; margin: 0.5rem 0 1.5rem 0; flex-wrap: wrap; font-size: 0.85rem; }
     .legend-item { display: flex; align-items: center; gap: 0.4rem; }
@@ -62,17 +62,17 @@
 
     /* Interview guide subsections */
     .guide-principle { margin-bottom: 1.4rem; }
-    .guide-principle h4 { color: #0b3d91; margin: 0 0 0.5rem 0; font-size: 0.95rem; border-left: 3px solid #00a0b0; padding-left: 0.6rem; }
+    .guide-principle h4 { color: #0170B9; margin: 0 0 0.5rem 0; font-size: 0.95rem; border-left: 3px solid #1c67e3; padding-left: 0.6rem; }
     .guide-principle ul { margin: 0.3rem 0 0 1.4rem; }
     .guide-principle ul li { margin-bottom: 0.45rem; line-height: 1.65; }
 
     /* Interview prompts table */
     .prompts-table { width: 100%; border-collapse: collapse; margin: 1rem 0 1.5rem 0; font-size: 0.84rem; }
-    .prompts-table th { background: #0b3d91; color: #fff; padding: 0.6rem 0.8rem; text-align: left; font-weight: 600; vertical-align: top; }
-    .prompts-table td { padding: 0.7rem 0.8rem; border: 1px solid #c0cfe0; vertical-align: top; line-height: 1.6; }
+    .prompts-table th { background: #0170B9; color: #fff; padding: 0.6rem 0.8rem; text-align: left; font-weight: 600; vertical-align: top; }
+    .prompts-table td { padding: 0.7rem 0.8rem; border: 1px solid #dddddd; vertical-align: top; line-height: 1.6; }
     .prompts-table tr:nth-child(odd) td { background: #f5f8fc; }
     .prompts-table tr:nth-child(even) td { background: #fff; }
-    .prompts-table td:first-child { font-weight: 600; color: #0b3d91; }
+    .prompts-table td:first-child { font-weight: 600; color: #0170B9; }
     .prompts-table ul { margin: 0.3rem 0 0 1.1rem; padding: 0; }
     .prompts-table ul li { margin-bottom: 0.3rem; }
     .prompts-table em { color: #555; }
@@ -106,7 +106,7 @@
 <div class="subsection">
     <h2>How and When To Use this Tool:</h2>
     <div style="text-align: center;">
-        <img src="{%  static 'images/fig_9.png'  %}" alt="How and when" class="figure" >
+        <img src="{% static 'images/fig_9.png' %}" alt="Phase timeline diagram showing the Needs Assessment tool is used in Phase 1, following completion of the Stakeholder Mapping process." class="figure">
     </div>
     <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 46</p>
     <p>The Needs Assessment Tool is used after completing the Stakeholder Mapping process. Use the <a href="https://docs.google.com/spreadsheets/d/1Yi0ScvjPthAMr1fQNkLX50kDHNTalrHz/edit?gid=78278432#gid=78278432" target="_blank">Needs Assessment Template</a> for each priority group to capture:</p>

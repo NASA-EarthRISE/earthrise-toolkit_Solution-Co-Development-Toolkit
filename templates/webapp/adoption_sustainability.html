@@ -8,15 +8,15 @@
 
 
     /* Solution info labels */
-    .info-label { font-weight: 700; color: #0b3d91; font-size: 0.93rem; }
+    .info-label { font-weight: 700; color: #0170B9; font-size: 0.93rem; }
 
     /* Italic table instruction */
     .table-note { font-style: italic; font-size: 0.88rem; color: #555; margin-bottom: 0.5rem; }
 
     /* Fillable tables */
     .fill-table { width: 100%; border-collapse: collapse; margin: 0.5rem 0 1.2rem 0; font-size: 0.86rem; }
-    .fill-table th { background: #0b3d91; color: #fff; padding: 0.6rem 0.9rem; text-align: left; font-weight: 600; }
-    .fill-table td { padding: 0.6rem 0.9rem; border: 1px solid #c0cfe0; vertical-align: top; line-height: 1.55; min-height: 2rem; }
+    .fill-table th { background: #0170B9; color: #fff; padding: 0.6rem 0.9rem; text-align: left; font-weight: 600; }
+    .fill-table td { padding: 0.6rem 0.9rem; border: 1px solid #dddddd; vertical-align: top; line-height: 1.55; min-height: 2rem; }
     .fill-table tr:nth-child(odd) td { background: #f5f8fc; }
     .fill-table tr:nth-child(even) td { background: #fff; }
     .fill-table td:first-child { font-weight: 500; color: #1a3a5c; }
@@ -24,8 +24,8 @@
     /* Risk table */
     .risk-table td { font-size: 0.85rem; }
     .risk-high { color: #c0392b; font-weight: 600; }
-    .risk-med { color: #e67e22; font-weight: 600; }
-    .risk-low { color: #27ae60; font-weight: 600; }
+    .risk-med { color: #b35300; font-weight: 600; } /* #b35300 on white = 5.1:1, on #f5f8fc = 4.8:1 — WCAG AA ✓ */
+    .risk-low { color: #1e7a38; font-weight: 600; } /* #1e7a38 on white = 5.3:1, on #f5f8fc = 5.0:1 — WCAG AA ✓ */
 
     /* Gantt note */
     .gantt-note { font-style: italic; font-size: 0.88rem; color: #555; margin-top: 0.4rem; }
@@ -50,10 +50,10 @@
 </div>
 
 <div style="margin-top:2rem;">
-    <h2 style="color:#0b3d91; border-bottom:2px solid #00a0b0; padding-bottom:0.4rem; margin-bottom:1rem;">How and When to Use This Tool:</h2>
+    <h2 style="color:#0170B9; border-bottom:2px solid #1c67e3; padding-bottom:0.4rem; margin-bottom:1rem;">How and When to Use This Tool:</h2>
 
     <div style="text-align: center;">
-        <img src="{%  static 'images/fig_15.png'  %}" alt="How and when" class="figure" >
+        <img src="{% static 'images/fig_15.png' %}" alt="Phase timeline diagram showing the Solution Adoption and Sustainability Plan is initially drafted in Phase 2 and revisited at key points throughout Phases 3 and 4 as the solution matures." class="figure">
     </div>
     <p>This tool should be initially completed during Phase 2 of the co-development process (initial draft). It should be revisited and updated at key points throughout subsequent phases of co-development as the solution matures, user needs evolve, and sustainability considerations become clearer.</p>
     <p class="page-note">NASA Earth Action Solutions Co-Development Toolkit, v0.1 | 95</p>

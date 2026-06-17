@@ -18,6 +18,7 @@ from .rag import build_context_snippets, get_store
 from .prompts import SYSTEM_PROMPT
 from .ingest_helpers import extract_text_and_chunk
 from .document_registry import get_document_list_prompt
+from .moderation import rate_limit, moderate_input, sanitize_document_chunks
 
 UPLOAD_DIR = os.path.join(settings.BASE_DIR, "uploads")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -240,6 +241,8 @@ def api_chat_upload(request):
             d["metadata"]["session_id"] = session_id
             d["metadata"]["is_global"] = False
 
+        docs, redaction_warnings = sanitize_document_chunks(docs)
+
         store = get_store()
         store.upsert(docs)
 
@@ -249,10 +252,13 @@ def api_chat_upload(request):
         request.session["uploaded_files"] = uploaded_files
         request.session.modified = True
 
-        return JsonResponse({
+        response_data = {
             "message": f"File '{file.name}' ingested for this chat ({len(docs)} chunks).",
-            "filename": file.name
-        })
+            "filename": file.name,
+        }
+        if redaction_warnings:
+            response_data["warnings"] = redaction_warnings
+        return JsonResponse(response_data)
     except Exception as e:
         return JsonResponse({"error": f"ERROR ingesting {file.name}: {e}"}, status=500)
 
@@ -286,6 +292,7 @@ def api_clear_chat(request):
 
 @csrf_exempt
 @require_POST
+@rate_limit()
 def api_message(request):
     try:
         raw = request.body.decode("utf-8") or "{}"
@@ -298,6 +305,16 @@ def api_message(request):
 
     if not user_text:
         return JsonResponse({"error": "Message is required"}, status=400)
+
+    if len(user_text) > settings.MAX_MESSAGE_LENGTH:
+        return JsonResponse(
+            {"error": f"Message exceeds the {settings.MAX_MESSAGE_LENGTH}-character limit."},
+            status=400,
+        )
+
+    safe, reason = moderate_input(user_text, client, CHAT_MODEL)
+    if not safe:
+        return JsonResponse({"error": reason}, status=400)
 
     session_id = request.session.get("session_id")
 
@@ -343,6 +360,7 @@ def _sse(data: dict, event: str | None = None) -> str:
 
 
 @csrf_exempt
+@rate_limit()
 def api_message_stream(request):
     if request.method != "GET":
         return JsonResponse({"error": "Use GET with query params"}, status=405)
@@ -352,6 +370,15 @@ def api_message_stream(request):
 
     if not user_text:
         return HttpResponseBadRequest("message is required")
+
+    if len(user_text) > settings.MAX_MESSAGE_LENGTH:
+        return HttpResponseBadRequest(
+            f"Message exceeds the {settings.MAX_MESSAGE_LENGTH}-character limit."
+        )
+
+    safe, reason = moderate_input(user_text, client, CHAT_MODEL)
+    if not safe:
+        return HttpResponseBadRequest(reason)
 
     session_id = request.session.get("session_id")
 

@@ -115,6 +115,19 @@ STATICFILES_DIRS = [ BASE_DIR / "webapp" / "static" ]
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+# Cache — used for rate limiting; FileBasedCache works across multiple workers
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+        "LOCATION": os.path.join(BASE_DIR, "django_cache"),
+    }
+}
+
+# Chat safety settings
+MAX_MESSAGE_LENGTH = int(os.getenv("MAX_MESSAGE_LENGTH", "2000"))
+RATE_LIMIT_CHAT_REQUESTS = int(os.getenv("RATE_LIMIT_CHAT_REQUESTS", "20"))
+RATE_LIMIT_CHAT_WINDOW_SECONDS = int(os.getenv("RATE_LIMIT_CHAT_WINDOW_SECONDS", "60"))
+
 # App settings
 OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL")
 OPENAI_API_KEY  = os.getenv("OPENAI_API_KEY")

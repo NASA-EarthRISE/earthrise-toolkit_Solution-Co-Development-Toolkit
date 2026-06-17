@@ -6,7 +6,7 @@
 
     .workflow-box {
         background: #dce8f5;
-        border-left: 4px solid #0b3d91;
+        border-left: 4px solid #0170B9;
         border-radius: 4px;
         padding: 1rem 1.25rem;
         margin: 1rem 0 1.5rem;
@@ -14,14 +14,14 @@
     .workflow-box .wf-label {
         font-weight: 700;
         font-size: 0.85rem;
-        color: #0b3d91;
+        color: #0170B9;
         margin-bottom: 0.75rem;
         text-transform: uppercase;
         letter-spacing: 0.05em;
     }
     .workflow-box ol { margin-left: 0; list-style: none; padding: 0; }
     .workflow-box ol li { padding: 0.2rem 0 0.2rem 1.5rem; position: relative; }
-    .workflow-box ol li::before { content: "➔"; position: absolute; left: 0; color: #0b3d91; }
+    .workflow-box ol li::before { content: "➔"; position: absolute; left: 0; color: #0170B9; }
 
     /* Phase card variant used on this page (arrow-bullet style) */
     .phase-card .phase-title {
@@ -34,10 +34,10 @@
     .phase-card ul { list-style: none; padding: 0; margin: 0; }
     .phase-card ul li { padding: 0.2rem 0 0.2rem 1.2rem; position: relative; }
     .phase-card ul li::before { content: "➤"; position: absolute; left: 0; font-size: 0.65rem; top: 0.3rem; }
-    .phase-1 { color: #1a1a2e; }
-    .phase-2 { color: #1a1a2e; }
-    .phase-3 { color: #1a1a2e; }
-    .phase-4 { color: #1a1a2e; }
+    .phase-1 { color: #3a3a3a; }
+    .phase-2 { color: #3a3a3a; }
+    .phase-3 { color: #3a3a3a; }
+    .phase-4 { color: #3a3a3a; }
     .phase-card.highlighted { outline: 2px solid #c0392b; }
 </style>
 
@@ -84,7 +84,7 @@
     <p><strong>Phase 4—Transition and Impact Assessment</strong> supports adoption and handoff, documents evidence of use and impact, and identifies opportunities for scaling, adaptation, or replication. Phase 4 is when solution teams ensure sustainability, capture lessons learned, and plan for scalability, informing future modifications to a project.</p>
 
     <div style="text-align: center">
-        <img src="{%  static 'images/fig_1.png'  %}" alt="Co-Development Phases" class="figure" >
+        <img src="{% static 'images/fig_1.png' %}" alt="Diagram showing the four phases of co-development and key activities for each phase: Phase 1 Discover (stakeholder mapping, needs assessment), Phase 2 Design (solution co-design, technical requirements), Phase 3 Develop and Implement (prototyping, monitoring), and Phase 4 Sustain and Transition (adoption, impact reporting), arranged as an iterative cycle." class="figure">
     </div>
     <p class="fig-caption">Fig. 1. Phases of Co-Development and key activities for each phase</p>
 

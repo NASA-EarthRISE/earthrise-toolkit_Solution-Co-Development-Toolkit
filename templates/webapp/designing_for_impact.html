@@ -3,14 +3,14 @@
 {% block title %}Designing for Impact — Solution Co-Development Toolkit{% endblock %}
 {% block content %}
 <style>
-    {#.tk-body { font-size: 0.95rem; line-height: 1.75; color: #1a1a2e; }#}
-    {#.tk-body h2 { font-size: 1.5rem; font-weight: 700; color: #0b3d91; margin: 2.25rem 0 0.6rem; }#}
-    {#.tk-body h3 { font-size: 1.15rem; font-weight: 600; color: #0b3d91; margin: 1.75rem 0 0.5rem; }#}
-    {#.tk-body h4 { font-size: 1rem; font-style: italic; font-weight: 600; color: #1a1a2e; margin: 1.4rem 0 0.4rem; }#}
+    {#.tk-body { font-size: 0.95rem; line-height: 1.75; color: #3a3a3a; }#}
+    {#.tk-body h2 { font-size: 1.5rem; font-weight: 700; color: #0170B9; margin: 2.25rem 0 0.6rem; }#}
+    {#.tk-body h3 { font-size: 1.15rem; font-weight: 600; color: #0170B9; margin: 1.75rem 0 0.5rem; }#}
+    {#.tk-body h4 { font-size: 1rem; font-style: italic; font-weight: 600; color: #3a3a3a; margin: 1.4rem 0 0.4rem; }#}
     {#.tk-body p { margin-bottom: 1rem; }#}
     {#.tk-body ul, .tk-body ol { margin: 0.5rem 0 1rem 1.5rem; }#}
     {#.tk-body li { margin-bottom: 0.4rem; }#}
-    {#.tk-body hr { border: none; border-top: 1px solid #d0d7e3; margin: 2rem 0; }#}
+    {#.tk-body hr { border: none; border-top: 1px solid #dddddd; margin: 2rem 0; }#}
 
     /* Phase card variant used on this page (arrow-bullet style) */
     .phase-card .phase-title {
@@ -23,10 +23,10 @@
     .phase-card ul { list-style: none; padding: 0; margin: 0; }
     .phase-card ul li { padding: 0.2rem 0 0.2rem 1.2rem; position: relative; }
     .phase-card ul li::before { content: "➤"; position: absolute; left: 0; font-size: 0.65rem; top: 0.3rem; }
-    .phase-1 { color: #1a1a2e; outline: 2px solid #c0392b; }
-    .phase-2 { color: #1a1a2e; }
-    .phase-3 { color: #1a1a2e; }
-    .phase-4 { color: #1a1a2e; }
+    .phase-1 { color: #3a3a3a; outline: 2px solid #c0392b; }
+    .phase-2 { color: #3a3a3a; }
+    .phase-3 { color: #3a3a3a; }
+    .phase-4 { color: #3a3a3a; }
 
     /* Results pyramid diagram */
     .results-pyramid {
@@ -39,7 +39,7 @@
     }
     .pyramid-level {
         width: 100%;
-        border-radius: 6px;
+        border-radius: 4px;
         padding: 0.65rem 1rem;
         text-align: center;
         position: relative;
@@ -50,7 +50,7 @@
         display: block;
         text-align: center;
         font-size: 1.3rem;
-        color: #0b3d91;
+        color: #0170B9;
         line-height: 1;
         margin-bottom: 2px;
     }
@@ -61,8 +61,8 @@
 
     /* Logic chain / results framework diagram (Fig 2) */
     .logic-chain {
-        border: 1px solid #d0d7e3;
-        border-radius: 8px;
+        border: 1px solid #dddddd;
+        border-radius: 4px;
         overflow: hidden;
         margin: 1.5rem 0;
         font-size: 0.82rem;
@@ -117,19 +117,19 @@
         background: #e8f2fb;
         padding: 0.2rem;
         font-size: 1rem;
-        color: #0b3d91;
+        color: #0170B9;
         border-top: 1px solid #d0dce8;
     }
 
     /* Step boxes (scoped to .step-box to avoid conflict with toolkit .step-header) */
     .step-box {
-        border: 1px solid #d0d7e3;
-        border-radius: 8px;
+        border: 1px solid #dddddd;
+        border-radius: 4px;
         margin: 1.5rem 0;
         overflow: hidden;
     }
     .step-box .step-header {
-        background: #0b3d91;
+        background: #0170B9;
         color: #fff;
         padding: 0.65rem 1.25rem;
         font-weight: 700;
@@ -144,7 +144,7 @@
     .step-box .step-body ul { margin: 0.4rem 0 0.75rem 1.5rem; }
     .step-box .step-example {
         background: #f0f5fb;
-        border-left: 3px solid #00a0b0;
+        border-left: 3px solid #1c67e3;
         padding: 0.75rem 1rem;
         margin-top: 0.75rem;
         font-size: 0.88rem;
@@ -153,9 +153,9 @@
 
     /* If/then template box */
     .ifthen-box {
-        background: #f5f7fa;
-        border: 1px dashed #00a0b0;
-        border-radius: 6px;
+        background: #F5F5F5;
+        border: 1px dashed #1c67e3;
+        border-radius: 4px;
         padding: 0.9rem 1.25rem;
         margin: 1rem 0;
         font-style: italic;
@@ -166,13 +166,13 @@
     .resource-box {
         background: #f0f5fb;
         border: 1px solid #b3cde8;
-        border-radius: 6px;
+        border-radius: 4px;
         padding: 1rem 1.25rem;
         text-align: center;
         margin: 1.25rem 0;
         font-size: 0.92rem;
     }
-    .resource-box a { color: #0b3d91; font-weight: 600; }
+    .resource-box a { color: #0170B9; font-weight: 600; }
 
     @media (max-width: 700px) {
         .logic-chain .lc-outcomes-row { grid-template-columns: 1fr; }
@@ -182,7 +182,7 @@
 
 <div class="page-header">
     <div class="section-tag">Section 1</div>
-    <h1>Designing for Impact: <span style="font-weight:400;color:#4a4a6a;">An Overview for Earth Science to Action</span></h1>
+    <h1>Designing for Impact: <span style="font-weight:400;color:#58585b;">An Overview for Earth Science to Action</span></h1>
 </div>
 
 <div class="tk-body">
@@ -225,7 +225,7 @@
 {#                <li>Plan for scaling, replication, and long-term uptake</li>#}
 {#            </ul>#}
 {#        </div>#}
-        <img src="{%  static 'images/fig_2.png'  %}" alt="Co-Development Phases" class="figure" >
+        <img src="{% static 'images/fig_2.png' %}" alt="Phase timeline diagram showing Designing for Impact is used throughout all four co-development phases, with initial use in Phase 1 planning and continued reference through solution implementation and impact reporting." class="figure">
     </div>
 
     <p>This tool is used throughout an applied Earth science project, especially when the goal is to inform decisions, take action, or generate societal benefit. It is first used during Phase 1 of the Solution Co-Development Toolkit when planning to co-develop solutions with users, partners, or stakeholders, but it can and should also be used during project implementation to strengthen or redirect ongoing solution development toward clearer, more achievable pathways to impact. It can be referenced throughout the process to ensure all parts of the co-development process align around the same goals.</p>
@@ -340,7 +340,7 @@
 
     <!-- Fig. 1: Results framework pyramid diagram -->
     <div class="results-pyramid">
-        <img src="{%  static 'images/fig_3.png'  %}" alt="Results Framework Pyramid" class="figure" >
+        <img src="{% static 'images/fig_3.png' %}" alt="Results framework pyramid diagram showing four hierarchical levels from base to apex: Level 1 Inputs (resources and activities), Level 2 Outputs (direct deliverables), Level 3 Outcomes (behavioral and system changes), and Level 4 Impact (broad societal benefit). Each level builds on the one below." class="figure">
     </div>
     <p class="fig-caption" style="text-align:center;">Fig. 1: Results framework diagram.</p>
 
@@ -369,7 +369,7 @@
 
     <!-- Fig. 2: Logic chain diagram -->
     <div style="text-align:center;">
-        <img src="{%  static 'images/fig_4.png'  %}" alt="Results Framework Logic Chain" class="figure" >
+        <img src="{% static 'images/fig_4.png' %}" alt="Logic chain diagram showing examples of a results framework, with arrows connecting inputs through outputs and outcomes to intended impacts, illustrating the causal pathway from scientific activities to real-world decision-making and societal benefit." class="figure">
     </div>
     <p class="fig-caption" style="text-align:center;">Fig. 2: Examples of a results framework depiction of logic chain:</p>
 

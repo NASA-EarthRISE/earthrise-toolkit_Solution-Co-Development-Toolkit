@@ -3,13 +3,13 @@
 {% block title %}Capturing and Communicating Impact — Solution Co-Development Toolkit{% endblock %}
 {% block content %}
 <style>
-    {#.tk-body { font-size: 0.95rem; line-height: 1.75; color: #1a1a2e; }#}
-    {#.tk-body h2 { font-size: 1.5rem; font-weight: 700; color: #0b3d91; margin: 2.25rem 0 0.6rem; }#}
-    {#.tk-body h3 { font-size: 1.15rem; font-weight: 600; color: #0b3d91; margin: 1.75rem 0 0.5rem; }#}
+    {#.tk-body { font-size: 0.95rem; line-height: 1.75; color: #3a3a3a; }#}
+    {#.tk-body h2 { font-size: 1.5rem; font-weight: 700; color: #0170B9; margin: 2.25rem 0 0.6rem; }#}
+    {#.tk-body h3 { font-size: 1.15rem; font-weight: 600; color: #0170B9; margin: 1.75rem 0 0.5rem; }#}
     {#.tk-body p  { margin-bottom: 1rem; }#}
     {#.tk-body ul { margin: 0.5rem 0 1rem 1.5rem; }#}
     {#.tk-body li { margin-bottom: 0.4rem; }#}
-    {#.tk-body hr { border: none; border-top: 1px solid #d0d7e3; margin: 2rem 0; }#}
+    {#.tk-body hr { border: none; border-top: 1px solid #dddddd; margin: 2rem 0; }#}
 
     /* Phase card variant used on this page (arrow-bullet style) */
     .phase-card .phase-title {
@@ -35,7 +35,7 @@
         font-size: 0.875rem;
     }
     .audience-table thead tr {
-        background: #0b3d91;
+        background: #0170B9;
         color: #fff;
     }
     .audience-table thead th {
@@ -44,8 +44,8 @@
         font-weight: 700;
         font-size: 0.85rem;
     }
-    .audience-table tbody tr { border-bottom: 1px solid #d0d7e3; }
-    .audience-table tbody tr:nth-child(even) { background: #f5f7fa; }
+    .audience-table tbody tr { border-bottom: 1px solid #dddddd; }
+    .audience-table tbody tr:nth-child(even) { background: #F5F5F5; }
     .audience-table td { padding: 0.75rem 1rem; vertical-align: top; }
     .audience-table td:first-child { font-weight: 700; width: 28%; }
     .audience-table td:first-child .eg { font-weight: 400; font-style: italic; font-size: 0.82rem; margin-top: 0.3rem; }
@@ -70,7 +70,7 @@
     .pr-gov    { background: #2b6cb0; color: #fff; width: 40%; border-radius: 4px 4px 0 0; }
     .pr-high   { background: #3a7dc9; color: #fff; width: 56%; }
     .pr-front  { background: #5a9fd4; color: #fff; width: 72%; }
-    .pr-indiv  { background: #7ab8e0; color: #1a1a2e; width: 88%; border-radius: 0 0 4px 4px; }
+    .pr-indiv  { background: #7ab8e0; color: #3a3a3a; width: 88%; border-radius: 0 0 4px 4px; }
 
     /* Communications table */
     .comms-table {
@@ -79,12 +79,12 @@
         margin: 1rem 0 1.5rem;
         font-size: 0.875rem;
     }
-    .comms-table thead tr { background: #0b3d91; color: #fff; }
+    .comms-table thead tr { background: #0170B9; color: #fff; }
     .comms-table thead th { padding: 0.65rem 1rem; text-align: left; font-weight: 700; font-size: 0.85rem; }
-    .comms-table tbody tr { border-bottom: 1px solid #d0d7e3; vertical-align: top; }
-    .comms-table tbody tr:nth-child(even) { background: #f5f7fa; }
+    .comms-table tbody tr { border-bottom: 1px solid #dddddd; vertical-align: top; }
+    .comms-table tbody tr:nth-child(even) { background: #F5F5F5; }
     .comms-table td { padding: 0.85rem 1rem; vertical-align: top; }
-    .comms-table td:first-child { font-style: italic; font-weight: 600; width: 22%; color: #0b3d91; }
+    .comms-table td:first-child { font-style: italic; font-weight: 600; width: 22%; color: #0170B9; }
     .comms-table .ct-label { font-weight: 700; }
     .comms-table ul { margin: 0.3rem 0 0.5rem 1.25rem; }
     .comms-table li { margin-bottom: 0.3rem; }
@@ -93,7 +93,7 @@
     /* Example box — page-specific variant (italic style) */
     .example-box {
         background: #f0f5fb;
-        border-left: 3px solid #00a0b0;
+        border-left: 3px solid #1c67e3;
         padding: 0.75rem 1.1rem;
         margin: 0.75rem 0;
         font-style: italic;
@@ -125,7 +125,7 @@
     <h2>How and When to Use This Tool:</h2>
 
     <div style="text-align: center;">
-        <img src="{%  static 'images/fig_5.png'  %}" alt="How and when" class="figure" >
+        <img src="{% static 'images/fig_5.png' %}" alt="Phase timeline diagram showing the Capturing and Communicating Impact tool can be used across all four co-development phases, with integration into early planning recommended." class="figure">
     </div>
 
     <p>This tool can be used at any point in the co-development process, but it is most effective when integrated into early phases of solution planning and co-design. After reviewing the <a href="{% url 'webapp:designing_for_impact' %}">Designing for Impact 101</a> document, use this too to ensure that you are planning to capture and effectively communicate impact in a way that supports your team's strategic goals. This tool should also be used in developing the <a href="{% url 'webapp:implementation_monitoring' %}">Solution Implementation, Impact, and Monitoring Plan (SIIMP Plan)</a>, to outline the qualitative approaches that will be used to capture impact.</p>
@@ -205,7 +205,7 @@
 
     <!-- Fig. 1: Impact scale pyramid -->
     <div style="text-align: center;">
-        <img src="{%  static 'images/fig_6.png'  %}" alt="Impact scale pyramid" class="figure" >
+        <img src="{% static 'images/fig_6.png' %}" alt="Pyramid diagram illustrating the scale of impact, with foundational outputs at the base progressing upward through outcomes to broader societal and policy-level impacts at the apex." class="figure">
     </div>
     <p class="fig-caption">Fig. 1-Different groups and organizations experience impact at very different scales. When we want to show the breadth of impact, focusing on organizations that work on issues at an administrative or systems level will suffice. When it's important to put a human face to impact, it may be necessary to look for users or beneficiaries who experience impact on a local or personal level to illustrate the depth of impact.</p>
 

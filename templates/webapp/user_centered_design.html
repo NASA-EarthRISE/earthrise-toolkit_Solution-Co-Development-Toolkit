@@ -11,23 +11,23 @@
     .shapes-list li { margin-bottom: 0.4rem; line-height: 1.6; break-inside: avoid; }
 
     /* Callout box */
-    .callout-box { background: #f0f4f8; border-left: 4px solid #00a0b0; padding: 0.9rem 1.2rem; margin: 1rem 0 1.5rem 0; border-radius: 0 4px 4px 0; font-size: 0.95rem; line-height: 1.7; font-style: italic; color: #1a3a5c; }
+    .callout-box { background: #f0f4f8; border-left: 4px solid #1c67e3; padding: 0.9rem 1.2rem; margin: 1rem 0 1.5rem 0; border-radius: 0 4px 4px 0; font-size: 0.95rem; line-height: 1.7; font-style: italic; color: #1a3a5c; }
 
     /* What they are / are not table */
     .persona-table { width: 100%; border-collapse: collapse; margin: 1.2rem 0 1rem 0; font-size: 0.9rem; }
-    .persona-table th { background: #0b3d91; color: #fff; padding: 0.65rem 1rem; text-align: left; font-weight: 600; }
-    .persona-table td { padding: 0.7rem 1rem; border: 1px solid #c0cfe0; vertical-align: top; line-height: 1.6; }
+    .persona-table th { background: #0170B9; color: #fff; padding: 0.65rem 1rem; text-align: left; font-weight: 600; }
+    .persona-table td { padding: 0.7rem 1rem; border: 1px solid #dddddd; vertical-align: top; line-height: 1.6; }
     .persona-table tr:nth-child(odd) td { background: #f5f8fc; }
     .persona-table tr:nth-child(even) td { background: #fff; }
-    .persona-table td:first-child { border-right: 2px solid #0b3d91; }
+    .persona-table td:first-child { border-right: 2px solid #0170B9; }
 
     /* Numbered 4-step process */
     .steps-list { margin: 1rem 0 1.5rem 0; padding: 0; list-style: none; counter-reset: steps; }
     .steps-list li { display: flex; gap: 1rem; margin-bottom: 1rem; line-height: 1.65; counter-increment: steps; }
-    .steps-list li .step-num { flex-shrink: 0; width: 30px; height: 30px; background: #0b3d91; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; margin-top: 2px; }
+    .steps-list li .step-num { flex-shrink: 0; width: 30px; height: 30px; background: #0170B9; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; margin-top: 2px; }
 
     /* Decision-readiness summary box */
-    .summary-box { background: #e8f0fa; border: 1px solid #b0c8e8; border-left: 5px solid #0b3d91; border-radius: 4px; padding: 1.2rem 1.4rem; margin: 1.5rem 0; font-size: 0.93rem; line-height: 1.7; }
+    .summary-box { background: #e8f0fa; border: 1px solid #b0c8e8; border-left: 5px solid #0170B9; border-radius: 4px; padding: 1.2rem 1.4rem; margin: 1.5rem 0; font-size: 0.93rem; line-height: 1.7; }
     .summary-box p { margin-bottom: 0.7rem; }
     .summary-box p:last-child { margin-bottom: 0; }
 </style>
@@ -54,7 +54,7 @@
     <h2>How and When to Use This Tool:</h2>
 
     <div style="text-align: center;">
-        <img src="{%  static 'images/fig_13.png'  %}" alt="How and when" class="figure" >
+        <img src="{% static 'images/fig_13.png' %}" alt="Phase timeline diagram showing User-Centered Design considerations apply across all four co-development phases: clarifying decision behavior in early phases, structuring interaction in Phase 2, testing behavioral change in Phase 3, and ensuring scalable decision support in Phase 4." class="figure">
     </div>
 
     <p>UCD considerations begin at the start of a project, but remain relevant across all phases of co-development:</p>

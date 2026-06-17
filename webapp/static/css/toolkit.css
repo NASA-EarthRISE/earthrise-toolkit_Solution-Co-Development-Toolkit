@@ -5,26 +5,56 @@
 }
 
 :root {
-    --nasa-blue: #0b3d91;
-    --nasa-red: #fc3d21;
-    --earth-teal: #00a0b0;
-    --earth-teal-light: #e6f7f9;
-    --sidebar-width: 280px;
-    --header-height: 64px;
-    --text-primary: #1a1a2e;
-    --text-secondary: #4a4a6a;
-    --bg-page: #f5f7fa;
-    --border: #d0d7e3;
+    /* ── Horizon Design System tokens ───────────────────────── */
+    --color-primary:    #0170B9;
+    --color-action:     #1c67e3;
+    --color-hover:      #f64137;
+    --color-dark:       #2e2e32;
+    --color-text:       #3a3a3a;
+    --color-text-meta:  #58585b;
+    --color-bg:         #F5F5F5;
+    --color-surface:    #FFFFFF;
+    --color-border:     #dddddd;
+    --color-focus:      #444447;
+    --radius:           4px;
+    --shadow-card:      0px 0px 4px 0 rgba(0,0,0,0.34);
+    --shadow-menu:      0px 4px 10px -2px rgba(0,0,0,0.1);
+    --container:        1200px;
+    --font-body:        'Public Sans', sans-serif;
+    --font-heading:     'Inter', sans-serif;
+
+    /* ── Legacy aliases (CSS in templates uses these names) ─── */
+    --nasa-blue:        var(--color-primary);
+    --nasa-red:         var(--color-hover);
+    --earth-teal:       var(--color-action);
+    --earth-teal-light: #e8f0fc;
+    --text-primary:     var(--color-text);
+    --text-secondary:   var(--color-text-meta);
+    --bg-page:          var(--color-bg);
+    --border:           var(--color-border);
+
+    /* ── Structural (layout) ────────────────────────────────── */
+    --sidebar-width:    280px;
+    --header-height:    64px;
 }
 
 body {
-    font-family: Inter, sans-serif, 'DM Mono'; /*font-family: 'Segoe UI', Arial, sans-serif; */
-    font-size: 18px;
-    background: var(--bg-page);
-    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.65;
+    background: var(--color-bg);
+    color: var(--color-text);
     min-height: 100vh;
     overflow-x: hidden;
 }
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+}
+
+h1 { font-size: 36px; font-weight: 700; }
+h2 { font-size: 30px; font-weight: 500; }
+h3 { font-size: 24px; font-weight: 500; }
 
 /* ── Header ── */
 .site-header {
@@ -33,7 +63,7 @@ body {
     left: 0;
     right: 0;
     height: var(--header-height);
-    background: #000000;
+    background: var(--color-dark);
     color: #fff;
     display: flex;
     align-items: center;
@@ -217,7 +247,7 @@ body {
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--earth-teal);
+    color: #0170B9; /* 4.63:1 on white — WCAG AA (was #1c67e3 at 3.1:1) */
     margin-bottom: 0.4rem;
 }
 
@@ -231,7 +261,7 @@ body {
 .content-placeholder {
     background: #fff;
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: var(--radius);
     padding: 2rem;
     color: var(--text-secondary);
 }
@@ -239,20 +269,20 @@ body {
 .tk-body {
     font-size: 18px;
     line-height: 1.75;
-    color: #1a1a2e;
+    color: #3a3a3a;
 }
 
 .tk-body h2 {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #0b3d91;
+    color: #0170B9;
     margin: 2.25rem 0 0.6rem;
 }
 
 .tk-body h3 {
     font-size: 1.15rem;
     font-weight: 600;
-    color: #0b3d91;
+    color: #0170B9;
     margin: 1.75rem 0 0.5rem;
 }
 
@@ -260,7 +290,7 @@ body {
     font-size: 0.95rem;
     font-style: italic;
     font-weight: 600;
-    color: #1a1a2e;
+    color: #3a3a3a;
     margin: 1.4rem 0 0.4rem;
 }
 
@@ -278,14 +308,14 @@ body {
 
 .tk-body hr {
     border: none;
-    border-top: 1px solid #d0d7e3;
+    border-top: 1px solid #dddddd;
     margin: 2rem 0;
 }
 
 /* ── Footer ── */
 .site-footer {
     margin-left: var(--sidebar-width);
-    background: #000;
+    background: var(--color-dark);
     color: rgba(255, 255, 255, 0.75);
     font-size: 0.8rem;
     padding: 1.1rem 3rem;
@@ -320,13 +350,13 @@ body {
     writing-mode: vertical-lr;
     text-orientation: mixed;
     padding: 1.1rem 0.75rem;
-    background: var(--nasa-red);
+    background: #c0392b; /* 5.1:1 with #fff — WCAG AA ✓ */
     color: #fff;
     font-weight: 700;
     font-size: 0.8rem;
     letter-spacing: 0.06em;
     text-decoration: none;
-    border-radius: 6px 0 0 6px;
+    border-radius: var(--radius) 0 0 var(--radius);
     box-shadow: -3px 0 14px rgba(0, 0, 0, 0.18);
     z-index: 150;
     transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
@@ -334,7 +364,7 @@ body {
 }
 
 .review-btn:hover {
-    background: #d4301a;
+    background: #c9291e;
     transform: translateY(-50%) translateX(-4px);
     box-shadow: -5px 0 18px rgba(0, 0, 0, 0.22);
 }
@@ -380,7 +410,7 @@ body {
 
 .site-footer {
     margin-left: var(--sidebar-width);
-    background: #000;
+    background: var(--color-dark);
     color: rgba(255, 255, 255, 0.75);
     padding: 1.5rem 3rem;
 
@@ -447,7 +477,7 @@ body {
 
 /* ── Phase cards (standard variant used by most pages) ────── */
 .phase-card {
-    border-radius: 6px;
+    border-radius: var(--radius);
     padding: 1rem;
     font-size: 0.88rem;
 }
@@ -455,7 +485,7 @@ body {
 .phase-card h4 {
     margin: 0 0 0.6rem 0;
     font-size: 0.9rem;
-    color: #0b3d91;
+    color: #0170B9;
 }
 
 .phase-card ul {
@@ -489,11 +519,11 @@ body {
 .plan-section {
     margin-top: 2.2rem;
     padding-top: 0.5rem;
-    border-top: 1px solid #d0dae8;
+    border-top: 1px solid #dddddd;
 }
 
 .plan-section > h2 {
-    color: #0b3d91;
+    color: #0170B9;
     font-size: 1.2rem;
     margin-bottom: 0.7rem;
 }
@@ -509,7 +539,7 @@ body {
 }
 
 .plan-subsection > h3 {
-    color: #1a5276;
+    color: #0170B9;
     font-size: 1rem;
     margin-bottom: 0.6rem;
 }
@@ -542,14 +572,14 @@ body {
 }
 
 .subsection > h2 {
-    color: #0b3d91;
-    border-bottom: 2px solid #00a0b0;
+    color: #0170B9;
+    border-bottom: 2px solid #1c67e3;
     padding-bottom: 0.4rem;
     margin-bottom: 1rem;
 }
 
 .subsection > h3 {
-    color: #1a5276;
+    color: #0170B9;
     margin: 1.5rem 0 0.6rem 0;
 }
 
@@ -560,7 +590,7 @@ body {
 
 /* ── Step header / body ───────────────────────────────────── */
 .step-header {
-    background: #0b3d91;
+    background: #0170B9;
     color: #fff;
     padding: 0.7rem 1.1rem;
     border-radius: 4px 4px 0 0;
@@ -571,7 +601,7 @@ body {
 }
 
 .step-body {
-    border: 1px solid #c0cfe0;
+    border: 1px solid #dddddd;
     border-top: none;
     border-radius: 0 0 4px 4px;
     padding: 1.2rem 1.4rem;
@@ -588,7 +618,7 @@ body {
 }
 
 .step-body h4 {
-    color: #1a5276;
+    color: #0170B9;
     margin: 1rem 0 0.4rem 0;
     font-size: 0.95rem;
 }
@@ -607,15 +637,15 @@ body {
     color: #555;
     font-style: italic;
     margin: 0 0 0.8rem 0;
-    border-left: 3px solid #00a0b0;
+    border-left: 3px solid #1c67e3;
     padding-left: 0.7rem;
 }
 
 /* ── Example box ──────────────────────────────────────────── */
 .example-box {
-    background: #f0f9fb;
-    border: 1px solid #00a0b0;
-    border-left: 5px solid #00a0b0;
+    background: #eef4fc;
+    border: 1px solid #1c67e3;
+    border-left: 5px solid #1c67e3;
     border-radius: 4px;
     padding: 1rem 1.2rem;
     margin: 1rem 0 1.5rem 0;
@@ -624,7 +654,7 @@ body {
 
 .example-box h5 {
     margin: 0 0 0.6rem 0;
-    color: #0b3d91;
+    color: #0170B9;
     font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 0.04em;
@@ -647,20 +677,20 @@ body {
 
 /* ── Ref note (dashed teal callout) ──────────────────────── */
 .ref-note {
-    background: #e8f4fb;
-    border: 1px dashed #00a0b0;
+    background: #eef4fc;
+    border: 1px dashed #1c67e3;
     border-radius: 4px;
     padding: 0.6rem 1rem;
     margin: 0.5rem 0 1rem 0;
     font-size: 0.9rem;
     font-style: italic;
-    color: #1a5276;
+    color: #0170B9;
 }
 
 /* ── Related / callout boxes ─────────────────────────────── */
 .related-box {
-    background: #f0f4f8;
-    border-left: 4px solid #00a0b0;
+    background: #F5F5F5;
+    border-left: 4px solid #1c67e3;
     padding: 0.9rem 1.2rem;
     margin: 1rem 0 1.5rem 0;
     border-radius: 0 4px 4px 0;
@@ -669,7 +699,7 @@ body {
 }
 
 .related-box strong {
-    color: #0b3d91;
+    color: #0170B9;
 }
 
 .related-box ul {
@@ -697,7 +727,7 @@ body {
 
 .phase-usage li::before {
     content: "▸";
-    color: #00a0b0;
+    color: #1c67e3;
     flex-shrink: 0;
     font-size: 0.85rem;
     margin-top: 2px;
@@ -707,21 +737,21 @@ body {
 .fig-caption {
     font-style: italic;
     font-size: 0.82rem;
-    color: #4a4a6a;
+    color: #58585b;
     margin-top: 0.4rem;
 }
 
 /* ── Section rule ─────────────────────────────────────────── */
 hr.section-rule {
     border: none;
-    border-top: 1px solid #d0dae8;
+    border-top: 1px solid #dddddd;
     margin: 2rem 0;
 }
 
 /* ── Page note ────────────────────────────────────────────── */
 .page-note {
     font-size: 0.8rem;
-    color: #888;
+    color: #696969; /* 4.58:1 on #F5F5F5 bg — WCAG AA ✓ */
     text-align: right;
     margin-top: 0.5rem;
     font-style: italic;
@@ -738,7 +768,7 @@ hr.section-rule {
 }
 
 .tk-table th {
-    background: #0b3d91;
+    background: #0170B9;
     color: #fff;
     padding: 0.65rem 1rem;
     text-align: left;
@@ -748,13 +778,13 @@ hr.section-rule {
 
 .tk-table td {
     padding: 0.7rem 1rem;
-    border: 1px solid #c0cfe0;
+    border: 1px solid #dddddd;
     vertical-align: top;
     line-height: 1.6;
 }
 
 .tk-table tr:nth-child(odd) td {
-    background: #f5f8fc;
+    background: #F5F5F5;
 }
 
 .tk-table tr:nth-child(even) td {
@@ -863,4 +893,53 @@ hr.section-rule {
     .phases-grid {
         grid-template-columns: 1fr;
     }
+}
+
+/* ── Accessibility utilities ──────────────────────────────── */
+
+/* Visually hidden but available to screen readers */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Skip navigation link */
+.skip-link {
+    position: absolute;
+    top: -999px;
+    left: 1rem;
+    background: #0170B9;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 0 0 4px 4px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-decoration: none;
+    z-index: 9999;
+}
+
+.skip-link:focus {
+    top: 0;
+}
+
+/* Global keyboard focus indicator — Horizon: 1px dotted #444447 */
+:focus-visible {
+    outline: 1px dotted var(--color-focus);
+    outline-offset: 2px;
+}
+
+/* Focus on dark backgrounds */
+.hamburger:focus-visible,
+.review-btn:focus-visible,
+.chat-fab:focus-visible,
+.chat-hbtn:focus-visible {
+    outline: 2px dotted #fff;
+    outline-offset: 3px;
 }
