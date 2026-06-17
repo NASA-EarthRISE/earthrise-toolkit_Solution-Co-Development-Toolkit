@@ -22,7 +22,7 @@ from .moderation import rate_limit, moderate_input, sanitize_document_chunks
 
 UPLOAD_DIR = os.path.join(settings.BASE_DIR, "uploads")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
-static_version = 1.0
+static_version = 1.1
 
 
 def _nav():
