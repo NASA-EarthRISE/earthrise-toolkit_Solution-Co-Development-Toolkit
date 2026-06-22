@@ -51,3 +51,5 @@ nul
 chatbot_requirements.txt
 
 django_integration.md
+
+chroma_db.exclude
