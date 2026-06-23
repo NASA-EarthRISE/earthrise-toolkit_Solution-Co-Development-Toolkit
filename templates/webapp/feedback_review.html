@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Feedback &amp; Prompt Review</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body { background: #f4f6fb; font-size: 0.875rem; }
+        .page-header {
+            background: #0b3d91;
+            color: #fff;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .page-header h1 { font-size: 1.25rem; margin: 0; font-weight: 600; }
+        .page-header a { color: rgba(255,255,255,0.75); font-size: 0.8rem; text-decoration: none; }
+        .page-header a:hover { color: #fff; }
+        .stat-card { border: 1px solid #dee2e6; border-left: 4px solid #0b3d91; border-radius: 6px; background: #fff; }
+        .stat-num  { font-size: 1.9rem; font-weight: 700; color: #0b3d91; line-height: 1.1; }
+        .stat-lbl  { font-size: 0.7rem; color: #6c757d; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
+        .type-chip { display:inline-block; font-size:0.7rem; font-weight:600; padding:2px 8px;
+                     border-radius:20px; color:#fff; margin-right:4px; }
+        .chip-general    { background:#6c757d; }
+        .chip-chat_issue { background:#fd7e14; }
+        .chip-bug_report { background:#dc3545; }
+        .star-full  { color:#f5a623; }
+        .star-empty { color:#dee2e6; }
+        .expand-btn { cursor:pointer; font-size:0.7rem; color:#0b3d91; text-decoration:underline; }
+        .full-text  { white-space:pre-wrap; word-break:break-word; background:#f8f9fb;
+                      border:1px solid #dee2e6; border-radius:4px; padding:0.5rem 0.75rem;
+                      font-size:0.79rem; margin-top:0.35rem; }
+        .session-pill { font-family:monospace; font-size:0.7rem; background:#e9ecef;
+                        border-radius:3px; padding:1px 5px; }
+        a.session-pill { color:#0b3d91; text-decoration:none; }
+        a.session-pill:hover { background:#d0d7e0; }
+        .session-active { background:#0b3d91; color:#fff; border-radius:4px;
+                          padding:0.4rem 0.75rem; font-size:0.8rem; display:flex;
+                          align-items:center; gap:0.5rem; margin-bottom:0.75rem; }
+        .table th { font-size:0.72rem; text-transform:uppercase; letter-spacing:0.04em;
+                    color:#6c757d; font-weight:600; white-space:nowrap; }
+        .filter-bar { background:#fff; border:1px solid #dee2e6; border-radius:6px;
+                      padding:0.65rem 1rem; margin-bottom:1rem; }
+        .nav-tabs .nav-link { font-size:0.85rem; }
+        td { vertical-align:top; }
+    </style>
+</head>
+<body>
+
+<!-- ── Header ──────────────────────────────────────────── -->
+<div class="page-header">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+        <h1>Feedback &amp; Prompt Review</h1>
+        <a href="/">&#8592; Back to site</a>
+    </div>
+</div>
+
+<div class="container-fluid px-4">
+
+    <!-- ── Stat cards ─────────────────────────────────────── -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-6 col-sm-4 col-xl-2">
+            <div class="stat-card p-3 h-100">
+                <div class="stat-num">{{ stats.total }}</div>
+                <div class="stat-lbl">Total submissions</div>
+            </div>
+        </div>
+
+        <div class="col-6 col-sm-4 col-xl-2">
+            <div class="stat-card p-3 h-100" style="border-left-color:#198754;">
+                <div class="stat-num" style="color:#198754;">
+                    {% if stats.avg_rating %}{{ stats.avg_rating|floatformat:1 }}{% else %}&mdash;{% endif %}
+                </div>
+                <div class="stat-lbl">Avg rating (1&ndash;5)</div>
+            </div>
+        </div>
+
+        <div class="col-6 col-sm-4 col-xl-2">
+            <div class="stat-card p-3 h-100" style="border-left-color:#6c757d;">
+                <div class="stat-num" style="color:#6c757d;">{{ stats.by_type.general|default:"0" }}</div>
+                <div class="stat-lbl">General feedback</div>
+            </div>
+        </div>
+
+        <div class="col-6 col-sm-4 col-xl-2">
+            <div class="stat-card p-3 h-100" style="border-left-color:#fd7e14;">
+                <div class="stat-num" style="color:#fd7e14;">{{ stats.by_type.chat_issue|default:"0" }}</div>
+                <div class="stat-lbl">Chat issues</div>
+            </div>
+        </div>
+
+        <div class="col-6 col-sm-4 col-xl-2">
+            <div class="stat-card p-3 h-100" style="border-left-color:#dc3545;">
+                <div class="stat-num" style="color:#dc3545;">{{ stats.by_type.bug_report|default:"0" }}</div>
+                <div class="stat-lbl">Bug reports</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ── Session filter banner ─────────────────────────── -->
+    {% if session_filter %}
+    <div class="session-active">
+        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+        </svg>
+        Session: <code style="background:rgba(255,255,255,0.2);padding:1px 6px;border-radius:3px;">{{ session_filter }}</code>
+        <a href="?{% if type_filter %}type={{ type_filter }}&{% endif %}{% if prompt_search %}q={{ prompt_search }}&tab=prompts{% endif %}"
+           style="margin-left:auto;color:#fff;font-size:0.75rem;opacity:0.85;" title="Remove session filter">&#10005; Clear session</a>
+    </div>
+    {% endif %}
+
+    <!-- ── Tabs ───────────────────────────────────────────── -->
+    <ul class="nav nav-tabs mb-0" id="reviewTabs">
+        <li class="nav-item">
+            <button class="nav-link active" id="tab-feedback" data-bs-toggle="tab"
+                    data-bs-target="#pane-feedback" type="button">
+                Visitor Feedback
+                <span class="badge bg-secondary ms-1">{{ stats.total }}</span>
+            </button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" id="tab-prompts" data-bs-toggle="tab"
+                    data-bs-target="#pane-prompts" type="button">
+                Chat Prompts
+                <span class="badge bg-secondary ms-1" id="promptCount">{{ prompt_list|length }}</span>
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content border border-top-0 rounded-bottom bg-white shadow-sm p-3 mb-4">
+
+        <!-- ═══════════════ FEEDBACK PANE ═══════════════ -->
+        <div class="tab-pane fade show active" id="pane-feedback">
+
+            <form method="get" class="filter-bar d-flex flex-wrap gap-2 align-items-center mb-3">
+                {% if session_filter %}<input type="hidden" name="session" value="{{ session_filter }}">{% endif %}
+                <label class="text-muted me-1" style="font-size:0.78rem;white-space:nowrap;">Filter by type:</label>
+                <select name="type" class="form-select form-select-sm" style="width:auto;"
+                        onchange="this.form.submit()">
+                    <option value="">All types</option>
+                    {% for ftype, label in feedback_types %}
+                    <option value="{{ ftype }}" {% if type_filter == ftype %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+                {% if type_filter %}
+                <a href="?{% if session_filter %}session={{ session_filter }}{% endif %}" class="btn btn-sm btn-outline-secondary">Clear filter</a>
+                {% endif %}
+            </form>
+
+            {% if feedback_list %}
+            <div class="table-responsive">
+                <table class="table table-hover table-sm">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width:115px;">Date</th>
+                            <th style="width:110px;">Type</th>
+                            <th style="width:90px;">Rating</th>
+                            <th>Feedback</th>
+                            <th style="width:160px;">Page</th>
+                            <th style="width:100px;">Session</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for fb in feedback_list %}
+                        <tr>
+                            <td class="text-muted text-nowrap">{{ fb.submitted_at|date:"Y-m-d H:i" }}</td>
+                            <td>
+                                <span class="type-chip chip-{{ fb.feedback_type }}">
+                                    {{ fb.get_feedback_type_display }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if fb.rating %}
+                                    {% for i in "12345" %}
+                                        <span class="{% if forloop.counter <= fb.rating %}star-full{% else %}star-empty{% endif %}">&#9733;</span>
+                                    {% endfor %}
+                                {% else %}
+                                    <span class="text-muted">&mdash;</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span>{{ fb.feedback_text|truncatechars:120 }}</span>
+                                {% if fb.feedback_text|length > 120 %}
+                                <br><span class="expand-btn" onclick="toggleFull(this)">Show more &#8595;</span>
+                                <div class="full-text d-none">{{ fb.feedback_text }}</div>
+                                {% endif %}
+                            </td>
+                            <td class="text-muted" style="font-size:0.72rem;word-break:break-all;">
+                                {{ fb.page_url|truncatechars:60|default:"&mdash;" }}
+                            </td>
+                            <td><a href="?session={{ fb.session_key }}{% if type_filter %}&type={{ type_filter }}{% endif %}" class="session-pill" title="{{ fb.session_key }}">{{ fb.session_key|truncatechars:10 }}</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-secondary py-2 mb-0">No feedback submissions yet.</div>
+            {% endif %}
+        </div>
+
+        <!-- ═══════════════ PROMPTS PANE ═══════════════ -->
+        <div class="tab-pane fade" id="pane-prompts">
+
+            <form method="get" class="filter-bar d-flex gap-2 align-items-center mb-3">
+                <input type="hidden" name="tab" value="prompts">
+                {% if session_filter %}<input type="hidden" name="session" value="{{ session_filter }}">{% endif %}
+                <input type="search" name="q" value="{{ prompt_search }}"
+                       class="form-control form-control-sm" style="max-width:360px;"
+                       placeholder="Search prompts&hellip;">
+                <button class="btn btn-sm btn-primary" type="submit">Search</button>
+                {% if prompt_search %}
+                <a href="?tab=prompts{% if session_filter %}&session={{ session_filter }}{% endif %}" class="btn btn-sm btn-outline-secondary">Clear</a>
+                {% endif %}
+            </form>
+
+            {% if prompt_list %}
+            <div class="table-responsive">
+                <table class="table table-hover table-sm">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width:115px;">Date</th>
+                            <th style="width:100px;">Session</th>
+                            <th>Prompt</th>
+                            <th>Response</th>
+                            <th style="width:90px;">Feedback</th>
+                            <th style="width:140px;">Page</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cp in prompt_list %}
+                        <tr>
+                            <td class="text-muted text-nowrap">{{ cp.asked_at|date:"Y-m-d H:i" }}</td>
+                            <td><a href="?session={{ cp.session_key }}&tab=prompts" class="session-pill" title="{{ cp.session_key }}">{{ cp.session_key|truncatechars:10 }}</a></td>
+                            <td>
+                                <span class="fw-medium">{{ cp.prompt|truncatechars:140 }}</span>
+                                {% if cp.prompt|length > 140 %}
+                                <br><span class="expand-btn" onclick="toggleFull(this)">Show more &#8595;</span>
+                                <div class="full-text d-none">{{ cp.prompt }}</div>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="text-muted">{{ cp.response|truncatechars:160 }}</span>
+                                {% if cp.response|length > 160 %}
+                                <br><span class="expand-btn" onclick="toggleFull(this)">Show more &#8595;</span>
+                                <div class="full-text d-none">{{ cp.response }}</div>
+                                {% endif %}
+                            </td>
+                            <td style="white-space:nowrap;">
+                                {% if cp.thumbs_up %}<span title="Thumbs up" style="color:#198754;">&#128077; {{ cp.thumbs_up }}</span>{% endif %}
+                                {% if cp.thumbs_down %}<span title="Thumbs down" style="color:#dc3545;margin-left:4px;">&#128078; {{ cp.thumbs_down }}</span>{% endif %}
+                                {% if not cp.thumbs_up and not cp.thumbs_down %}<span class="text-muted">&mdash;</span>{% endif %}
+                                {% if cp.down_comments %}
+                                <br><span class="expand-btn" onclick="toggleFull(this)" style="color:#dc3545;">Comments &#8595;</span>
+                                <div class="full-text d-none">{% for fb in cp.down_comments %}<div style="margin-bottom:4px;"><em>{{ fb.feedback_text }}</em></div>{% endfor %}</div>
+                                {% endif %}
+                            </td>
+                            <td class="text-muted" style="font-size:0.72rem;word-break:break-all;">
+                                {{ cp.page_url|truncatechars:60|default:"&mdash;" }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-secondary py-2 mb-0">
+                {% if prompt_search %}No prompts matching &ldquo;{{ prompt_search }}&rdquo;.{% else %}No prompts logged yet.{% endif %}
+            </div>
+            {% endif %}
+        </div>
+
+    </div><!-- /tab-content -->
+</div><!-- /container -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Restore active tab from URL param or hash
+    (function () {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('tab') === 'prompts' || window.location.hash === '#tab-prompts') {
+            bootstrap.Tab.getOrCreateInstance(document.getElementById('tab-prompts')).show();
+        }
+    })();
+
+    function toggleFull(btn) {
+        const box = btn.nextElementSibling;
+        const opening = box.classList.contains('d-none');
+        box.classList.toggle('d-none', !opening);
+        btn.textContent = opening ? 'Show less \u2191' : 'Show more \u2193';
+    }
+</script>
+</body>
+</html>

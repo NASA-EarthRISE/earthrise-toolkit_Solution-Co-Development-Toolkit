@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.utils.encoding import smart_str
 from django.conf import settings
-from .models import NavSection, PageContent
+from .models import NavSection, PageContent, VisitorFeedback, ChatPrompt
 
 from .openai_client import client, CHAT_MODEL
 from .rag import build_context_snippets, get_store
@@ -349,7 +349,21 @@ def api_message(request):
     request.session["history"] = history
     request.session.modified = True
 
-    return JsonResponse({"reply": answer})
+    prompt_id = None
+    try:
+        if not request.session.session_key:
+            request.session.save()
+        cp = ChatPrompt.objects.create(
+            session_key=request.session.session_key or '',
+            prompt=user_text,
+            response=answer,
+            page_url=request.META.get('HTTP_REFERER', '')[:500],
+        )
+        prompt_id = cp.id
+    except Exception:
+        pass  # best-effort — never fail a chat over a DB write
+
+    return JsonResponse({"reply": answer, "prompt_id": prompt_id})
 
 
 def _sse(data: dict, event: str | None = None) -> str:
@@ -396,6 +410,12 @@ def api_message_stream(request):
     messages.extend(history[-10:])
     messages.append({"role": "user", "content": user_text})
 
+    # Capture session identity before the generator runs
+    if not request.session.session_key:
+        request.session.save()
+    _session_key = request.session.session_key or ''
+    _page_url = request.META.get('HTTP_REFERER', '')[:500]
+
     def stream():
         yield _sse({"status": "starting"})
 
@@ -424,7 +444,19 @@ def api_message_stream(request):
             request.session["history"] = history
             request.session.modified = True
 
-            yield _sse({"done": True, "full": full}, event="done")
+            _prompt_id = None
+            try:
+                cp = ChatPrompt.objects.create(
+                    session_key=_session_key,
+                    prompt=user_text,
+                    response=full,
+                    page_url=_page_url,
+                )
+                _prompt_id = cp.id
+            except Exception:
+                pass  # best-effort
+
+            yield _sse({"done": True, "full": full, "prompt_id": _prompt_id}, event="done")
 
         except Exception as e:
             yield _sse({"error": str(e)}, event="error")
@@ -434,3 +466,166 @@ def api_message_stream(request):
     resp["X-Accel-Buffering"] = "no"
     return resp
 
+
+# ---------------------------------------------------------------------------
+# Visitor feedback submission (anonymous, no auth required)
+# ---------------------------------------------------------------------------
+
+@csrf_exempt
+@require_POST
+def api_submit_feedback(request):
+    """Accept anonymous qualitative feedback and issue reports from the chat widget."""
+    try:
+        data = json.loads(request.body.decode('utf-8'))
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return JsonResponse({'error': 'Invalid JSON'}, status=400)
+
+    feedback_text = (data.get('feedback_text') or '').strip()
+    if not feedback_text:
+        return JsonResponse({'error': 'feedback_text is required'}, status=400)
+
+    feedback_type = (data.get('feedback_type') or 'general').strip()
+    valid_types = {t[0] for t in VisitorFeedback.FEEDBACK_TYPES}
+    if feedback_type not in valid_types:
+        feedback_type = 'general'
+
+    raw_rating = data.get('rating')
+    rating = None
+    if raw_rating is not None:
+        try:
+            rating = int(raw_rating)
+            if not 1 <= rating <= 5:
+                rating = None
+        except (ValueError, TypeError):
+            rating = None
+
+    page_url = (data.get('page_url') or '').strip()[:500]
+
+    if not request.session.session_key:
+        request.session.save()
+    session_key = request.session.session_key or ''
+
+    VisitorFeedback.objects.create(
+        session_key=session_key,
+        feedback_type=feedback_type,
+        rating=rating,
+        feedback_text=feedback_text,
+        page_url=page_url,
+    )
+    return JsonResponse({'ok': True})
+
+
+# ---------------------------------------------------------------------------
+# Per-response thumbs-up / thumbs-down feedback
+# ---------------------------------------------------------------------------
+
+@csrf_exempt
+@require_POST
+def api_response_feedback(request):
+    """Record a thumbs-up or thumbs-down on a specific ChatPrompt, with optional comment."""
+    try:
+        data = json.loads(request.body.decode('utf-8'))
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return JsonResponse({'error': 'Invalid JSON'}, status=400)
+
+    sentiment = (data.get('sentiment') or '').strip()
+    if sentiment not in ('up', 'down'):
+        return JsonResponse({'error': 'sentiment must be "up" or "down"'}, status=400)
+
+    prompt_id = data.get('prompt_id')
+    chat_prompt_obj = None
+    if prompt_id is not None:
+        try:
+            chat_prompt_obj = ChatPrompt.objects.get(pk=int(prompt_id))
+        except (ChatPrompt.DoesNotExist, ValueError, TypeError):
+            pass  # store without FK if ID is unknown
+
+    comment = (data.get('comment') or '').strip()[:2000]
+    page_url = (data.get('page_url') or '').strip()[:500]
+
+    if not request.session.session_key:
+        request.session.save()
+    session_key = request.session.session_key or ''
+
+    VisitorFeedback.objects.create(
+        session_key=session_key,
+        feedback_type='chat_issue' if sentiment == 'down' else 'general',
+        sentiment=sentiment,
+        feedback_text=comment,
+        page_url=page_url,
+        chat_prompt=chat_prompt_obj,
+    )
+    return JsonResponse({'ok': True})
+
+
+# ---------------------------------------------------------------------------
+# Staff review page — feedback results + prompt log
+# ---------------------------------------------------------------------------
+
+@staff_member_required
+def review(request):
+    """Staff-only page for reviewing visitor feedback and chat prompt logs."""
+    from django.db.models import Avg, Count, Q, Prefetch
+
+    # --- Feedback ---
+    type_filter    = request.GET.get('type', '').strip()
+    session_filter = request.GET.get('session', '').strip()
+    feedback_qs = VisitorFeedback.objects.all()
+    if type_filter:
+        feedback_qs = feedback_qs.filter(feedback_type=type_filter)
+    if session_filter:
+        feedback_qs = feedback_qs.filter(session_key=session_filter)
+
+    stats = {
+        'total':      VisitorFeedback.objects.count(),
+        'avg_rating': VisitorFeedback.objects.filter(rating__isnull=False)
+                      .aggregate(avg=Avg('rating'))['avg'],
+        'by_type':    {
+            row['feedback_type']: row['cnt']
+            for row in VisitorFeedback.objects
+                         .values('feedback_type')
+                         .annotate(cnt=Count('id'))
+        },
+    }
+
+    # --- Prompts ---
+    prompt_search = request.GET.get('q', '').strip()
+    prompt_qs = ChatPrompt.objects.all()
+    if prompt_search:
+        prompt_qs = prompt_qs.filter(prompt__icontains=prompt_search)
+    if session_filter:
+        prompt_qs = prompt_qs.filter(session_key=session_filter).order_by('asked_at')
+
+    prompt_qs = (
+        prompt_qs
+        .annotate(
+            thumbs_up=Count(
+                'response_feedback',
+                filter=Q(response_feedback__sentiment='up'),
+            ),
+            thumbs_down=Count(
+                'response_feedback',
+                filter=Q(response_feedback__sentiment='down'),
+            ),
+        )
+        .prefetch_related(
+            Prefetch(
+                'response_feedback',
+                queryset=VisitorFeedback.objects.filter(
+                    sentiment='down',
+                ).exclude(feedback_text='').order_by('submitted_at'),
+                to_attr='down_comments',
+            )
+        )
+    )
+
+    ctx = _ctx('review', request=request, extra={
+        'feedback_list':  feedback_qs[:200],
+        'stats':          stats,
+        'feedback_types': VisitorFeedback.FEEDBACK_TYPES,
+        'type_filter':    type_filter,
+        'session_filter': session_filter,
+        'prompt_list':    prompt_qs[:500],
+        'prompt_search':  prompt_search,
+    })
+    return render(request, 'webapp/feedback_review.html', ctx)

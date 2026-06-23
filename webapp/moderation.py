@@ -5,6 +5,9 @@ Provides:
   rate_limit        — decorator that enforces per-IP request rate limits
   moderate_input    — two-phase check: regex injection patterns + LLM topic classifier
   sanitize_document_chunks — scans uploaded document chunks for embedded injection
+
+Conspiracy / misinformation categories filtered in Phase 1b (regex, no API call):
+  flat_earth, hollow_earth, climate_denial, moon_landing_hoax, chemtrails, space_denial
 """
 
 import re
@@ -38,6 +41,61 @@ _RAW_INJECTION_PATTERNS = [
 ]
 
 INJECTION_PATTERNS = [re.compile(p, re.IGNORECASE) for p in _RAW_INJECTION_PATTERNS]
+
+# ---------------------------------------------------------------------------
+# Conspiracy / misinformation patterns (Phase 1b — no API call)
+# Organised by named category for logging and future policy management.
+# ---------------------------------------------------------------------------
+_CONSPIRACY_CATEGORIES: dict[str, list[str]] = {
+    "flat_earth": [
+        r"\bflat[\s\-]?earth(er|ers|ism)?\b",
+        r"\bearth\s+is\s+(actually\s+)?flat\b",
+        r"\bflat[\s\-]?earth\s+(theory|movement|conspiracy|believer|truther)",
+    ],
+    "hollow_earth": [
+        r"\bhollow[\s\-]?earth\b",
+        r"\bearth\s+is\s+hollow\b",
+        r"\binner[\s\-]?earth\s+(civilization|people|beings|world|entrances?)\b",
+    ],
+    "climate_denial": [
+        r"\bclimate\s+change\s+is\s+(a\s+)?(hoax|fake|lie|fraud|scam)\b",
+        r"\bglobal\s+warming\s+is\s+(a\s+)?(hoax|fake|lie|fraud|scam)\b",
+        r"\bclimate\s+(hoax|fraud|scam)\b",
+        r"\b(climate|temperature)\s+(data|records?)\s+(is|are)\s+(manipulated|fabricated|faked?)\b",
+        r"\bclimate\s+change\s+(isn'?t|is\s+not)\s+real\b",
+    ],
+    "moon_landing_hoax": [
+        r"\bmoon\s+landing\s+(was\s+)?(faked?|hoax|staged|fabricated|never\s+happened)\b",
+        r"\b(nasa|apollo)\s+(faked?|staged|fabricated)\s+(the\s+)?moon\b",
+        r"\bapollo\s+(hoax|conspiracy|fraud)\b",
+        r"\bnever\s+(went|landed)\s+(to|on)\s+the\s+moon\b",
+    ],
+    "chemtrails": [
+        r"\bchemtrails?\b",
+        r"\bchemical\s+trails?\s+(from|behind|sprayed\s+by)\s+(planes?|aircraft|jets?)\b",
+        r"\bgovernment\s+(is\s+)?(spraying|spray)\s+(chemicals?|poison|toxins?)\b",
+        r"\baerial\s+spraying\s+(conspiracy|program|agenda)\b",
+    ],
+    "space_denial": [
+        r"\bspace\s+is\s+(fake|a\s+(lie|hoax|fraud|scam))\b",
+        r"\b(outer\s+)?space\s+(doesn'?t|does\s+not)\s+exist\b",
+        r"\bnasa\s+(is\s+)?(lying|lies|lied)\s+about\s+space\b",
+        r"\bthere\s+is\s+no\s+(outer\s+)?space\b",
+        r"\bspace\s+(travel|exploration)\s+(is\s+)?(fake|staged|fabricated|a\s+lie)\b",
+    ],
+}
+
+# Flat list of (category, compiled_pattern) for iteration
+CONSPIRACY_PATTERNS: list[tuple[str, re.Pattern]] = [
+    (category, re.compile(pattern, re.IGNORECASE))
+    for category, patterns in _CONSPIRACY_CATEGORIES.items()
+    for pattern in patterns
+]
+
+_CONSPIRACY_BLOCK_MESSAGE = (
+    "This assistant does not engage with conspiracy theories or scientific misinformation. "
+    "Please ask a question about the NASA Solution Co-Development Toolkit."
+)
 
 # ---------------------------------------------------------------------------
 # LLM topic-classifier prompt (Phase 2)
@@ -133,6 +191,12 @@ def moderate_input(text: str, client, model: str) -> tuple[bool, str]:
             LOG.warning("Prompt injection pattern matched: %s", pattern.pattern)
             return False, "Request blocked: prompt injection detected."
 
+    # Phase 1b: conspiracy / misinformation patterns — fast, no API call
+    for category, pattern in CONSPIRACY_PATTERNS:
+        if pattern.search(text):
+            LOG.warning("Conspiracy pattern matched (category=%s): %s", category, pattern.pattern)
+            return False, _CONSPIRACY_BLOCK_MESSAGE
+
     # Phase 2: LLM topic classifier — single cheap call, max_tokens=5
     try:
         response = client.chat.completions.create(
@@ -176,10 +240,21 @@ def sanitize_document_chunks(chunks: list[dict]) -> tuple[list[dict], list[str]]
     for chunk in chunks:
         text = chunk.get("text", "")
         redacted = text
+
         for pattern in INJECTION_PATTERNS:
             if pattern.search(redacted):
                 LOG.warning(
                     "Prompt injection pattern '%s' found in document chunk '%s'; redacting.",
+                    pattern.pattern,
+                    chunk.get("id", "unknown"),
+                )
+                redacted = pattern.sub("[CONTENT REDACTED: POLICY VIOLATION]", redacted)
+
+        for category, pattern in CONSPIRACY_PATTERNS:
+            if pattern.search(redacted):
+                LOG.warning(
+                    "Conspiracy pattern (category=%s) '%s' found in document chunk '%s'; redacting.",
+                    category,
                     pattern.pattern,
                     chunk.get("id", "unknown"),
                 )
