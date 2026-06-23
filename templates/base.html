@@ -630,6 +630,115 @@
         display: block;
     }
 
+    /* ── AI disclaimer ── */
+    .chat-disclaimer {
+        font-size: 0.68rem;
+        color: var(--text-secondary);
+        margin-top: 0.5rem;
+        padding-top: 0.4rem;
+        border-top: 1px solid var(--border);
+        opacity: 0.8;
+        line-height: 1.4;
+    }
+
+    /* ── Per-response thumbs feedback bar ── */
+    .rf-bar {
+        display: flex; align-items: center; flex-wrap: wrap; gap: 0.3rem;
+        margin-top: 0.45rem; padding-top: 0.35rem;
+        border-top: 1px solid var(--border);
+        font-size: 0.7rem; color: var(--text-secondary);
+    }
+    .rf-label { margin-right: 0.1rem; }
+    .rf-btn {
+        background: none; border: 1px solid var(--border); border-radius: 4px;
+        cursor: pointer; padding: 1px 6px; font-size: 0.78rem; line-height: 1.6;
+        color: var(--text-secondary); transition: background 0.15s, color 0.15s;
+    }
+    .rf-btn:hover { background: var(--border); }
+    .rf-btn.rf-active-up   { background: #d4edda; border-color: #198754; color: #198754; }
+    .rf-btn.rf-active-down { background: #fde8e8; border-color: #dc3545; color: #dc3545; }
+    .rf-btn:disabled { cursor: default; opacity: 0.7; }
+    .rf-comment-box { display: none; width: 100%; margin-top: 0.35rem; }
+    .rf-comment-input {
+        width: 100%; font-size: 0.75rem; border: 1px solid var(--border);
+        border-radius: 4px; padding: 4px 6px; resize: vertical; min-height: 46px;
+        font-family: inherit; box-sizing: border-box;
+    }
+    .rf-comment-submit {
+        margin-top: 0.2rem; font-size: 0.72rem; padding: 2px 10px;
+        background: var(--nasa-blue, #0b3d91); color: #fff; border: none;
+        border-radius: 4px; cursor: pointer;
+    }
+    .rf-thanks { font-style: italic; color: #198754; }
+
+    /* ── Feedback modal ── */
+    .fb-overlay {
+        position: fixed; inset: 0; z-index: 9998;
+        background: rgba(0,0,0,0.45);
+        display: flex; align-items: center; justify-content: center;
+        padding: 1rem;
+        opacity: 0; visibility: hidden;
+        transition: opacity 0.18s, visibility 0.18s;
+    }
+    .fb-overlay.open { opacity: 1; visibility: visible; }
+    .fb-modal {
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.22);
+        padding: 1.4rem 1.5rem 1.2rem;
+        width: 100%; max-width: 400px;
+        position: relative;
+        transform: translateY(10px);
+        transition: transform 0.18s;
+    }
+    .fb-overlay.open .fb-modal { transform: translateY(0); }
+    .fb-modal h3 { margin: 0 0 0.2rem; font-size: 0.95rem; font-weight: 700; color: var(--nasa-blue); }
+    .fb-modal-sub { margin: 0 0 1rem; font-size: 0.76rem; color: var(--text-secondary); }
+    .fb-close {
+        position: absolute; top: 0.75rem; right: 0.9rem;
+        background: none; border: none; cursor: pointer;
+        color: var(--text-secondary); font-size: 1.15rem; line-height: 1; padding: 0;
+    }
+    .fb-close:hover { color: var(--text-primary); }
+    .fb-label { display: block; font-size: 0.76rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.3rem; }
+    .fb-select, .fb-textarea {
+        width: 100%; border: 1px solid var(--border); border-radius: 6px;
+        padding: 0.4rem 0.65rem; font-size: 0.82rem; font-family: inherit;
+        color: var(--text-primary); background: #fff; margin-bottom: 0.85rem; box-sizing: border-box;
+    }
+    .fb-select:focus, .fb-textarea:focus {
+        outline: none; border-color: var(--nasa-blue);
+        box-shadow: 0 0 0 2px rgba(11,61,145,0.12);
+    }
+    .fb-textarea { resize: vertical; min-height: 78px; }
+    .fb-stars { display: flex; gap: 0.3rem; margin-bottom: 0.85rem; }
+    .fb-star {
+        font-size: 1.35rem; cursor: pointer; color: #d0d5de;
+        transition: color 0.1s, transform 0.1s;
+        line-height: 1; background: none; border: none; padding: 0;
+    }
+    .fb-star.lit, .fb-star:hover { color: #f5a623; }
+    .fb-star:hover { transform: scale(1.15); }
+    .fb-actions { display: flex; gap: 0.6rem; justify-content: flex-end; margin-top: 0.2rem; }
+    .fb-cancel {
+        background: none; border: 1px solid var(--border); border-radius: 6px;
+        padding: 0.38rem 0.85rem; font-size: 0.8rem; font-family: inherit;
+        color: var(--text-secondary); cursor: pointer;
+    }
+    .fb-cancel:hover { background: #f4f6fb; }
+    .fb-submit {
+        background: var(--nasa-blue); color: #fff; border: none; border-radius: 6px;
+        padding: 0.38rem 1rem; font-size: 0.8rem; font-family: inherit;
+        cursor: pointer; transition: opacity 0.15s;
+    }
+    .fb-submit:disabled { opacity: 0.6; cursor: default; }
+    .fb-err { font-size: 0.74rem; color: #c0392b; margin-top: -0.6rem; margin-bottom: 0.7rem; display: none; }
+    .fb-success {
+        text-align: center; padding: 1.2rem 0 0.5rem;
+        color: var(--earth-teal); font-size: 0.9rem; font-weight: 600; display: none;
+    }
+    .fb-success svg { display: block; margin: 0 auto 0.55rem; }
+
     /* ── Upload bar ── */
     .chat-upload-bar {
         display: flex;
@@ -830,6 +939,14 @@
                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
                 </svg>
             </button>
+            <!-- Feedback -->
+            <button class="chat-hbtn" id="chatFbBtn" aria-label="Give feedback or report an issue" title="Feedback / report issue">
+                <svg aria-hidden="true" focusable="false" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                     stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
+                    <line x1="4" y1="22" x2="4" y2="15"/>
+                </svg>
+            </button>
             <!-- Close -->
             <button class="chat-hbtn" id="chatCloseBtn" aria-label="Close chat" title="Close">
                 <svg aria-hidden="true" focusable="false" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -880,6 +997,52 @@
             </svg>
             Send
         </button>
+    </div>
+</div>
+
+<!-- ── Feedback modal ────────────────────────────────── -->
+<div class="fb-overlay" id="fbOverlay" role="dialog" aria-modal="true" aria-labelledby="fbTitle">
+    <div class="fb-modal">
+        <button class="fb-close" id="fbCloseBtn" aria-label="Close feedback form" type="button">&times;</button>
+
+        <div id="fbFormBody">
+            <h3 id="fbTitle">Share your feedback</h3>
+            <p class="fb-modal-sub">Anonymous &mdash; never linked to any personal data.</p>
+
+            <label class="fb-label" for="fbType">Type</label>
+            <select class="fb-select" id="fbType">
+                <option value="general">General feedback</option>
+                <option value="chat_issue">Report a chat issue</option>
+                <option value="bug_report">Report a bug</option>
+            </select>
+
+            <label class="fb-label">Overall rating <span style="font-weight:400;color:var(--text-secondary);">(optional)</span></label>
+            <div class="fb-stars" id="fbStars" role="group" aria-label="Rating 1 to 5 stars">
+                <button class="fb-star" data-v="1" aria-label="1 star"  type="button">&#9733;</button>
+                <button class="fb-star" data-v="2" aria-label="2 stars" type="button">&#9733;</button>
+                <button class="fb-star" data-v="3" aria-label="3 stars" type="button">&#9733;</button>
+                <button class="fb-star" data-v="4" aria-label="4 stars" type="button">&#9733;</button>
+                <button class="fb-star" data-v="5" aria-label="5 stars" type="button">&#9733;</button>
+            </div>
+
+            <label class="fb-label" for="fbText">Tell us more <span style="color:#c0392b;">*</span></label>
+            <textarea class="fb-textarea" id="fbText" placeholder="Describe your experience or the issue you encountered…" maxlength="2000"></textarea>
+            <div class="fb-err" id="fbErr">Please enter your feedback before submitting.</div>
+
+            <div class="fb-actions">
+                <button class="fb-cancel" id="fbCancelBtn" type="button">Cancel</button>
+                <button class="fb-submit" id="fbSubmitBtn" type="button">Submit feedback</button>
+            </div>
+        </div>
+
+        <div class="fb-success" id="fbSuccess">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+            Thank you for your feedback!
+        </div>
     </div>
 </div>
 
@@ -1117,6 +1280,25 @@
                 '</button>';
         }
 
+        function disclaimerHtml() {
+            return '<p class="chat-disclaimer">AI-generated &middot; AI can make mistakes &middot; Verify important information</p>';
+        }
+
+        function responseFeedbackHtml(promptId) {
+            if (!promptId) return '';
+            const pid = String(Number(promptId));
+            return '<div class="rf-bar" data-pid="' + pid + '">' +
+                '<span class="rf-label">Was this helpful?</span>' +
+                '<button class="rf-btn rf-up" aria-label="Thumbs up" title="Mark as helpful">&#128077;</button>' +
+                '<button class="rf-btn rf-down" aria-label="Thumbs down" title="Mark as not helpful">&#128078;</button>' +
+                '<span class="rf-thanks" style="display:none;">Thanks!</span>' +
+                '<div class="rf-comment-box">' +
+                    '<textarea class="rf-comment-input" placeholder="What went wrong? (optional)" rows="2"></textarea>' +
+                    '<button class="rf-comment-submit">Send</button>' +
+                '</div>' +
+                '</div>';
+        }
+
         function renderMsg(role, content) {
             if (role === 'user') {
                 const d = document.createElement('div');
@@ -1127,7 +1309,7 @@
                 const d = document.createElement('div');
                 d.className = 'chat-msg assistant';
                 d.dataset.raw = content;
-                d.innerHTML = mdToHtml(content) + copyBtnHtml();
+                d.innerHTML = mdToHtml(content) + copyBtnHtml() + disclaimerHtml();
                 msgsList.appendChild(d);
             } else if (role === 'sys') {
                 const d = document.createElement('div');
@@ -1188,10 +1370,12 @@
                 }
             };
 
-            source.addEventListener('done', () => {
+            source.addEventListener('done', (e) => {
                 done = true;
                 source.close();
-                finaliseAssistant(raw);
+                let promptId = null;
+                try { promptId = JSON.parse(e.data).prompt_id || null; } catch (_) {}
+                finaliseAssistant(raw, promptId);
             });
 
             source.onerror = () => {
@@ -1206,12 +1390,12 @@
                 }
             };
 
-            function finaliseAssistant(content) {
+            function finaliseAssistant(content, promptId) {
                 assistantDiv.classList.remove('streaming');
                 assistantDiv.removeAttribute('aria-live');
                 assistantDiv.removeAttribute('aria-label');
                 assistantDiv.dataset.raw = content;
-                assistantDiv.innerHTML = mdToHtml(content) + copyBtnHtml();
+                assistantDiv.innerHTML = mdToHtml(content) + copyBtnHtml() + disclaimerHtml() + responseFeedbackHtml(promptId);
                 messages.push({role: 'assistant', content});
                 saveState();
                 finish();
@@ -1269,6 +1453,163 @@
         // ── Init ────────────────────────────────────────────────
         loadState();
         applySize();
+
+        // ── Feedback modal ──────────────────────────────────────
+        const fbBtn       = document.getElementById('chatFbBtn');
+        const fbOverlay   = document.getElementById('fbOverlay');
+        const fbCloseBtn  = document.getElementById('fbCloseBtn');
+        const fbCancelBtn = document.getElementById('fbCancelBtn');
+        const fbSubmitBtn = document.getElementById('fbSubmitBtn');
+        const fbType      = document.getElementById('fbType');
+        const fbText      = document.getElementById('fbText');
+        const fbStarsCtr  = document.getElementById('fbStars');
+        const fbErr       = document.getElementById('fbErr');
+        const fbFormBody  = document.getElementById('fbFormBody');
+        const fbSuccess   = document.getElementById('fbSuccess');
+
+        let fbRating = 0;
+
+        function openFeedback() {
+            fbOverlay.classList.add('open');
+            setTimeout(() => fbText.focus(), 50);
+        }
+
+        function closeFeedback() {
+            fbOverlay.classList.remove('open');
+            setTimeout(resetFeedback, 200);
+        }
+
+        function resetFeedback() {
+            fbRating = 0;
+            fbText.value = '';
+            fbType.value = 'general';
+            fbErr.style.display = 'none';
+            fbErr.textContent = 'Please enter your feedback before submitting.';
+            setStarLit(0);
+            fbFormBody.style.display = '';
+            fbSuccess.style.display = 'none';
+            fbSubmitBtn.disabled = false;
+            fbSubmitBtn.textContent = 'Submit feedback';
+        }
+
+        function setStarLit(n) {
+            Array.from(fbStarsCtr.querySelectorAll('.fb-star')).forEach((s, i) => {
+                s.classList.toggle('lit', i < n);
+            });
+        }
+
+        fbBtn.addEventListener('click', openFeedback);
+        fbCloseBtn.addEventListener('click', closeFeedback);
+        fbCancelBtn.addEventListener('click', closeFeedback);
+        fbOverlay.addEventListener('click', (e) => { if (e.target === fbOverlay) closeFeedback(); });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && fbOverlay.classList.contains('open')) closeFeedback();
+        });
+
+        fbStarsCtr.addEventListener('click', (e) => {
+            const s = e.target.closest('.fb-star');
+            if (!s) return;
+            fbRating = parseInt(s.dataset.v, 10);
+            setStarLit(fbRating);
+        });
+        fbStarsCtr.addEventListener('mouseover', (e) => {
+            const s = e.target.closest('.fb-star');
+            if (s) setStarLit(parseInt(s.dataset.v, 10));
+        });
+        fbStarsCtr.addEventListener('mouseleave', () => setStarLit(fbRating));
+
+        fbSubmitBtn.addEventListener('click', async () => {
+            const text = fbText.value.trim();
+            if (!text) {
+                fbErr.style.display = 'block';
+                fbText.focus();
+                return;
+            }
+            fbErr.style.display = 'none';
+            fbSubmitBtn.disabled = true;
+            fbSubmitBtn.textContent = 'Sending…';
+
+            try {
+                const res = await fetch("{% url 'webapp:api_submit_feedback' %}", {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        feedback_type: fbType.value,
+                        rating: fbRating || null,
+                        feedback_text: text,
+                        page_url: window.location.href,
+                    }),
+                });
+                if (res.ok) {
+                    fbFormBody.style.display = 'none';
+                    fbSuccess.style.display = 'block';
+                    setTimeout(closeFeedback, 2200);
+                } else {
+                    fbSubmitBtn.disabled = false;
+                    fbSubmitBtn.textContent = 'Submit feedback';
+                    fbErr.textContent = 'Something went wrong. Please try again.';
+                    fbErr.style.display = 'block';
+                }
+            } catch (_) {
+                fbSubmitBtn.disabled = false;
+                fbSubmitBtn.textContent = 'Submit feedback';
+                fbErr.textContent = 'Connection error. Please try again.';
+                fbErr.style.display = 'block';
+            }
+        });
+
+        // ── Per-response thumbs feedback ─────────────────────────
+        const RF_URL = "{% url 'webapp:api_response_feedback' %}";
+
+        msgsList.addEventListener('click', async (e) => {
+            // Thumbs up
+            const upBtn = e.target.closest('.rf-btn.rf-up');
+            if (upBtn) {
+                const bar = upBtn.closest('.rf-bar');
+                if (!bar || bar.dataset.voted) return;
+                bar.dataset.voted = '1';
+                upBtn.disabled = true;
+                bar.querySelector('.rf-btn.rf-down').disabled = true;
+                upBtn.classList.add('rf-active-up');
+                bar.querySelector('.rf-thanks').style.display = '';
+                fetch(RF_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ sentiment: 'up', prompt_id: bar.dataset.pid, page_url: window.location.href }),
+                }).catch(() => {});
+                return;
+            }
+
+            // Thumbs down — show comment box
+            const downBtn = e.target.closest('.rf-btn.rf-down');
+            if (downBtn) {
+                const bar = downBtn.closest('.rf-bar');
+                if (!bar || bar.dataset.voted) return;
+                downBtn.classList.add('rf-active-down');
+                bar.querySelector('.rf-comment-box').style.display = 'block';
+                bar.querySelector('.rf-comment-input').focus();
+                return;
+            }
+
+            // Comment submit
+            const submitBtn = e.target.closest('.rf-comment-submit');
+            if (submitBtn) {
+                const bar = submitBtn.closest('.rf-bar');
+                if (!bar || bar.dataset.voted) return;
+                bar.dataset.voted = '1';
+                const comment = bar.querySelector('.rf-comment-input').value.trim();
+                bar.querySelector('.rf-btn.rf-up').disabled = true;
+                bar.querySelector('.rf-btn.rf-down').disabled = true;
+                submitBtn.disabled = true;
+                fetch(RF_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ sentiment: 'down', comment, prompt_id: bar.dataset.pid, page_url: window.location.href }),
+                }).catch(() => {});
+                bar.querySelector('.rf-comment-box').style.display = 'none';
+                bar.querySelector('.rf-thanks').style.display = '';
+            }
+        });
 
     })();
 </script>

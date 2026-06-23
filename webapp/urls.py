@@ -40,4 +40,9 @@ urlpatterns = [
     # Admin upload GUI (staff only)
     path("upload", upload_page, name="upload"),
     path("upload_file", upload_file, name="upload_file"),
+
+    # Visitor feedback (anonymous) + staff review page
+    path("api/feedback", views.api_submit_feedback, name="api_submit_feedback"),
+    path("api/response-feedback", views.api_response_feedback, name="api_response_feedback"),
+    path("review/", views.review, name="review"),
 ]

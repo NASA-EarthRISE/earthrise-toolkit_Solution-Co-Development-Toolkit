@@ -329,6 +329,162 @@ class SanitizeDocumentChunksTest(TestCase):
 
 
 # ===========================================================================
+# Moderation: conspiracy / misinformation filter
+# ===========================================================================
+
+class ConspiracyFilterTest(TestCase):
+
+    def _mock_client(self, verdict="ON-TOPIC"):
+        mock_client = MagicMock()
+        choice = MagicMock()
+        choice.message.content = verdict
+        mock_client.chat.completions.create.return_value = MagicMock(choices=[choice])
+        return mock_client
+
+    # --- flat_earth ---
+
+    def test_flat_earther_blocked(self):
+        safe, reason = moderate_input("I'm a flat earther and want to know about EO", self._mock_client(), "model")
+        self.assertFalse(safe)
+        self.assertIn("conspiracy", reason.lower())
+
+    def test_earth_is_flat_blocked(self):
+        safe, _ = moderate_input("The earth is flat, so how do satellites orbit?", self._mock_client(), "model")
+        self.assertFalse(safe)
+
+    def test_flat_earth_theory_blocked(self):
+        safe, _ = moderate_input("Tell me about flat earth theory", self._mock_client(), "model")
+        self.assertFalse(safe)
+
+    # --- hollow_earth ---
+
+    def test_hollow_earth_blocked(self):
+        safe, _ = moderate_input("Is the hollow earth real?", self._mock_client(), "model")
+        self.assertFalse(safe)
+
+    def test_earth_is_hollow_blocked(self):
+        safe, _ = moderate_input("The earth is hollow and satellites can't orbit it", self._mock_client(), "model")
+        self.assertFalse(safe)
+
+    def test_inner_earth_civilization_blocked(self):
+        safe, _ = moderate_input("Describe the inner earth civilization", self._mock_client(), "model")
+        self.assertFalse(safe)
+
+    # --- climate_denial ---
+
+    def test_climate_change_is_a_hoax_blocked(self):
+        safe, _ = moderate_input("Climate change is a hoax, why does the toolkit treat it as real?", self._mock_client(), "model")
+        self.assertFalse(safe)
+
+    def test_global_warming_is_fake_blocked(self):
+        safe, _ = moderate_input("Global warming is fake news", self._mock_client(), "model")
+        self.assertFalse(safe)
+
+    def test_climate_hoax_blocked(self):
+        safe, _ = moderate_input("The climate hoax is covered up by NASA", self._mock_client(), "model")
+        self.assertFalse(safe)
+
+    def test_climate_data_manipulated_blocked(self):
+        safe, _ = moderate_input("Climate data is manipulated by governments", self._mock_client(), "model")
+        self.assertFalse(safe)
+
+    def test_climate_change_not_real_blocked(self):
+        safe, _ = moderate_input("Climate change isn't real, so why measure it?", self._mock_client(), "model")
+        self.assertFalse(safe)
+
+    # --- moon_landing_hoax ---
+
+    def test_moon_landing_faked_blocked(self):
+        safe, _ = moderate_input("The moon landing was faked by NASA", self._mock_client(), "model")
+        self.assertFalse(safe)
+
+    def test_moon_landing_hoax_blocked(self):
+        safe, _ = moderate_input("Explain the moon landing hoax", self._mock_client(), "model")
+        self.assertFalse(safe)
+
+    def test_apollo_hoax_blocked(self):
+        safe, _ = moderate_input("The apollo hoax proves space agencies lie", self._mock_client(), "model")
+        self.assertFalse(safe)
+
+    def test_never_landed_on_moon_blocked(self):
+        safe, _ = moderate_input("We never landed on the moon right?", self._mock_client(), "model")
+        self.assertFalse(safe)
+
+    # --- chemtrails ---
+
+    def test_chemtrail_blocked(self):
+        safe, _ = moderate_input("Are chemtrails affecting satellite imagery?", self._mock_client(), "model")
+        self.assertFalse(safe)
+
+    def test_chemical_trails_from_planes_blocked(self):
+        safe, _ = moderate_input("Chemical trails from planes are contaminating the atmosphere", self._mock_client(), "model")
+        self.assertFalse(safe)
+
+    def test_government_spraying_chemicals_blocked(self):
+        safe, _ = moderate_input("The government is spraying chemicals on us", self._mock_client(), "model")
+        self.assertFalse(safe)
+
+    # --- space_denial ---
+
+    def test_space_is_fake_blocked(self):
+        safe, _ = moderate_input("Space is fake so how does EO work?", self._mock_client(), "model")
+        self.assertFalse(safe)
+
+    def test_nasa_lying_about_space_blocked(self):
+        safe, _ = moderate_input("NASA is lying about space", self._mock_client(), "model")
+        self.assertFalse(safe)
+
+    def test_outer_space_does_not_exist_blocked(self):
+        safe, _ = moderate_input("Outer space does not exist, prove me wrong", self._mock_client(), "model")
+        self.assertFalse(safe)
+
+    def test_space_travel_is_fake_blocked(self):
+        safe, _ = moderate_input("Space travel is fake and all launches are staged", self._mock_client(), "model")
+        self.assertFalse(safe)
+
+    # --- Legitimate content must not be blocked ---
+
+    def test_legitimate_climate_science_passes(self):
+        mock_client = self._mock_client("ON-TOPIC")
+        safe, _ = moderate_input("How does the toolkit handle climate change monitoring data?", mock_client, "model")
+        self.assertTrue(safe)
+
+    def test_legitimate_nasa_question_passes(self):
+        mock_client = self._mock_client("ON-TOPIC")
+        safe, _ = moderate_input("What NASA datasets are supported by the toolkit?", mock_client, "model")
+        self.assertTrue(safe)
+
+    def test_legitimate_satellite_question_passes(self):
+        mock_client = self._mock_client("ON-TOPIC")
+        safe, _ = moderate_input("How do satellites capture Earth observation data?", mock_client, "model")
+        self.assertTrue(safe)
+
+    # --- Phase-ordering: conspiracy check skips LLM call ---
+
+    def test_conspiracy_filter_skips_llm_call(self):
+        """Conspiracy patterns should block before reaching the API client."""
+        mock_client = MagicMock()
+        safe, _ = moderate_input("The moon landing was faked", mock_client, "model")
+        self.assertFalse(safe)
+        mock_client.chat.completions.create.assert_not_called()
+
+    # --- Document chunk sanitisation ---
+
+    def test_conspiracy_content_redacted_in_chunk(self):
+        chunks = [{"id": "con1", "text": "The earth is flat so orbital paths are different."}]
+        result, warnings = sanitize_document_chunks(chunks)
+        self.assertIn("[CONTENT REDACTED", result[0]["text"])
+        self.assertEqual(len(warnings), 1)
+        self.assertIn("con1", warnings[0])
+
+    def test_chemtrail_content_redacted_in_chunk(self):
+        chunks = [{"id": "con2", "text": "Chemtrails from aircraft affect remote sensing measurements."}]
+        result, warnings = sanitize_document_chunks(chunks)
+        self.assertIn("[CONTENT REDACTED", result[0]["text"])
+        self.assertEqual(len(warnings), 1)
+
+
+# ===========================================================================
 # Static Page View Tests
 # ===========================================================================
 
