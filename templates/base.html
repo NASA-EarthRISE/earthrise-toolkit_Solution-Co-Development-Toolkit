@@ -347,10 +347,15 @@
         pointer-events: none;
     }
 
+    /* Hide FAB while the chat panel is open */
+    .chat-fab[aria-expanded="true"] {
+        display: none !important;
+    }
+
     /* ── Chat window ── */
     .chat-window {
         position: fixed;
-        bottom: 5.5rem;
+        bottom: 1rem;
         right: 4rem;
         z-index: 199;
         display: flex;
@@ -1067,6 +1072,7 @@
         const fileInput = document.getElementById('chatFileInput');
         const fileBadge = document.getElementById('chatFileBadge');
         const newChatBtn = document.getElementById('chatNewBtn');
+        const siteFooter = document.querySelector('.site-footer');
 
         // ── State ───────────────────────────────────────────────
         const SIZES = ['small', 'medium'];
@@ -1119,6 +1125,25 @@
             }
         }
 
+        // ── Footer clamping — keep widget above footer when it scrolls into view ──
+        function clampAboveFooter() {
+            if (!siteFooter) return;
+            const footerTop = siteFooter.getBoundingClientRect().top;
+            const vh = window.innerHeight;
+            const gap = 12; // px gap to leave above the footer
+            const needed = footerTop < vh ? (vh - footerTop) + gap : 0;
+
+            // FAB: always clamp — it's independent of fullscreen state
+            fab.style.bottom = needed ? needed + 'px' : '';
+
+            // Chat window: skip in fullscreen (CSS data-size handles positioning)
+            if (fullscreen) {
+                win.style.bottom = '';
+            } else {
+                win.style.bottom = needed ? needed + 'px' : '';
+            }
+        }
+
         // ── Size / fullscreen ───────────────────────────────────
         function applySize() {
             win.setAttribute('data-size', fullscreen ? 'fullscreen' : SIZES[sizeIdx]);
@@ -1130,6 +1155,7 @@
             input.placeholder = (sizeIdx === 0 && !fullscreen)
                 ? 'Ask about the toolkit\u2026'
                 : 'Ask about the toolkit\u2026 (Enter to send)';
+            clampAboveFooter();
         }
 
         function setChatOpen(open) {
@@ -1139,10 +1165,13 @@
                 fab.setAttribute('aria-label', 'Close AI Assistant');
                 input.focus();
                 scrollBottom();
+                console.log('Chat window opened');
             } else {
                 win.classList.add('hidden');
                 fab.setAttribute('aria-expanded', 'false');
                 fab.setAttribute('aria-label', 'Open AI Assistant');
+                clampAboveFooter(); // Re-clamp FAB position now that it's visible again
+                console.log('Chat window closed');
             }
             saveState();
         }
@@ -1199,31 +1228,7 @@
 
         sendBtn.addEventListener('click', sendMessage);
 
-        // ── File upload ─────────────────────────────────────────
-        fileInput.addEventListener('change', async () => {
-            const file = fileInput.files[0];
-            if (!file) return;
-            fileBadge.textContent = 'Uploading…';
-            fileBadge.style.display = 'inline';
-            const fd = new FormData();
-            fd.append('file', file);
-            try {
-                const res = await fetch(UPLOAD_URL, {method: 'POST', body: fd});
-                const data = await res.json();
-                if (res.ok) {
-                    fileBadge.textContent = file.name;
-                    appendSys(`"${file.name}" attached — I can now answer questions about it.`);
-                } else {
-                    fileBadge.style.display = 'none';
-                    appendSys(`Upload failed: ${data.error || 'unknown error'}`);
-                }
-            } catch {
-                fileBadge.style.display = 'none';
-                appendSys('Upload failed. Please try again.');
-            }
-            fileInput.value = '';
-            saveState();
-        });
+
 
         // ── Copy button (event delegation) ─────────────────────
         msgsList.addEventListener('click', (e) => {
@@ -1453,6 +1458,8 @@
         // ── Init ────────────────────────────────────────────────
         loadState();
         applySize();
+        window.addEventListener('scroll', clampAboveFooter, { passive: true });
+        window.addEventListener('resize', clampAboveFooter, { passive: true });
 
         // ── Feedback modal ──────────────────────────────────────
         const fbBtn       = document.getElementById('chatFbBtn');
