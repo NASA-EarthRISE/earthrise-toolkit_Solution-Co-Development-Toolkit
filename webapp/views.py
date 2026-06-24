@@ -22,7 +22,7 @@ from .moderation import rate_limit, moderate_input, sanitize_document_chunks
 
 UPLOAD_DIR = os.path.join(settings.BASE_DIR, "uploads")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
-static_version = 1.1
+static_version = 1.2
 
 
 def _nav():
@@ -447,7 +447,10 @@ def api_message_stream(request):
             history.append({"role": "user", "content": user_text})
             history.append({"role": "assistant", "content": full})
             request.session["history"] = history
-            request.session.modified = True
+            # session.modified = True is not enough inside a StreamingHttpResponse
+            # generator — the session middleware runs before the generator executes,
+            # so we must save explicitly to persist history across requests.
+            request.session.save()
 
             _prompt_id = None
             try:
