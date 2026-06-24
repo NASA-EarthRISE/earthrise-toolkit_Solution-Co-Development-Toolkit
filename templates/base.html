@@ -1366,6 +1366,19 @@
             source.onmessage = (e) => {
                 try {
                     const data = JSON.parse(e.data);
+                    if (data.blocked) {
+                        source.close();
+                        assistantDiv.classList.remove('streaming');
+                        assistantDiv.removeAttribute('aria-live');
+                        assistantDiv.removeAttribute('aria-label');
+                        const em = document.createElement('em');
+                        em.style.color = '#c0392b';
+                        em.textContent = data.blocked;
+                        assistantDiv.innerHTML = '';
+                        assistantDiv.appendChild(em);
+                        finish();
+                        return;
+                    }
                     if (data.delta) {
                         raw += data.delta;
                         assistantDiv.innerHTML = mdToHtml(raw);
