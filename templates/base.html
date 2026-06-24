@@ -1094,7 +1094,7 @@
                     messages,
                     open: !win.classList.contains('hidden'),
                     sizeIdx,
-                    fileBadge: fileBadge.style.display !== 'none' ? fileBadge.textContent : ''
+                    fileBadge: (fileBadge && fileBadge.style.display !== 'none') ? fileBadge.textContent : ''
                 }));
             } catch (_) {
             }
@@ -1106,7 +1106,7 @@
                 if (!saved) return;
                 messages = Array.isArray(saved.messages) ? saved.messages : [];
                 sizeIdx = typeof saved.sizeIdx === 'number' ? saved.sizeIdx : 0;
-                if (saved.fileBadge) {
+                if (saved.fileBadge && fileBadge) {
                     fileBadge.textContent = saved.fileBadge;
                     fileBadge.style.display = 'inline';
                 }
@@ -1194,8 +1194,7 @@
             welcome.className = 'chat-welcome';
             welcome.innerHTML = '<strong>Ask me anything about the toolkit</strong> I can answer questions about co-development methods, tools, concepts, and best practices.';
             msgsList.appendChild(welcome);
-            fileBadge.textContent = '';
-            fileBadge.style.display = 'none';
+            if (fileBadge) { fileBadge.textContent = ''; fileBadge.style.display = 'none'; }
 
             // Clear server-side history and session docs (best-effort)
             fetch(CLEAR_URL, { method: 'POST' }).catch(() => {});
