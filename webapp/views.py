@@ -392,7 +392,12 @@ def api_message_stream(request):
 
     safe, reason = moderate_input(user_text, client, CHAT_MODEL)
     if not safe:
-        return HttpResponseBadRequest(reason)
+        def _blocked():
+            yield _sse({"blocked": reason})
+        resp = StreamingHttpResponse(_blocked(), content_type="text/event-stream")
+        resp["Cache-Control"] = "no-cache"
+        resp["X-Accel-Buffering"] = "no"
+        return resp
 
     session_id = request.session.get("session_id")
 

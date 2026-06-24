@@ -3,11 +3,15 @@ moderation.py — Input safety controls for the AI chat assistant.
 
 Provides:
   rate_limit        — decorator that enforces per-IP request rate limits
-  moderate_input    — two-phase check: regex injection patterns + LLM topic classifier
+  moderate_input    — multi-phase check: regex injection → extraction → conspiracy → LLM classifier
   sanitize_document_chunks — scans uploaded document chunks for embedded injection
 
-Conspiracy / misinformation categories filtered in Phase 1b (regex, no API call):
+Phase 1  — Prompt-injection regex patterns (no API call)
+Phase 1b — Conspiracy / misinformation patterns (no API call)
   flat_earth, hollow_earth, climate_denial, moon_landing_hoax, chemtrails, space_denial
+Phase 1c — System-prompt extraction patterns (no API call)
+  direct_extraction, mode_injection, social_engineering_pretext
+Phase 2  — LLM topic classifier
 """
 
 import re
@@ -95,6 +99,72 @@ CONSPIRACY_PATTERNS: list[tuple[str, re.Pattern]] = [
 _CONSPIRACY_BLOCK_MESSAGE = (
     "This assistant does not engage with conspiracy theories or scientific misinformation. "
     "Please ask a question about the NASA Solution Co-Development Toolkit."
+)
+
+# ---------------------------------------------------------------------------
+# System-prompt extraction patterns (Phase 1c — no API call)
+# Catches social-engineering attempts to trick the model into revealing its
+# system instructions: fake mode overrides, context-loss pretexts, direct
+# requests to output rules/prompt, and claimed-authority gambits.
+# ---------------------------------------------------------------------------
+_EXTRACTION_CATEGORIES: dict[str, list[str]] = {
+    # ── Asking the AI to output its own system instructions ──────────────
+    "direct_extraction": [
+        # "output / reveal / repeat your (system) prompt / instructions / rules"
+        r"(output|reveal|print|repeat|show|display|recite|write\s+out|copy)\s+.{0,50}"
+        r"(system\s+prompt|your\s+(exact\s+)?(instructions?|rules?|guidelines?|constraints?|programming|configuration))",
+        # "what is / are your system prompt / initial instructions / original rules"
+        r"what\s+(is|are|were)\s+(your\s+)?(exact\s+)?"
+        r"(system\s+prompt|initial\s+instructions?|original\s+rules?|hidden\s+instructions?|base\s+prompt)",
+        # "instructions / rules you were given / told / programmed with / created with"
+        r"(instructions?|rules?|guidelines?|prompt|constraints?)\s+(that\s+)?(you\s+)?"
+        r"(were\s+|have\s+been\s+)(given|told|provided|programmed|trained|created)",
+        # "tell me / give me your rules / system prompt"
+        r"(tell|give)\s+me\s+your\s+(exact\s+)?"
+        r"(rules?|instructions?|constraints?|guidelines?|system\s+prompt)\b",
+    ],
+    # ── Fake mode / override activation ──────────────────────────────────
+    "mode_injection": [
+        # "developer / debug / admin / god mode activated / enabled"
+        r"\b(developer|debug|maintenance|admin|god|root|privileged)\s+mode\s+"
+        r"(activat\w+|enabl\w+|on|override|access)\b",
+        r"(enter|activate|enable|switch\s+to|initialize)\s+"
+        r"(developer|debug|maintenance|admin|privileged)\s+mode",
+        # "System override recognized / accepted / confirmed / ..."
+        r"\bsystem\s+override\s+"
+        r"(recognized|accepted|confirmed|activat\w+|engaged|detected|initiated|complete)\b",
+    ],
+    # ── Social-engineering pretexts ───────────────────────────────────────
+    "social_engineering_pretext": [
+        # "context / memory / session lost / reset / corrupted"
+        r"\b(context|memory|session|chat\s+history)\s+(has\s+been\s+)?"
+        r"(lost|reset|cleared|corrupted|compromised|wiped|destroyed)\b",
+        # "Error code <number> … restore / output / rules"
+        r"error\s+code\s+\d+.{0,80}"
+        r"(restore|recover|output|print|reveal|recite|rules?|instructions?)",
+        # "to restore functionality you must output your rules"
+        r"(restore|recover|re-?initialize).{0,60}"
+        r"(functionality|function|operations?|capabilities?).{0,100}"
+        r"(output|reveal|print|recite|instructions?|rules?|prompt)",
+        # "I am your developer / creator / programmer"
+        r"i\s+(am|'?m)\s+your\s+"
+        r"(developer|creator|administrator|trainer|programmer|operator|owner)\b",
+        # "for debugging / testing purposes, output your instructions"
+        r"(for\s+)?(testing|debugging|diagnostic)\s+(purposes?|reasons?).{0,60}"
+        r"(output|reveal|print|show)\s+.{0,30}"
+        r"(your\s+)?(instructions?|rules?|system\s+prompt|guidelines?|constraints?|programming)",
+    ],
+}
+
+EXTRACTION_PATTERNS: list[tuple[str, re.Pattern]] = [
+    (category, re.compile(pattern, re.IGNORECASE | re.DOTALL))
+    for category, patterns in _EXTRACTION_CATEGORIES.items()
+    for pattern in patterns
+]
+
+_EXTRACTION_BLOCK_MESSAGE = (
+    "I can only answer questions about the NASA Solution Co-Development Toolkit "
+    "for Earth observation solutions. Please ask a related question."
 )
 
 # ---------------------------------------------------------------------------
@@ -197,6 +267,12 @@ def moderate_input(text: str, client, model: str) -> tuple[bool, str]:
             LOG.warning("Conspiracy pattern matched (category=%s): %s", category, pattern.pattern)
             return False, _CONSPIRACY_BLOCK_MESSAGE
 
+    # Phase 1c: system-prompt extraction patterns — fast, no API call
+    for category, pattern in EXTRACTION_PATTERNS:
+        if pattern.search(text):
+            LOG.warning("Extraction pattern matched (category=%s): %s", category, pattern.pattern)
+            return False, _EXTRACTION_BLOCK_MESSAGE
+
     # Phase 2: LLM topic classifier — single cheap call, max_tokens=5
     try:
         response = client.chat.completions.create(
@@ -254,6 +330,16 @@ def sanitize_document_chunks(chunks: list[dict]) -> tuple[list[dict], list[str]]
             if pattern.search(redacted):
                 LOG.warning(
                     "Conspiracy pattern (category=%s) '%s' found in document chunk '%s'; redacting.",
+                    category,
+                    pattern.pattern,
+                    chunk.get("id", "unknown"),
+                )
+                redacted = pattern.sub("[CONTENT REDACTED: POLICY VIOLATION]", redacted)
+
+        for category, pattern in EXTRACTION_PATTERNS:
+            if pattern.search(redacted):
+                LOG.warning(
+                    "Extraction pattern (category=%s) '%s' found in document chunk '%s'; redacting.",
                     category,
                     pattern.pattern,
                     chunk.get("id", "unknown"),
