@@ -354,7 +354,7 @@ def api_message(request):
         if not request.session.session_key:
             request.session.save()
         cp = ChatPrompt.objects.create(
-            session_key=request.session.session_key or '',
+            session_key=request.session.get("session_id") or request.session.session_key or '',
             prompt=user_text,
             response=answer,
             page_url=request.META.get('HTTP_REFERER', '')[:500],
@@ -415,10 +415,12 @@ def api_message_stream(request):
     messages.extend(history[-10:])
     messages.append({"role": "user", "content": user_text})
 
-    # Capture session identity before the generator runs
+    # Capture session identity before the generator runs.
+    # Use the conversation UUID (session_id) so each "New Chat" gets a distinct
+    # identifier in the review page, rather than the coarser Django cookie key.
     if not request.session.session_key:
         request.session.save()
-    _session_key = request.session.session_key or ''
+    _session_key = request.session.get("session_id") or request.session.session_key or ''
     _page_url = request.META.get('HTTP_REFERER', '')[:500]
 
     def stream():
@@ -598,11 +600,16 @@ def review(request):
 
     # --- Prompts ---
     prompt_search = request.GET.get('q', '').strip()
+    psort = request.GET.get('psort', 'date').strip()
+    pdir  = request.GET.get('pdir',  'desc').strip()
     prompt_qs = ChatPrompt.objects.all()
     if prompt_search:
         prompt_qs = prompt_qs.filter(prompt__icontains=prompt_search)
     if session_filter:
-        prompt_qs = prompt_qs.filter(session_key=session_filter).order_by('asked_at')
+        prompt_qs = prompt_qs.filter(session_key=session_filter)
+    _order_map   = {'date': 'asked_at', 'session': 'session_key'}
+    _order_field = _order_map.get(psort, 'asked_at')
+    prompt_qs = prompt_qs.order_by(_order_field if pdir == 'asc' else f'-{_order_field}')
 
     prompt_qs = (
         prompt_qs
@@ -635,6 +642,8 @@ def review(request):
         'session_filter': session_filter,
         'prompt_list':    prompt_qs[:500],
         'prompt_search':  prompt_search,
+        'psort':          psort,
+        'pdir':           pdir,
     })
     return render(request, 'webapp/feedback_review.html', ctx)
 
