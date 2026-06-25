@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.utils.encoding import smart_str
 from django.conf import settings
-from .models import NavSection, PageContent, VisitorFeedback, ChatPrompt
+from .models import NavSection, PageContent, VisitorFeedback, ChatPrompt, IngestedDocument
 
 from .openai_client import client, CHAT_MODEL
 from .rag import build_context_snippets, get_store
@@ -22,7 +22,7 @@ from .moderation import rate_limit, moderate_input, sanitize_document_chunks
 
 UPLOAD_DIR = os.path.join(settings.BASE_DIR, "uploads")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
-static_version = 1.2
+static_version = 1.3
 
 
 def _nav():
@@ -637,3 +637,52 @@ def review(request):
         'prompt_search':  prompt_search,
     })
     return render(request, 'webapp/feedback_review.html', ctx)
+
+
+# ---------------------------------------------------------------------------
+# Document download — serves registered knowledge-base PDFs
+# ---------------------------------------------------------------------------
+
+def api_document_download(request, filename):
+    """
+    Serve a knowledge-base document for viewing/download.
+
+    Security:
+    - Filenames with path separators or '..' are rejected immediately.
+    - The resolved absolute path must reside inside UPLOAD_DIR.
+    - Files registered in IngestedDocument are preferred; unregistered files
+      in UPLOAD_DIR (e.g. the combined toolkit PDF) are served as a fallback.
+    """
+    # Reject any path-traversal attempt before touching the filesystem
+    if not filename or '/' in filename or '\\' in filename or '..' in filename:
+        raise Http404
+
+    uploads_dir = os.path.realpath(UPLOAD_DIR)
+
+    # Prefer the database-registered path; fall back to uploads/ for files
+    # that exist on disk but aren't individually chunked (e.g. the full PDF).
+    try:
+        doc = IngestedDocument.objects.get(filename=filename)
+        candidate = os.path.realpath(doc.file_path)
+    except IngestedDocument.DoesNotExist:
+        candidate = os.path.realpath(os.path.join(UPLOAD_DIR, filename))
+
+    # Belt-and-suspenders: confirmed path must be inside uploads/
+    if not candidate.startswith(uploads_dir + os.sep):
+        raise Http404
+
+    if not os.path.isfile(candidate):
+        raise Http404
+
+    content_type, _ = mimetypes.guess_type(candidate)
+    content_type = content_type or 'application/octet-stream'
+
+    # PDFs can be displayed inline; DOCX and other formats must be downloaded
+    as_attachment = not content_type == 'application/pdf'
+
+    return FileResponse(
+        open(candidate, 'rb'),
+        content_type=content_type,
+        as_attachment=as_attachment,
+        filename=filename,
+    )

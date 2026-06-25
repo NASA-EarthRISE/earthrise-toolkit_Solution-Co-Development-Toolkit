@@ -1435,6 +1435,36 @@
                 .replace(/"/g, '&quot;');
         }
 
+        // ── Tool-name auto-linker ────────────────────────────────
+        // Replaces known toolkit page names with internal links.
+        // Splits on existing <a> tags first so already-linked text is never double-wrapped.
+        const _TOOL_LINKS = [
+            [/\bDesigning for Impact(?: Tool)?\b/gi,                               '/designing-for-impact/'],
+            [/\bCapturing (?:&amp;|and) Communicating Impact(?: Tool)?\b/gi,       '/capturing-communicating-impact/'],
+            [/\bEconomic Impact Assessments?(?: Tool)?\b/gi,                       '/economic-impact-assessments/'],
+            [/\bStakeholder Mapping(?:\s+(?:&amp;|and)\s+Analysis)?(?: Tool)?\b/gi, '/stakeholder-mapping/'],
+            [/\bNeeds Assessment(?: Tool)?\b/gi,                                   '/needs-assessment/'],
+            [/\bInformation Chain Analysis(?: Tool)?\b/gi,                         '/information-chain-analysis/'],
+            [/\bUser[- ]Centered Design(?: Tool)?\b/gi,                            '/user-centered-design/'],
+            [/\bTechnical Requirements?(?: Tool)?\b/gi,                            '/technical-requirements/'],
+            [/\bData Governance(?:\s+(?:&amp;|and)\s+Storage)?(?: Tool)?\b/gi,    '/data-governance/'],
+            [/\bImplementation (?:&amp;|and) Monitoring(?:\s+Plan)?(?: Tool)?\b/gi, '/implementation-monitoring/'],
+            [/\bAdoption (?:&amp;|and) Sustainability(?:\s+Plan)?(?: Tool)?\b/gi, '/adoption-sustainability/'],
+            [/\bMeaningful Metrics(?:\s+Development)?(?: Tool)?\b/gi,              '/meaningful-metrics/'],
+        ];
+        function linkToolNames(html) {
+            // Split on existing anchors (captured group keeps them in the array)
+            const parts = html.split(/(<a\b[^>]*>[\s\S]*?<\/a>)/);
+            return parts.map((part, i) => {
+                if (i % 2 === 1) return part; // already inside an <a> — skip
+                let s = part;
+                for (const [re, url] of _TOOL_LINKS) {
+                    s = s.replace(re, match => `<a href="${url}">${match}</a>`);
+                }
+                return s;
+            }).join('');
+        }
+
         // ── Markdown → HTML ─────────────────────────────────────
         function mdToHtml(text) {
             if (!text) return '';
@@ -1445,6 +1475,7 @@
             s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
             s = s.replace(/__(.+?)__/g, '<strong>$1</strong>');
             s = s.replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
+            s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
             const blocks = s.split(/\n{2,}/);
             s = blocks.map(block => {
                 const lines = block.split('\n');
@@ -1464,7 +1495,7 @@
                 if (block.startsWith('<pre>')) return block;
                 return `<p>${lines.join('<br>')}</p>`;
             }).join('');
-            return s;
+            return linkToolNames(s);
         }
 
         // ── Init ────────────────────────────────────────────────
