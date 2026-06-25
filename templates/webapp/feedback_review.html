@@ -39,6 +39,11 @@
                           align-items:center; gap:0.5rem; margin-bottom:0.75rem; }
         .table th { font-size:0.72rem; text-transform:uppercase; letter-spacing:0.04em;
                     color:#6c757d; font-weight:600; white-space:nowrap; }
+        th.sortable { cursor:pointer; user-select:none; }
+        th.sortable:hover { color:#0b3d91; }
+        th.sort-active { color:#0b3d91; }
+        .sort-ind { font-size:0.65rem; margin-left:2px; opacity:0.45; }
+        th.sort-active .sort-ind { opacity:1; }
         .filter-bar { background:#fff; border:1px solid #dee2e6; border-radius:6px;
                       padding:0.65rem 1rem; margin-bottom:1rem; }
         .nav-tabs .nav-link { font-size:0.85rem; }
@@ -223,8 +228,8 @@
                 <table class="table table-hover table-sm">
                     <thead class="table-light">
                         <tr>
-                            <th style="width:115px;">Date</th>
-                            <th style="width:100px;">Session</th>
+                            <th class="sortable" data-sort="date" style="width:115px;">Date <span class="sort-ind"></span></th>
+                            <th class="sortable" data-sort="session" style="width:100px;">Session <span class="sort-ind"></span></th>
                             <th>Prompt</th>
                             <th>Response</th>
                             <th style="width:90px;">Feedback</th>
@@ -293,6 +298,29 @@
         box.classList.toggle('d-none', !opening);
         btn.textContent = opening ? 'Show less \u2191' : 'Show more \u2193';
     }
+
+    // Prompts table column sort
+    (function () {
+        const PSORT = '{{ psort }}';
+        const PDIR  = '{{ pdir }}';
+        document.querySelectorAll('#pane-prompts th.sortable').forEach(th => {
+            const field = th.dataset.sort;
+            const ind   = th.querySelector('.sort-ind');
+            if (field === PSORT) {
+                th.classList.add('sort-active');
+                ind.textContent = PDIR === 'asc' ? '\u25b2' : '\u25bc';
+            } else {
+                ind.textContent = '\u21c5';
+            }
+            th.addEventListener('click', () => {
+                const params = new URLSearchParams(window.location.search);
+                params.set('tab', 'prompts');
+                params.set('psort', field);
+                params.set('pdir', field === PSORT && PDIR === 'desc' ? 'asc' : 'desc');
+                window.location.search = params.toString();
+            });
+        });
+    })();
 </script>
 </body>
 </html>
