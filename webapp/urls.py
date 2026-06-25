@@ -1,7 +1,7 @@
 from django.urls import path
 
 from . import views
-from .views import api_message, api_message_stream, api_chat_upload, api_clear_chat, save_page_content
+from .views import api_message, api_message_stream, api_chat_upload, api_clear_chat, save_page_content, api_document_download
 from .views_upload import upload_page, upload_file
 
 app_name = 'webapp'
@@ -40,6 +40,9 @@ urlpatterns = [
     # Admin upload GUI (staff only)
     path("upload", upload_page, name="upload"),
     path("upload_file", upload_file, name="upload_file"),
+
+    # Knowledge-base document downloads
+    path("api/documents/<str:filename>", api_document_download, name="api_document_download"),
 
     # Visitor feedback (anonymous) + staff review page
     path("api/feedback", views.api_submit_feedback, name="api_submit_feedback"),
