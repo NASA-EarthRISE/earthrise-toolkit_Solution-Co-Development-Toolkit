@@ -53,3 +53,6 @@ chatbot_requirements.txt
 django_integration.md
 
 chroma_db.exclude
+
+NASA_CoP_Presentation.pptx
+presentation_outline.md

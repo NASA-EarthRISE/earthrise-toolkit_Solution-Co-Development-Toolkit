@@ -148,6 +148,11 @@ LITELLM_RAG_UPSERT = os.getenv("LITELLM_RAG_UPSERT","/rag/upsert")
 SHARED_EMBEDDING_SERVICE_URL     = os.getenv("SHARED_EMBEDDING_SERVICE_URL", "http://localhost:8000")
 SHARED_EMBEDDING_SERVICE_API_KEY = os.getenv("SHARED_EMBEDDING_SERVICE_API_KEY", "")
 
+# ── AI Assistant visibility ──────────────────────────────────────────────────
+# Set to True  → chat widget visible to staff only (temporary restriction).
+# Set to False → chat widget visible to all visitors (normal public access).
+CHAT_STAFF_ONLY = os.getenv("CHAT_STAFF_ONLY", "True").lower() == "true"
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
