@@ -219,12 +219,15 @@ def _parse_affiliation_map(text: str) -> dict:
     Returns {1: "EarthRISE Project Office, NASA MSFC", 2: "Lab for ...", ...}.
     Returns an empty dict when no such block is found.
     """
-    # The block starts on a line that begins with " 1 " and ends before
-    # Acknowledgments, Abstract, or the end of the string.
+    # The block starts on a line that begins with "1 " (possibly preceded by
+    # whitespace or a newline) and ends before Acknowledgments, Abstract, or
+    # the end of the string.  Use (?:^|\n) so the match works whether or not
+    # the first affiliation starts at the very beginning of a line in the
+    # extracted text.
     block_match = re.search(
-        r'\n\s*1\s+(.+?)(?=\n\s*Acknowledgments|\n\s*Abstract|\n\s*Introduction|\Z)',
+        r'(?:^|\n)\s*1\s+(.+?)(?=\n\s*Acknowledgments|\n\s*Abstract|\n\s*Introduction|\Z)',
         text,
-        re.DOTALL,
+        re.DOTALL | re.MULTILINE,
     )
     if not block_match:
         return {}
@@ -253,15 +256,22 @@ def extract_and_enhance_authors(text: str, source: str) -> dict:
     that appear after their name in the PDF.
     """
     # Locate the author section — capture everything up to the affiliation block
-    # or Acknowledgments.
-    author_section_pattern = r'Authors?\s*[\n:]\s*(.*?)(?=\s+1\s+EarthRISE|\s+1\s+Lab\s+for|\n\s*Acknowledgments)'
+    # or a major document section heading.
+    # The lookahead detects the start of ANY numbered affiliation block (a line
+    # beginning with "1 " followed by an uppercase word) rather than hardcoding
+    # specific affiliation names that won't generalise across documents.
+    author_section_pattern = (
+        r'Authors?\s*[\n:]\s*(.*?)'
+        r'(?=\n\s*1\s+[A-Z]|\n\s*Acknowledgments|\n\s*Abstract|\n\s*Introduction)'
+    )
 
     match = re.search(author_section_pattern, text[:5000], re.MULTILINE | re.DOTALL)
 
     if not match:
-        # Fallback: try just capturing a reasonable amount after "Authors"
-        author_section_pattern = r'Authors?\s*[\n:]\s*([^\n]{50,500})'
-        match = re.search(author_section_pattern, text[:5000], re.MULTILINE)
+        # Fallback: capture up to ~600 chars after "Authors" — allow multi-line
+        # author blocks by not anchoring to a single line.
+        author_section_pattern = r'Authors?\s*[\n:]\s*(.{50,600}?)(?=\n\n|\n\s*\d|\Z)'
+        match = re.search(author_section_pattern, text[:5000], re.MULTILINE | re.DOTALL)
 
     if not match:
         return None
