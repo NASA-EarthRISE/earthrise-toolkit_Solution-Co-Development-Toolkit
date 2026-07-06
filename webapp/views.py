@@ -40,7 +40,8 @@ def _ctx(active_slug, request=None, extra=None):
         'active_slug': active_slug,
         'saved_content': saved_content,
         'is_staff': request.user.is_staff if (request and request.user.is_authenticated) else False,
-        'static_version': static_version
+        'static_version': static_version,
+        'chat_staff_only': getattr(settings, 'CHAT_STAFF_ONLY', False),
     }
     if extra:
         ctx.update(extra)

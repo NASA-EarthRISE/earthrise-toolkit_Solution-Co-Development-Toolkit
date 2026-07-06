@@ -896,6 +896,7 @@
     }
 </style>
 
+{% if not chat_staff_only or is_staff %}
 <!-- FAB -->
 <button class="chat-fab" id="chatFab"
         aria-label="Open AI Assistant"
@@ -1663,6 +1664,7 @@
 
     })();
 </script>
+{% endif %}
 
 {% if is_staff %}
 <!-- ══════════════════════════════════════════════
