@@ -243,7 +243,7 @@
         }
         submitBtn.disabled = true;
         submitBtn.textContent = 'Creating…';
-        fetch('/api/create-page', {
+        fetch('{% url "webapp:api_create_page" %}', {
             method: 'POST',
             headers: {'Content-Type': 'application/json', 'X-CSRFToken': CSRF},
             body: JSON.stringify({
@@ -279,7 +279,7 @@
             if (!confirm('Publish this page? It will become visible to all visitors.')) return;
             publishBtn.disabled = true;
             publishBtn.textContent = 'Publishing…';
-            fetch('/api/publish-page/{{ active_slug }}', {
+            fetch('{% url "webapp:api_publish_page" active_slug %}', {
                 method: 'POST',
                 headers: {'X-CSRFToken': CSRF}
             })
@@ -297,7 +297,7 @@
         deleteBtn.addEventListener('click', function () {
             if (!confirm('Permanently delete this page and all its content? This cannot be undone.')) return;
             deleteBtn.disabled = true;
-            fetch('/api/delete-page/{{ active_slug }}', {
+            fetch('{% url "webapp:api_delete_page" active_slug %}', {
                 method: 'POST',
                 headers: {'X-CSRFToken': CSRF}
             })
@@ -1808,7 +1808,7 @@
         setStatus('Saving…', true);
         saveBtn.disabled = true;
 
-        fetch('/api/save-page-content', {
+        fetch('{% url "webapp:save_page_content" %}', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

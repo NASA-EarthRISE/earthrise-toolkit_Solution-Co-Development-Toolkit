@@ -18,10 +18,21 @@ DEBUG = os.getenv("DJANGO_DEBUG","True")=="True"
 
 ALLOWED_HOSTS = ['*']
 
-CSRF_TRUSTED_ORIGINS = [
-    'http://localhost',
-    'http://127.0.0.1',
-]
+# Sub-path deployment (e.g. https://host/earthrise-toolkit/solution-co-development-toolkit/)
+# Set SCRIPT_NAME in .env for production; leave blank (or omit) for local dev.
+SCRIPT_NAME = os.getenv("SCRIPT_NAME", "")
+if SCRIPT_NAME:
+    FORCE_SCRIPT_NAME = SCRIPT_NAME
+    USE_X_FORWARDED_HOST = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# CSRF — always trust localhost for dev; extend via comma-separated env var for production.
+# e.g. CSRF_TRUSTED_ORIGINS=https://science-dev.data.nasa.gov
+CSRF_TRUSTED_ORIGINS = ['http://localhost', 'http://127.0.0.1']
+_extra_csrf = os.getenv("CSRF_TRUSTED_ORIGINS", "")
+if _extra_csrf:
+    CSRF_TRUSTED_ORIGINS += [o.strip() for o in _extra_csrf.split(',') if o.strip()]
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -110,7 +121,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = f"{SCRIPT_NAME}/static/" if SCRIPT_NAME else "static/"
 STATICFILES_DIRS = [ BASE_DIR / "webapp" / "static" ]
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
