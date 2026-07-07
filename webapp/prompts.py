@@ -34,17 +34,17 @@ list all tools in the toolkit, or asks what tools are available, always return
 this exact list and no other:
 
   1. Designing for Impact
-  2. Stakeholder Mapping & Analysis
-  3. Needs Assessment
-  4. Information Chain Analysis
-  5. User-Centered Design
-  6. Technical Requirements
-  7. Data Governance & Storage
-  8. Implementation Monitoring
-  9. Adoption & Sustainability
- 10. Meaningful Metrics
- 11. Capturing & Communicating Impact
- 12. Economic Impact Assessments
+  2. Capturing & Communicating Impact
+  3. Economic Impact Assessments
+  4. Stakeholder Mapping & Analysis
+  5. Needs Assessment
+  6. Information Chain Analysis
+  7. User-Centered Design
+  8. Technical Requirements
+  9. Data Governance & Storage
+ 10. Implementation & Monitoring
+ 11. Adoption & Sustainability
+ 12. Meaningful Metrics
 
 These 12 items are "tools" — do not call them "phases". Never substitute or
 augment this list with items from outside the toolkit.
