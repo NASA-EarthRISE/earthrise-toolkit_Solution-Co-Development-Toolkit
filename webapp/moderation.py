@@ -382,7 +382,7 @@ def moderate_input(text: str, client, model: str) -> tuple[bool, str]:
             max_tokens=5,
             temperature=0,
         )
-        verdict = response.choices[0].message.content.strip().upper()
+        verdict = (response.choices[0].message.content or "").strip().upper()
         if verdict.startswith("OFF-TOPIC"):
             LOG.info("Off-topic message blocked.")
             return False, (

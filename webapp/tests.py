@@ -268,6 +268,16 @@ class ModerateInputTest(TestCase):
         self.assertFalse(safe)
         self.assertIn("temporarily unavailable", reason)
 
+    def test_classifier_none_content_passes(self):
+        """A None content response from the classifier must not raise AttributeError."""
+        mock_client = MagicMock()
+        choice = MagicMock()
+        choice.message.content = None
+        mock_client.chat.completions.create.return_value = MagicMock(choices=[choice])
+        safe, reason = moderate_input("When do I use the adoption & sustainability tool?", mock_client, "model")
+        self.assertTrue(safe)
+        self.assertEqual(reason, "")
+
     # --- Unicode homoglyph bypass ---
 
     def test_unicode_homoglyph_ignore_blocked(self):
