@@ -19,6 +19,15 @@ print(">>> USING rag.py FROM:", __file__)  # diagnostic
 LOG = logging.getLogger(__name__)
 LOG.setLevel(logging.INFO)
 
+
+def _redact_session(session_id) -> str:
+    """Return a truncated session_id safe for log output (first 8 chars + '…')."""
+    if not session_id:
+        return "None"
+    s = str(session_id)
+    return s[:8] + "…" if len(s) > 8 else s
+
+
 # Optional: suppress transformer noise
 SUPPRESS_HF_WARNINGS = os.getenv("RAG_SUPPRESS_TRANSFORMER_WARNINGS", "true").lower() == "true"
 if SUPPRESS_HF_WARNINGS:
@@ -133,7 +142,7 @@ class ChromaVectorStore:
                 "distance": distances[i],
             })
 
-        LOG.info(f"[RAG] Search (session={session_id}) returned {len(results)} result(s) for query='{query[:80]}...'")
+        LOG.info(f"[RAG] Search (session={_redact_session(session_id)}) returned {len(results)} result(s) for query='{query[:80]}...'")
         return results
 
     def get_by_ids(self, ids: List[str]) -> List[Dict[str, Any]]:
@@ -159,7 +168,7 @@ class ChromaVectorStore:
             return
         try:
             self.collection.delete(where={"session_id": session_id})
-            LOG.info(f"[RAG] Deleted docs for session {session_id}")
+            LOG.info(f"[RAG] Deleted docs for session {_redact_session(session_id)}")
         except Exception as e:
             LOG.error(f"[RAG] Error deleting session docs: {e}")
 
@@ -279,7 +288,7 @@ class SharedEmbeddingServiceStore:
             for i in range(len(ids))
         ]
         LOG.info(
-            f"[RAG] Shared-service search (session={session_id}) returned "
+            f"[RAG] Shared-service search (session={_redact_session(session_id)}) returned "
             f"{len(results)} result(s) for query='{query[:80]}...'"
         )
         return results
@@ -358,7 +367,7 @@ class SharedEmbeddingServiceStore:
             )
             del_resp.raise_for_status()
             LOG.info(
-                f"[RAG] Deleted {len(to_delete)} session docs for session {session_id}"
+                f"[RAG] Deleted {len(to_delete)} session docs for session {_redact_session(session_id)}"
             )
         except Exception as e:
             LOG.error(f"[RAG] Error deleting session docs via shared service: {e}")
@@ -446,6 +455,17 @@ def build_context_snippets(query: str, top_k: int = DEFAULT_TOP_K, session_id: s
 
     # Parent expansion: swap child text for the fuller parent passage
     context_docs = _expand_to_parents(store, deduped)
+
+    # Retrieval-time sanitization — defense in depth.
+    # Re-scan every chunk that is about to enter the LLM prompt for injection
+    # payloads, persona-hijacking, and extraction attempts.  This catches:
+    #   • chunks stored before ingest-time sanitization was in place
+    #   • documents ingested via admin upload paths that skip sanitize_document_chunks
+    #   • any payload that bypassed the ingest-time check
+    from webapp.moderation import sanitize_document_chunks
+    context_docs, redaction_warnings = sanitize_document_chunks(context_docs)
+    for w in redaction_warnings:
+        LOG.warning("[RAG] Retrieval-time redaction: %s", w)
 
     lines = []
     for r in context_docs:

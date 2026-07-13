@@ -29,6 +29,7 @@
 </head>
 
 <body class="container py-4">
+    {% csrf_token %}
     <h2>Upload Documents for Vector Store</h2>
     <p class="text-muted">Drag and drop DOCX, PDF, TXT, XLSX here.</p>
 
@@ -75,14 +76,17 @@
             }
         }
 
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
         function uploadFile(file) {
             writeLog("Uploading: " + file.name);
 
             const formData = new FormData();
             formData.append("file", file);
 
-            fetch("/upload_file", {
+            fetch("{% url 'webapp:upload_file' %}", {
                 method: "POST",
+                headers: {"X-CSRFToken": csrfToken},
                 body: formData
             })
             .then(r => r.json())

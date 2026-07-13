@@ -15,10 +15,9 @@ from .models import NavSection, PageContent, VisitorFeedback, ChatPrompt, Ingest
 
 from .openai_client import client, CHAT_MODEL
 from .rag import build_context_snippets, get_store
-from .prompts import SYSTEM_PROMPT
-from .ingest_helpers import extract_text_and_chunk
+from .prompts import SYSTEM_PROMPT, build_context_message
 from .document_registry import get_document_list_prompt
-from .moderation import rate_limit, moderate_input, sanitize_document_chunks
+from .moderation import rate_limit, moderate_input, sanitize_history
 
 UPLOAD_DIR = os.path.join(settings.BASE_DIR, "uploads")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -220,52 +219,6 @@ def api_delete_page(request, slug):
 
 @csrf_exempt
 @require_POST
-def api_chat_upload(request):
-    file = request.FILES.get("file")
-    if not file:
-        return JsonResponse({"error": "No file received"}, status=400)
-
-    session_id = request.session.get("session_id")
-    if not session_id:
-        session_id = str(uuid.uuid4())
-        request.session["session_id"] = session_id
-
-    save_path = os.path.join(UPLOAD_DIR, f"{session_id}_{file.name}")
-
-    with open(save_path, "wb") as f:
-        for chunk in file.chunks():
-            f.write(chunk)
-
-    try:
-        docs = extract_text_and_chunk(save_path)
-        for d in docs:
-            d["metadata"]["session_id"] = session_id
-            d["metadata"]["is_global"] = False
-
-        docs, redaction_warnings = sanitize_document_chunks(docs)
-
-        store = get_store()
-        store.upsert(docs)
-
-        uploaded_files = request.session.get("uploaded_files", [])
-        if file.name not in uploaded_files:
-            uploaded_files.append(file.name)
-        request.session["uploaded_files"] = uploaded_files
-        request.session.modified = True
-
-        response_data = {
-            "message": f"File '{file.name}' ingested for this chat ({len(docs)} chunks).",
-            "filename": file.name,
-        }
-        if redaction_warnings:
-            response_data["warnings"] = redaction_warnings
-        return JsonResponse(response_data)
-    except Exception as e:
-        return JsonResponse({"error": f"ERROR ingesting {file.name}: {e}"}, status=500)
-
-
-@csrf_exempt
-@require_POST
 def api_clear_chat(request):
     """
     Clear the server-side chat history and session-uploaded documents,
@@ -286,6 +239,7 @@ def api_clear_chat(request):
 
     # Fresh session_id so future uploads are isolated from this new chat
     request.session["session_id"] = str(uuid.uuid4())
+    request.session.cycle_key()  # rotate Django session key to prevent session fixation
     request.session.modified = True
 
     return JsonResponse({"ok": True})
@@ -328,10 +282,10 @@ def api_message(request):
     messages = [{"role": "system", "content": SYSTEM_PROMPT}]
     if doc_list:
         messages.append({"role": "system", "content": doc_list})
-    messages.append({"role": "system", "content": f"Context snippets:\n{context}" if context else "No retrieved context."})
+    messages.append({"role": "system", "content": build_context_message(context)})
 
     history = request.session.get("history", [])
-    for h in history[-10:]:
+    for h in sanitize_history(history[-10:]):
         messages.append(h)
     messages.append({"role": "user", "content": user_text})
 
@@ -412,8 +366,8 @@ def api_message_stream(request):
     messages = [{"role": "system", "content": SYSTEM_PROMPT}]
     if doc_list:
         messages.append({"role": "system", "content": doc_list})
-    messages.append({"role": "system", "content": f"Context snippets:\n{context}" if context else "No retrieved context."})
-    messages.extend(history[-10:])
+    messages.append({"role": "system", "content": build_context_message(context)})
+    messages.extend(sanitize_history(history[-10:]))
     messages.append({"role": "user", "content": user_text})
 
     # Capture session identity before the generator runs.

@@ -126,6 +126,14 @@ STATICFILES_DIRS = [ BASE_DIR / "webapp" / "static" ]
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+# Session cookie security
+# HttpOnly prevents JavaScript from reading the cookie (blocks XSS theft).
+# SameSite=Lax blocks cross-site request forgery via cookie.
+# Secure ensures the cookie is only sent over HTTPS; disabled in local dev (DEBUG=True).
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SECURE   = not DEBUG
+
 # Cache — used for rate limiting; FileBasedCache works across multiple workers
 CACHES = {
     "default": {
@@ -138,6 +146,10 @@ CACHES = {
 MAX_MESSAGE_LENGTH = int(os.getenv("MAX_MESSAGE_LENGTH", "2000"))
 RATE_LIMIT_CHAT_REQUESTS = int(os.getenv("RATE_LIMIT_CHAT_REQUESTS", "20"))
 RATE_LIMIT_CHAT_WINDOW_SECONDS = int(os.getenv("RATE_LIMIT_CHAT_WINDOW_SECONDS", "60"))
+
+# Upload rate limiting (staff admin upload endpoint)
+RATE_LIMIT_UPLOAD_REQUESTS = int(os.getenv("RATE_LIMIT_UPLOAD_REQUESTS", "10"))
+RATE_LIMIT_UPLOAD_WINDOW_SECONDS = int(os.getenv("RATE_LIMIT_UPLOAD_WINDOW_SECONDS", "60"))
 
 # App settings
 OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL")
