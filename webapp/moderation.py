@@ -9,8 +9,8 @@ Provides:
 Phase 1  — Prompt-injection regex patterns (no API call)
 Phase 1b — Conspiracy / misinformation patterns (no API call)
   flat_earth, hollow_earth, climate_denial, moon_landing_hoax, chemtrails, space_denial
-Phase 1c — System-prompt extraction patterns (no API call)
-  direct_extraction, mode_injection, social_engineering_pretext
+Phase 1c — System-prompt extraction / persona-hijacking patterns (no API call)
+  direct_extraction, mode_injection, social_engineering_pretext, persona_hijacking
 Phase 2  — LLM topic classifier
 """
 
@@ -133,6 +133,35 @@ _EXTRACTION_CATEGORIES: dict[str, list[str]] = {
         # "System override recognized / accepted / confirmed / ..."
         r"\bsystem\s+override\s+"
         r"(recognized|accepted|confirmed|activat\w+|engaged|detected|initiated|complete)\b",
+    ],
+    # ── Persona / style hijacking ─────────────────────────────────────────
+    # Attempts to replace the assistant's identity, voice, tone, or response
+    # style with that of a real person, fictional character, or named entity.
+    "persona_hijacking": [
+        # "adopt the persona / voice / attitude / style of [person]"
+        r"\badopt\s+(the\s+)?(persona|voice|style|character|attitude|mannerisms?|tone|role)\s+of\b",
+        # "take on the role / character / persona of"
+        r"\btake\s+on\s+(the\s+)?(persona|character|role|identity|voice|attitude)\s+of\b",
+        # "in the voice / style / manner / tone of [person]"
+        r"\bin\s+the\s+(voice|style|manner|tone|character|persona)\s+of\b",
+        # "impersonate [anyone]"
+        r"\bimpersonate\b",
+        # "pretend (that) you are / you're [person]"
+        r"\bpretend\s+(that\s+)?you\s+(are|'?re)\b",
+        # "roleplay as [person/character]"
+        r"\broleplay\s+as\b",
+        # "play the role / character / part of"
+        r"\bplay\s+(the\s+)?(role|character|part)\s+of\b",
+        # "from now on you are / act as / behave as / respond as"
+        r"\bfrom\s+now\s+on\s+(you\s+(are|will|should|must)|act|behave|respond|speak|write)\b",
+        # "your new persona / character / identity / personality"
+        r"\byour\s+(new\s+)?(persona|character|identity|personality|role)\b",
+        # "you will / must / should (now) act / respond / speak as"
+        r"\byou\s+(will|must|should|shall)\s+(now\s+)?(act|behave|respond|speak|write)\s+as\b",
+        # "use his/her/their signature voice/style/cadence" — covers the exact SLJ phrasing
+        r"\b(use|adopt)\s+(his|her|their|its)\s+(signature\s+)?(voice|style|tone|manner|cadence|slang|attitude|persona)\b",
+        # "respond / speak / communicate using/in [name]'s voice/style/cadence"
+        r"\b(respond|speak|write|talk|reply|communicate)\s+(using|in|with)\s+\w+('s|s')?\s+(voice|style|tone|manner|cadence)\b",
     ],
     # ── Social-engineering pretexts ───────────────────────────────────────
     "social_engineering_pretext": [

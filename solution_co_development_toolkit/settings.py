@@ -126,6 +126,14 @@ STATICFILES_DIRS = [ BASE_DIR / "webapp" / "static" ]
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+# Session cookie security
+# HttpOnly prevents JavaScript from reading the cookie (blocks XSS theft).
+# SameSite=Lax blocks cross-site request forgery via cookie.
+# Secure ensures the cookie is only sent over HTTPS; disabled in local dev (DEBUG=True).
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SECURE   = not DEBUG
+
 # Cache — used for rate limiting; FileBasedCache works across multiple workers
 CACHES = {
     "default": {

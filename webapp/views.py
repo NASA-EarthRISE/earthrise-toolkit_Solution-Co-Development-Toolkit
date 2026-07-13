@@ -229,6 +229,7 @@ def api_chat_upload(request):
     if not session_id:
         session_id = str(uuid.uuid4())
         request.session["session_id"] = session_id
+        request.session.cycle_key()  # rotate Django session key to prevent session fixation
 
     save_path = os.path.join(UPLOAD_DIR, f"{session_id}_{file.name}")
 
@@ -286,6 +287,7 @@ def api_clear_chat(request):
 
     # Fresh session_id so future uploads are isolated from this new chat
     request.session["session_id"] = str(uuid.uuid4())
+    request.session.cycle_key()  # rotate Django session key to prevent session fixation
     request.session.modified = True
 
     return JsonResponse({"ok": True})
