@@ -755,42 +755,6 @@
         border-top: 1px solid #eef0f4;
     }
 
-    .chat-upload-lbl {
-        font-size: 0.72rem;
-        color: var(--text-secondary);
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 0.25rem;
-        padding: 0.18rem 0.55rem;
-        border: 1px dashed var(--border);
-        border-radius: 4px;
-        transition: border-color 0.15s, color 0.15s;
-        white-space: nowrap;
-    }
-
-    .chat-upload-lbl:hover {
-        border-color: var(--earth-teal);
-        color: var(--earth-teal);
-    }
-
-    #chatFileInput {
-        display: none;
-    }
-
-    .chat-file-badge {
-        font-size: 0.7rem;
-        background: var(--earth-teal-light);
-        color: var(--earth-teal);
-        border-radius: 10px;
-        padding: 0.15rem 0.55rem;
-        display: none;
-        max-width: 160px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-
     /* ── Input area ── */
     .chat-input-row {
         display: flex;
@@ -975,22 +939,6 @@
         </div>
     </div>
 
-    <!-- File upload bar -->
-{#    <div class="chat-upload-bar">#}
-{#        <label class="chat-upload-lbl" for="chatFileInput">#}
-{#            <svg aria-hidden="true" focusable="false" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor"#}
-{#                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">#}
-{#                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>#}
-{#                <polyline points="17 8 12 3 7 8"/>#}
-{#                <line x1="12" y1="3" x2="12" y2="15"/>#}
-{#            </svg>#}
-{#            Attach file#}
-{#            <span class="sr-only">Accepted formats: PDF, TXT, DOCX, CSV, XLSX</span>#}
-{#        </label>#}
-{#        <span class="chat-file-badge" id="chatFileBadge"></span>#}
-{#        <input type="file" id="chatFileInput" accept=".pdf,.txt,.docx,.csv,.xlsx">#}
-{#    </div>#}
-
     <!-- Input -->
     <div class="chat-input-row">
         <label for="chatInput" class="sr-only">Message to AI Assistant</label>
@@ -1057,7 +1005,6 @@
         'use strict';
 
         const STREAM_URL = "{% url 'webapp:api_message_stream' %}";
-        const UPLOAD_URL = "{% url 'webapp:api_chat_upload' %}";
         const CLEAR_URL  = "{% url 'webapp:api_clear_chat' %}";
 
         const fab = document.getElementById('chatFab');
@@ -1070,8 +1017,6 @@
         const expandIco = document.getElementById('chatExpandIcon');
         const fsBtn = document.getElementById('chatFsBtn');
         const fsIco = document.getElementById('chatFsIcon');
-        const fileInput = document.getElementById('chatFileInput');
-        const fileBadge = document.getElementById('chatFileBadge');
         const newChatBtn = document.getElementById('chatNewBtn');
         const siteFooter = document.querySelector('.site-footer');
 
@@ -1094,8 +1039,7 @@
                 sessionStorage.setItem(SS_KEY, JSON.stringify({
                     messages,
                     open: !win.classList.contains('hidden'),
-                    sizeIdx,
-                    fileBadge: (fileBadge && fileBadge.style.display !== 'none') ? fileBadge.textContent : ''
+                    sizeIdx
                 }));
             } catch (_) {
             }
@@ -1107,10 +1051,6 @@
                 if (!saved) return;
                 messages = Array.isArray(saved.messages) ? saved.messages : [];
                 sizeIdx = typeof saved.sizeIdx === 'number' ? saved.sizeIdx : 0;
-                if (saved.fileBadge && fileBadge) {
-                    fileBadge.textContent = saved.fileBadge;
-                    fileBadge.style.display = 'inline';
-                }
                 if (saved.open) {
                     win.classList.remove('hidden');
                     fab.setAttribute('aria-expanded', 'true');
@@ -1195,7 +1135,6 @@
             welcome.className = 'chat-welcome';
             welcome.innerHTML = '<strong>Ask me anything about the toolkit</strong> I can answer questions about co-development methods, tools, concepts, and best practices.';
             msgsList.appendChild(welcome);
-            if (fileBadge) { fileBadge.textContent = ''; fileBadge.style.display = 'none'; }
 
             // Clear server-side history and session docs (best-effort)
             fetch(CLEAR_URL, { method: 'POST' }).catch(() => {});

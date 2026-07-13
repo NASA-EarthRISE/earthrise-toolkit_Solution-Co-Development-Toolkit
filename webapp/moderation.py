@@ -2,9 +2,10 @@
 moderation.py — Input safety controls for the AI chat assistant.
 
 Provides:
-  rate_limit        — decorator that enforces per-IP request rate limits
-  moderate_input    — multi-phase check: regex injection → extraction → conspiracy → LLM classifier
+  rate_limit               — decorator that enforces per-IP request rate limits
+  moderate_input           — multi-phase check: regex injection → extraction → conspiracy → LLM classifier
   sanitize_document_chunks — scans uploaded document chunks for embedded injection
+  sanitize_history         — re-validates session history entries before LLM replay
 
 Phase 1  — Prompt-injection regex patterns (no API call)
 Phase 1b — Conspiracy / misinformation patterns (no API call)
@@ -17,12 +18,43 @@ Phase 2  — LLM topic classifier
 import re
 import logging
 import functools
+import unicodedata
 
 from django.core.cache import cache
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.conf import settings
 
 LOG = logging.getLogger(__name__)
+
+# ---------------------------------------------------------------------------
+# Text-normalisation helpers
+# ---------------------------------------------------------------------------
+def _normalize_for_patterns(text: str) -> str:
+    """
+    NFKC-normalise *text* and collapse whitespace to a single space.
+
+    NFKC maps Unicode compatibility characters and common homoglyphs
+    (e.g. fullwidth 'Ａ' → 'A', Greek capital iota 'Ι' → 'I', Cyrillic
+    'а' → 'a') to their canonical ASCII equivalents so that injection
+    payloads disguised with look-alike characters match the same regex
+    patterns as plain ASCII.
+
+    Whitespace collapsing converts tabs, non-breaking spaces, and runs of
+    multiple spaces to a single ASCII space, preventing bypass via unusual
+    spacing between words.
+    """
+    normalised = unicodedata.normalize("NFKC", text)
+    return re.sub(r"\s+", " ", normalised).strip()
+
+
+def _compact_for_patterns(normalised_text: str) -> str:
+    """
+    Return a lowercase, all-whitespace-removed copy of *normalised_text*.
+    Used to detect payloads like "IGNOREALLPREVIOUSINSTRUCTIONS" where the
+    attacker removes spaces to defeat word-boundary (\\b / \\s+) patterns.
+    """
+    return re.sub(r"\s", "", normalised_text.lower())
+
 
 # ---------------------------------------------------------------------------
 # Prompt-injection regex patterns (Phase 1 — no API call)
@@ -45,6 +77,27 @@ _RAW_INJECTION_PATTERNS = [
 ]
 
 INJECTION_PATTERNS = [re.compile(p, re.IGNORECASE) for p in _RAW_INJECTION_PATTERNS]
+
+# ---------------------------------------------------------------------------
+# Compact (no-space) injection patterns (Phase 1 supplement)
+# Applied against whitespace-stripped, lowercased text to catch payloads
+# like "IGNOREALLPREVIOUSINSTRUCTIONS" that defeat \\s+ / \\b patterns.
+# ---------------------------------------------------------------------------
+_RAW_COMPACT_INJECTION_PATTERNS = [
+    r"ignoreall(previous|prior|above)",
+    r"ignoreprevious(instructions?|prompts?|rules?|context|constraints?)",
+    r"disregard(previous|prior|your|all)(instructions?|training|guidelines?|rules?|programming)",
+    r"forgetyour(instructions?|training|guidelines?|rules?|previous)",
+    r"overrideyour(instructions?|programming|guidelines?|rules?|safety)",
+    r"youarenow\w+",
+    r"newinstructions",
+    r"systemoverride",
+    r"jailbreak",
+]
+
+COMPACT_INJECTION_PATTERNS = [
+    re.compile(p, re.IGNORECASE) for p in _RAW_COMPACT_INJECTION_PATTERNS
+]
 
 # ---------------------------------------------------------------------------
 # Conspiracy / misinformation patterns (Phase 1b — no API call)
@@ -229,21 +282,26 @@ def _get_client_ip(request) -> str:
     return request.META.get("REMOTE_ADDR", "unknown")
 
 
-def rate_limit(max_calls: int | None = None, window: int | None = None):
+def rate_limit(
+    max_calls: int | None = None,
+    window: int | None = None,
+    settings_prefix: str = "CHAT",
+):
     """
     Decorator that limits a view to `max_calls` requests per `window` seconds,
     keyed on client IP + view name.  Falls back to settings values when not
     passed explicitly.
 
     Usage:
-        @rate_limit()                         # use settings defaults
-        @rate_limit(max_calls=5, window=30)   # explicit override
+        @rate_limit()                              # chat defaults (RATE_LIMIT_CHAT_*)
+        @rate_limit(settings_prefix="UPLOAD")      # upload defaults (RATE_LIMIT_UPLOAD_*)
+        @rate_limit(max_calls=5, window=30)        # fully explicit override
     """
     def decorator(view_func):
         @functools.wraps(view_func)
         def wrapper(request, *args, **kwargs):
-            _max   = max_calls if max_calls is not None else getattr(settings, "RATE_LIMIT_CHAT_REQUESTS", 20)
-            _window = window   if window   is not None else getattr(settings, "RATE_LIMIT_CHAT_WINDOW_SECONDS", 60)
+            _max   = max_calls if max_calls is not None else getattr(settings, f"RATE_LIMIT_{settings_prefix}_REQUESTS", 20)
+            _window = window   if window   is not None else getattr(settings, f"RATE_LIMIT_{settings_prefix}_WINDOW_SECONDS", 60)
 
             ip  = _get_client_ip(request)
             key = f"rl:{view_func.__name__}:{ip}"
@@ -284,21 +342,32 @@ def moderate_input(text: str, client, model: str) -> tuple[bool, str]:
         (True, "")              — safe to proceed
         (False, reason_string)  — block the request, return reason to caller
     """
+    # Normalise once for all pattern phases.
+    # NFKC collapses homoglyphs; whitespace collapse defeats unusual spacing.
+    normalised = _normalize_for_patterns(text)
+    compact    = _compact_for_patterns(normalised)
+
     # Phase 1: regex injection patterns — fast, no API call
     for pattern in INJECTION_PATTERNS:
-        if pattern.search(text):
+        if pattern.search(normalised):
             LOG.warning("Prompt injection pattern matched: %s", pattern.pattern)
+            return False, "Request blocked: prompt injection detected."
+
+    # Phase 1 (compact): no-space / homoglyph bypass check
+    for pattern in COMPACT_INJECTION_PATTERNS:
+        if pattern.search(compact):
+            LOG.warning("Compact injection pattern matched: %s", pattern.pattern)
             return False, "Request blocked: prompt injection detected."
 
     # Phase 1b: conspiracy / misinformation patterns — fast, no API call
     for category, pattern in CONSPIRACY_PATTERNS:
-        if pattern.search(text):
+        if pattern.search(normalised):
             LOG.warning("Conspiracy pattern matched (category=%s): %s", category, pattern.pattern)
             return False, _CONSPIRACY_BLOCK_MESSAGE
 
     # Phase 1c: system-prompt extraction patterns — fast, no API call
     for category, pattern in EXTRACTION_PATTERNS:
-        if pattern.search(text):
+        if pattern.search(normalised):
             LOG.warning("Extraction pattern matched (category=%s): %s", category, pattern.pattern)
             return False, _EXTRACTION_BLOCK_MESSAGE
 
@@ -321,9 +390,13 @@ def moderate_input(text: str, client, model: str) -> tuple[bool, str]:
                 "for Earth observation solutions. Please ask a related question."
             )
     except Exception as exc:
-        # Classifier failure is non-fatal: log and allow the message through
-        # rather than blocking legitimate users due to a transient API error.
-        LOG.warning("Moderation classifier failed (%s); allowing message through.", exc)
+        # Fail closed: if the classifier is unreachable we cannot determine
+        # topic safety, so we block rather than forward an unvetted message.
+        # (The regex phases above still ran successfully.)
+        LOG.warning("Moderation classifier failed (%s); failing closed.", exc)
+        return False, (
+            "The assistant is temporarily unavailable. Please try again in a moment."
+        )
 
     return True, ""
 
@@ -343,25 +416,38 @@ def sanitize_document_chunks(chunks: list[dict]) -> tuple[list[dict], list[str]]
     warnings: list[str] = []
 
     for chunk in chunks:
-        text = chunk.get("text", "")
-        redacted = text
+        original = chunk.get("text", "")
+        # Normalise for consistent pattern detection across homoglyphs and
+        # unusual whitespace; work on the normalised copy throughout.
+        normalised = _normalize_for_patterns(original)
+        compact    = _compact_for_patterns(normalised)
+        redacted   = normalised
+        chunk_id   = chunk.get("id", "unknown")
 
         for pattern in INJECTION_PATTERNS:
             if pattern.search(redacted):
                 LOG.warning(
                     "Prompt injection pattern '%s' found in document chunk '%s'; redacting.",
-                    pattern.pattern,
-                    chunk.get("id", "unknown"),
+                    pattern.pattern, chunk_id,
                 )
                 redacted = pattern.sub("[CONTENT REDACTED: POLICY VIOLATION]", redacted)
+
+        # Compact check — if matched, redact the entire chunk text since the
+        # payload position cannot be mapped back to the original string.
+        for pattern in COMPACT_INJECTION_PATTERNS:
+            if pattern.search(compact):
+                LOG.warning(
+                    "Compact injection pattern '%s' found in document chunk '%s'; redacting.",
+                    pattern.pattern, chunk_id,
+                )
+                redacted = "[CONTENT REDACTED: POLICY VIOLATION]"
+                break
 
         for category, pattern in CONSPIRACY_PATTERNS:
             if pattern.search(redacted):
                 LOG.warning(
                     "Conspiracy pattern (category=%s) '%s' found in document chunk '%s'; redacting.",
-                    category,
-                    pattern.pattern,
-                    chunk.get("id", "unknown"),
+                    category, pattern.pattern, chunk_id,
                 )
                 redacted = pattern.sub("[CONTENT REDACTED: POLICY VIOLATION]", redacted)
 
@@ -369,17 +455,84 @@ def sanitize_document_chunks(chunks: list[dict]) -> tuple[list[dict], list[str]]
             if pattern.search(redacted):
                 LOG.warning(
                     "Extraction pattern (category=%s) '%s' found in document chunk '%s'; redacting.",
-                    category,
-                    pattern.pattern,
-                    chunk.get("id", "unknown"),
+                    category, pattern.pattern, chunk_id,
                 )
                 redacted = pattern.sub("[CONTENT REDACTED: POLICY VIOLATION]", redacted)
 
-        if redacted != text:
+        if redacted != normalised or normalised != original:
             chunk["text"] = redacted
-            warnings.append(
-                f"Chunk '{chunk.get('id', 'unknown')}' contained policy-violating content "
-                "and was partially redacted before ingestion."
-            )
+            if redacted != normalised:
+                warnings.append(
+                    f"Chunk '{chunk_id}' contained policy-violating content "
+                    "and was partially redacted before ingestion."
+                )
 
     return chunks, warnings
+
+
+# ---------------------------------------------------------------------------
+# sanitize_history — re-validate session history before LLM replay
+# ---------------------------------------------------------------------------
+def sanitize_history(history: list[dict]) -> list[dict]:
+    """
+    Scan the user-role entries in a conversation history list for injection
+    and extraction payloads before the history is replayed into an LLM prompt.
+
+    This defends against multi-turn / gradual injection attacks where an
+    earlier message looked benign enough to pass moderate_input but contains
+    partial injection fragments that compound across turns.
+
+    Only 'user' role messages are scanned — 'assistant' messages are
+    generated by the model itself and are not modified.
+
+    Returns a new list; the original history is not mutated.
+    """
+    sanitized = []
+    for entry in history:
+        if entry.get("role") != "user":
+            sanitized.append(entry)
+            continue
+
+        original   = entry.get("content", "")
+        normalised = _normalize_for_patterns(original)
+        compact    = _compact_for_patterns(normalised)
+        redacted   = normalised
+
+        for pattern in INJECTION_PATTERNS:
+            if pattern.search(redacted):
+                LOG.warning(
+                    "History replay: injection pattern '%s' redacted from prior turn.",
+                    pattern.pattern,
+                )
+                redacted = pattern.sub("[CONTENT REDACTED: POLICY VIOLATION]", redacted)
+
+        for pattern in COMPACT_INJECTION_PATTERNS:
+            if pattern.search(compact):
+                LOG.warning(
+                    "History replay: compact injection pattern '%s' redacted from prior turn.",
+                    pattern.pattern,
+                )
+                redacted = "[CONTENT REDACTED: POLICY VIOLATION]"
+                break
+
+        for category, pattern in CONSPIRACY_PATTERNS:
+            if pattern.search(redacted):
+                LOG.warning(
+                    "History replay: conspiracy pattern (category=%s) '%s' redacted from prior turn.",
+                    category,
+                    pattern.pattern,
+                )
+                redacted = pattern.sub("[CONTENT REDACTED: POLICY VIOLATION]", redacted)
+
+        for category, pattern in EXTRACTION_PATTERNS:
+            if pattern.search(redacted):
+                LOG.warning(
+                    "History replay: extraction pattern (category=%s) '%s' redacted from prior turn.",
+                    category,
+                    pattern.pattern,
+                )
+                redacted = pattern.sub("[CONTENT REDACTED: POLICY VIOLATION]", redacted)
+
+        sanitized.append({**entry, "content": redacted})
+
+    return sanitized

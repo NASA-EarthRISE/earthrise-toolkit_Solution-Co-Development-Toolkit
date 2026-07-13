@@ -1,7 +1,7 @@
 from django.urls import path
 
 from . import views
-from .views import api_message, api_message_stream, api_chat_upload, api_clear_chat, save_page_content, api_document_download
+from .views import api_message, api_message_stream, api_clear_chat, save_page_content, api_document_download
 from .views_upload import upload_page, upload_file
 
 app_name = 'webapp'
@@ -30,7 +30,6 @@ urlpatterns = [
 
     path("api/message", api_message, name="api_message"),
     path("api/stream", api_message_stream, name="api_message_stream"),
-    path("api/chat-upload", api_chat_upload, name="api_chat_upload"),
     path("api/clear-chat", api_clear_chat, name="api_clear_chat"),
     path("api/save-page-content", save_page_content, name="save_page_content"),
     path("api/create-page", views.api_create_page, name="api_create_page"),
