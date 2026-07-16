@@ -1,4 +1,4 @@
-Django>=4.2
+Django>=6.0.4
 python-dotenv>=1.0.1
 openai>=1.30.0
 chromadb>=0.5.3

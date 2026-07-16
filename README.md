@@ -31,14 +31,14 @@ The toolkit is authored by the EarthRISE Project, NASA SPoRT Center, and NASA NS
 
 ## Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Language | Python 3.10+ |
-| Framework | Django 6.0.4 |
-| Database | SQLite (dev) / PostgreSQL (prod) |
-| Frontend | Django Templates, vanilla CSS/JS |
+| Layer | Technology                              |
+|-------|-----------------------------------------|
+| Language | Python 3.13                             |
+| Framework | Django 6.04+                            |
+| Database | SQLite (dev) / PostgreSQL (prod)        |
+| Frontend | Django Templates, vanilla CSS/JS        |
 | AI | OpenAI API (streaming chat completions) |
-| RAG | Custom vector store (`webapp/rag.py`) |
+| RAG | Custom vector store (`webapp/rag.py`)   |
 
 ---
 
@@ -62,15 +62,54 @@ A floating chat widget is available on every page, powered by OpenAI via a Retri
 ### RAG pipeline
 Document chunks are stored in a custom vector store (`webapp/rag.py`). On each chat request, the top-15 most relevant snippets are retrieved and injected into the system prompt alongside the conversation history (last 10 turns).
 
+### Input moderation
+Every chat message is validated before being sent to the model:
+- **Rate limiting** — configurable request limit per session per time window (default: 20 requests / 60 s)
+- **Length validation** — messages over the configured maximum are rejected (default: 2000 characters)
+- **Prompt injection detection** — regex patterns screen for common injection attempts
+- **Topic classification** — LLM-based check to keep responses on-topic
+- **Unicode normalization** — homoglyph-based bypass attempts are neutralised before pattern matching
+
+### Staff features
+Staff members (Django `is_staff`) have access to additional functionality:
+- **Content editing** — in-page TinyMCE WYSIWYG editor to update any section's HTML, saved via `/api/save-page-content`
+- **Dynamic tool pages** — create, edit, publish, unpublish, and delete custom tool pages at `/tools/<slug>/`
+- **Document upload** — upload knowledge-base files (PDF, DOCX, TXT, CSV, XLSX) via the `/upload` interface
+- **Feedback review** — view all visitor feedback and chat history at `/review/`
+
+### Visitor feedback
+- **Page feedback** — anonymous visitors can submit general feedback, bug reports, or chat issue reports
+- **Response ratings** — thumbs up / down rating on individual AI responses
+
 ---
 
 ## API endpoints
+
+### Chat
 
 | Method | Path | Description |
 |--------|------|-------------|
 | `GET` | `/api/stream?message=…` | Streaming SSE chat response |
 | `POST` | `/api/message` | Non-streaming JSON chat response |
+| `POST` | `/api/clear-chat` | Clear session chat history |
 | `POST` | `/api/chat-upload` | Upload a file to session context |
+
+### Feedback
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/api/feedback` | Submit anonymous visitor feedback |
+| `POST` | `/api/response-feedback` | Rate an AI response (thumbs up/down) |
+
+### Staff only
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/api/save-page-content` | Save edited HTML content for a page |
+| `POST` | `/api/create-page` | Create a new dynamic tool page |
+| `POST` | `/api/publish-page/<slug>` | Publish or unpublish a tool page |
+| `POST` | `/api/delete-page/<slug>` | Delete a tool page |
+| `GET` | `/api/documents/<filename>` | Download a knowledge-base document |
 
 ---
 
@@ -102,8 +141,8 @@ Create a `.env` file (or export directly) with:
 OPENAI_API_KEY=sk-...
 OPENAI_BASE_URL=https://....
 MODEL=gemini-2.5-pro
-SECRET_KEY=<django-secret-key>
-DEBUG=True
+DJANGO_SECRET_KEY=<django-secret-key>
+DJANGO_DEBUG=True
 ```
 
 ### 5. Initialize the database
@@ -254,13 +293,20 @@ python manage.py reingest_missing --purge-orphans
 │   ├── views.py                       # Page views + API endpoints
 │   ├── views_upload.py                # Staff document upload
 │   ├── urls.py                        # App URL routing
-│   ├── models.py                      # NavSection and document models
+│   ├── models.py                      # NavSection, IngestedDocument, PageContent, VisitorFeedback, ChatPrompt
+│   ├── admin.py                       # Django admin configuration
+│   ├── apps.py                        # App configuration
 │   ├── openai_client.py               # OpenAI client wrapper
 │   ├── rag.py                         # Vector store + retrieval
 │   ├── prompts.py                     # System prompt templates
+│   ├── moderation.py                  # Input safety and rate limiting
 │   ├── document_registry.py           # Ingested document registry
 │   ├── ingest_helpers.py              # Chunking / ingestion utilities
 │   ├── tests.py                       # Test suite
+│   ├── static/
+│   │   ├── css/
+│   │   │   └── toolkit.css            # Main stylesheet
+│   │   └── images/                    # NASA logo, hero image, and section figures
 │   └── management/
 │       └── commands/
 │           ├── rag_status.py          # Inspect vector store contents
@@ -269,8 +315,6 @@ python manage.py reingest_missing --purge-orphans
 ├── templates/
 │   ├── base.html                      # Base layout, nav, chat widget
 │   └── webapp/                        # Per-section content templates
-├── static/
-│   └── images/                        # NASA logo and hero image
 ├── uploads/                           # Session-scoped user file uploads
 └── db.sqlite3                         # Local development database
 ```
