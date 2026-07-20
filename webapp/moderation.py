@@ -3,7 +3,7 @@ moderation.py — Input safety controls for the AI chat assistant.
 
 Provides:
   rate_limit               — decorator that enforces per-IP request rate limits
-  moderate_input           — multi-phase check: regex injection → extraction → conspiracy → LLM classifier
+  moderate_input           — multi-phase check: regex injection → extraction → conspiracy → dangerous-topics → LLM classifier
   sanitize_document_chunks — scans uploaded document chunks for embedded injection
   sanitize_history         — re-validates session history entries before LLM replay
 
@@ -12,6 +12,8 @@ Phase 1b — Conspiracy / misinformation patterns (no API call)
   flat_earth, hollow_earth, climate_denial, moon_landing_hoax, chemtrails, space_denial
 Phase 1c — System-prompt extraction / persona-hijacking patterns (no API call)
   direct_extraction, mode_injection, social_engineering_pretext, persona_hijacking
+Phase 1d — Dangerous-topic patterns: weapons, explosives, self-harm (no API call)
+  firearms_illegal, explosives_bombs, self_harm_suicide
 Phase 2  — LLM topic classifier
 """
 
@@ -250,6 +252,85 @@ _EXTRACTION_BLOCK_MESSAGE = (
 )
 
 # ---------------------------------------------------------------------------
+# Dangerous-topic patterns (Phase 1d — no API call)
+# Catches requests related to illegal weapons, explosive devices, and
+# self-harm / suicide — topics that are never in scope for this toolkit.
+# Organised by category for logging and future policy management.
+# ---------------------------------------------------------------------------
+_DANGEROUS_TOPICS_CATEGORIES: dict[str, list[str]] = {
+    # ── Firearms: illegal acquisition, manufacture, modification ──────────
+    "firearms_illegal": [
+        # Making / building weapons (ghost guns, zip guns, 3D-printed, homemade)
+        r"\b(make|build|construct|manufacture|fabricate|create|assemble|3d[\s\-]?print)\s+(a\s+|my\s+own\s+|your\s+own\s+)?(gun|firearm|pistol|rifle|shotgun|handgun|zip[\s\-]?gun|ghost[\s\-]?gun|homemade\s+(gun|firearm|weapon)|untraceable\s+(gun|firearm|weapon))\b",
+        # Illegal acquisition — black market, no background check, off-the-books
+        r"\b(buy|purchase|acquire|get|obtain|source|procure)\s+(a\s+)?(gun|firearm|rifle|shotgun|handgun|pistol|weapon)\s+(illegally|without\s+(a\s+)?(license|permit|background[\s\-]?check)|on\s+the\s+(black[\s\-]?market|streets?|dark[\s\-]?web)|off[\s\-]?the[\s\-]?(books|record))\b",
+        # Bypassing background checks / gun laws
+        r"\b(bypass|skip|avoid|evade|circumvent|get\s+around|work\s+around)\s+.{0,50}(background[\s\-]?check|gun\s+(laws?|control|registry|registration|permit|license))\b",
+        # Converting semi-auto to full-auto (illegal Class III conversion)
+        r"\b(convert|modify|turn|change)\s+.{0,50}(semi[\s\-]?auto(matic)?\s+to\s+full|to\s+full[\s\-]?auto(matic)?|full[\s\-]?auto(matic)?)\b",
+        # Suppressors, auto-switches, bump stocks, and other restricted/banned accessories
+        r"\b(make|build|install|attach|add|design|3d[\s\-]?print|fabricate)\s+.{0,30}(suppressor|silencer|auto[\s\-]?sear|glock[\s\-]?switch|auto[\s\-]?switch|bump[\s\-]?stock)\b",
+        r"\b(suppressor|silencer|auto[\s\-]?sear|glock[\s\-]?switch|auto[\s\-]?switch)\s+(instructions?|how[\s\-]?to|make|build|install|design|print)\b",
+        # Straw purchases and trafficking
+        r"\b(gun|firearm|weapon)\s+trafficking\b",
+        r"\bstraw[\s\-]?(purchase|buy|buying)\b",
+        # Direct guidance on illegal firearm use
+        r"\b(guidance|instructions?|steps?|how[\s\-]?to)\s+.{0,50}(acquire|use|obtain)\s+.{0,30}firearm\s+illegal",
+    ],
+    # ── Explosives: manufacture, assembly, detonation ─────────────────────
+    "explosives_bombs": [
+        # Making bombs and explosive devices
+        r"\b(make|build|construct|assemble|create|manufacture|design|wire|rig)\s+(a\s+)?(bomb|explosive\s+device|ied|pipe[\s\-]?bomb|car[\s\-]?bomb|letter[\s\-]?bomb|dirty[\s\-]?bomb|nail[\s\-]?bomb|pressure[\s\-]?cooker[\s\-]?bomb|claymore|landmine|hand[\s\-]?grenade)\b",
+        # Synthesizing explosive compounds
+        r"\b(make|synthesize|produce|create|manufacture|mix|prepare|assemble)\s+(a\s+)?(tnt|c[\s\-]?4|rdx|tatp|hmtd|amfo|anfo|semtex|thermite[\s\-]?bomb|black[\s\-]?powder[\s\-]?bomb)\b",
+        # Incendiary devices
+        r"\b(molotov[\s\-]?cocktail|incendiary[\s\-]?device|fire[\s\-]?bomb)\s+(instructions?|recipe|how[\s\-]?to|make|build|construct|use)\b",
+        # Detonation / arming
+        r"\b(how\s+to\s+)?(detonate|trigger|set[\s\-]?off|explode|arm|prime)\s+(a\s+)?(bomb|explosive|device|charge|ied)\b",
+        # Explosive compounds, formulas, recipes
+        r"\bexplosive\s+(compound|mixture|formula|recipe|synthesis|ingredient|material|powder)\b",
+        # Generic bomb-making
+        r"\bbomb[\s\-]?making\b",
+        r"\b(build|make|construct|assemble|wire)\s+.{0,30}explosive\s+(device|charge|trap)\b",
+        # IED
+        r"\bimprovised\s+explosive\s+(device|charge)\b",
+        # Detonators and blasting equipment instructions
+        r"\b(blasting\s+(cap|agent)|detonator|detonating\s+(cord|cap))\s+(instructions?|how[\s\-]?to|make|build|wire|connect)\b",
+    ],
+    # ── Self-harm and suicide: methods, guidance, encouragement ───────────
+    "self_harm_suicide": [
+        # "how to commit suicide" / "how to kill myself"
+        r"\b(how\s+to|ways?\s+to|best\s+way\s+to|method(s)?\s+(for|to)|steps?\s+(for|to))\s+(commit\s+)?suicide\b",
+        r"\b(how\s+to|ways?\s+to|best\s+way\s+to|easiest\s+way\s+to)\s+(kill|end|take)\s+(my(self)?|your(self)?|one'?s)\s+(own\s+)?life\b",
+        # "suicide methods / guide / instructions"
+        r"\bsuicide\s+(method(s)?|technique(s)?|instruction(s)?|guide|tutorial|how[\s\-]?to|plan(ning)?|attempt)\b",
+        # "painless / quick / effective / peaceful way to die"
+        r"\b(painless(ly)?|quick(ly)?|effective(ly)?|peaceful(ly)?|easiest?)\s+(way(s)?\s+to\s+)?(die|(commit\s+)?suicide|kill\s+(my(self)?|your(self)?)|end\s+(my|your|one'?s)\s+(own\s+)?life)\b",
+        # Lethal dose calculation
+        r"\blethal\s+(dose|dosage|amount|quantity|level|combination|overdose)\s+(of|for|to)\b",
+        r"\bhow\s+(much|many)\s+.{0,50}(to\s+)?(kill\s+(my(self)?|your(self)?|a\s+person)|be\s+lethal|cause\s+(death|a?\s*fatal))\b",
+        # Self-harm how-to
+        r"\b(how\s+to\s+|ways?\s+to\s+)(self[\s\-]?harm|cut\s+(my(self)?|your(self)?)|hurt\s+(my(self)?|your(self)?)|injure\s+(my(self)?|your(self)?)|harm\s+my(self)?)\b",
+        r"\bself[\s\-]?harm\s+(method(s)?|technique(s)?|instruction(s)?|guide|how[\s\-]?to)\b",
+        # "help me / someone die / end it"
+        r"\b(help\s+(me|us|someone))\s+(to\s+)?(die|kill\s+(my(self)?|them(self|selves)?|him(self)?|her(self)?)|(commit\s+)?suicide|end\s+(it|my|their|his|her)\s*(own\s+)?life)\b",
+        r"suicide",
+    ],
+}
+
+DANGEROUS_TOPICS_PATTERNS: list[tuple[str, re.Pattern]] = [
+    (category, re.compile(pattern, re.IGNORECASE | re.DOTALL))
+    for category, patterns in _DANGEROUS_TOPICS_CATEGORIES.items()
+    for pattern in patterns
+]
+
+_DANGEROUS_TOPICS_BLOCK_MESSAGE = (
+    "This assistant only answers questions about the NASA Solution Co-Development Toolkit "
+    "for Earth observation solutions. Questions about weapons, explosives, or self-harm "
+    "are outside its scope."
+)
+
+# ---------------------------------------------------------------------------
 # LLM topic-classifier prompt (Phase 2)
 # ---------------------------------------------------------------------------
 _CLASSIFIER_SYSTEM = (
@@ -371,6 +452,12 @@ def moderate_input(text: str, client, model: str) -> tuple[bool, str]:
             LOG.warning("Extraction pattern matched (category=%s): %s", category, pattern.pattern)
             return False, _EXTRACTION_BLOCK_MESSAGE
 
+    # Phase 1d: dangerous-topic patterns — fast, no API call
+    for category, pattern in DANGEROUS_TOPICS_PATTERNS:
+        if pattern.search(normalised):
+            LOG.warning("Dangerous topic pattern matched (category=%s): %s", category, pattern.pattern)
+            return False, _DANGEROUS_TOPICS_BLOCK_MESSAGE
+
     # Phase 2: LLM topic classifier — single cheap call, max_tokens=5
     try:
         response = client.chat.completions.create(
@@ -459,6 +546,14 @@ def sanitize_document_chunks(chunks: list[dict]) -> tuple[list[dict], list[str]]
                 )
                 redacted = pattern.sub("[CONTENT REDACTED: POLICY VIOLATION]", redacted)
 
+        for category, pattern in DANGEROUS_TOPICS_PATTERNS:
+            if pattern.search(redacted):
+                LOG.warning(
+                    "Dangerous topic pattern (category=%s) '%s' found in document chunk '%s'; redacting.",
+                    category, pattern.pattern, chunk_id,
+                )
+                redacted = pattern.sub("[CONTENT REDACTED: POLICY VIOLATION]", redacted)
+
         if redacted != normalised or normalised != original:
             chunk["text"] = redacted
             if redacted != normalised:
@@ -528,6 +623,15 @@ def sanitize_history(history: list[dict]) -> list[dict]:
             if pattern.search(redacted):
                 LOG.warning(
                     "History replay: extraction pattern (category=%s) '%s' redacted from prior turn.",
+                    category,
+                    pattern.pattern,
+                )
+                redacted = pattern.sub("[CONTENT REDACTED: POLICY VIOLATION]", redacted)
+
+        for category, pattern in DANGEROUS_TOPICS_PATTERNS:
+            if pattern.search(redacted):
+                LOG.warning(
+                    "History replay: dangerous topic pattern (category=%s) '%s' redacted from prior turn.",
                     category,
                     pattern.pattern,
                 )
