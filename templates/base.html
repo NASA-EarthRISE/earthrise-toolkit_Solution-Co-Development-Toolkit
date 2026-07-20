@@ -521,7 +521,8 @@
     }
 
     .chat-msg.assistant h3,
-    .chat-msg.assistant h4 {
+    .chat-msg.assistant h4,
+    .chat-msg.assistant h5 {
         color: var(--nasa-blue);
         margin: 0.6rem 0 0.3rem;
     }
@@ -532,6 +533,10 @@
 
     .chat-msg.assistant h4 {
         font-size: 0.85rem;
+    }
+
+    .chat-msg.assistant h5 {
+        font-size: 0.80rem;
     }
 
     .chat-msg.assistant strong {
@@ -1419,6 +1424,7 @@
             const blocks = s.split(/\n{2,}/);
             s = blocks.map(block => {
                 const lines = block.split('\n');
+                if (/^#### /.test(block)) return `<h5>${block.replace(/^#### /, '')}</h5>`;
                 if (/^### /.test(block)) return `<h4>${block.replace(/^### /, '')}</h4>`;
                 if (/^## /.test(block)) return `<h3>${block.replace(/^## /, '')}</h3>`;
                 if (/^# /.test(block)) return `<h3>${block.replace(/^# /, '')}</h3>`;
