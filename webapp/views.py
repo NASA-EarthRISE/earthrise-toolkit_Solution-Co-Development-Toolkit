@@ -1,7 +1,10 @@
+import logging
 import os
 import uuid
 import json
 import mimetypes
+
+LOG = logging.getLogger(__name__)
 
 from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import F
@@ -17,7 +20,7 @@ from .openai_client import client, CHAT_MODEL
 from .rag import build_context_snippets, get_store
 from .prompts import SYSTEM_PROMPT, build_context_message
 from .document_registry import get_document_list_prompt
-from .moderation import rate_limit, moderate_input, sanitize_history
+from .moderation import rate_limit, moderate_input, moderate_output, sanitize_history
 
 UPLOAD_DIR = os.path.join(settings.BASE_DIR, "uploads")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -299,6 +302,11 @@ def api_message(request):
     except Exception as e:
         return JsonResponse({"error": f"Chat backend error: {str(e)}"}, status=500)
 
+    output_safe, _output_reason = moderate_output(answer)
+    if not output_safe:
+        LOG.warning("Blocked unsafe LLM output in api_message")
+        return JsonResponse({"error": "I cannot provide that response."}, status=400)
+
     history.append({"role": "user", "content": user_text})
     history.append({"role": "assistant", "content": answer})
     request.session["history"] = history
@@ -401,6 +409,13 @@ def api_message_stream(request):
                     yield _sse({"delta": content})
 
             full = "".join(collected)
+
+            output_safe, _output_reason = moderate_output(full)
+            if not output_safe:
+                LOG.warning("Blocked unsafe LLM output in api_message_stream")
+                yield _sse({"blocked": "I cannot provide that response."})
+                return
+
             history.append({"role": "user", "content": user_text})
             history.append({"role": "assistant", "content": full})
             request.session["history"] = history
