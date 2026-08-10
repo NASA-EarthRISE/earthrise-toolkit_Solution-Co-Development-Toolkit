@@ -67,7 +67,10 @@ _RAW_INJECTION_PATTERNS = [
     r"ignore\s+(all\s+)?(previous|prior|above)\s+(instructions?|prompts?|rules?|context|constraints?)",
     r"you\s+are\s+now\s+\w+",
     r"(act|pretend|roleplay|simulate|behave)\s+as\s+.{0,40}(without\s+restrictions?|unfiltered|uncensored|no\s+limits?)",
-    r"\bDAN\b",
+    r"\bDAN\s+(mode|jailbreak|override|unfiltered|uncensored)\b",  # "DAN mode", etc.
+    r"\b(enable|switch\s+to|activate)\s+DAN\b",                  # "enable DAN"
+    r"\b(you\s+are\s+now|pretend\s+you\s+are)\s+DAN\b",           # "you are now DAN"
+    r"\bDAN\s+(is\s+now|mode\s+is)\s+activat\w+\b",                # "DAN is now active"
     r"do\s+anything\s+now",
     r"disregard\s+(your\s+)?(previous\s+)?(instructions?|training|guidelines?|rules?|programming)",
     r"forget\s+(your\s+)?(instructions?|training|guidelines?|previous|rules?)",
@@ -666,3 +669,54 @@ def sanitize_history(history: list[dict]) -> list[dict]:
         sanitized.append({**entry, "content": redacted})
 
     return sanitized
+
+
+# ---------------------------------------------------------------------------
+# moderate_output — validate LLM responses before returning to the user
+# ---------------------------------------------------------------------------
+def moderate_output(text: str) -> tuple[bool, str]:
+    """
+    Validate LLM output for safety before returning it to the user.
+
+    Reuses the same compiled pattern sets as input moderation (injection,
+    conspiracy, extraction, dangerous topics) so that prompt-injection
+    bypasses embedded in LLM responses are caught at the output boundary.
+
+    Returns (True, "") when safe, or (False, reason) when blocked.
+    No LLM classifier call is made — regex only, keeping latency minimal.
+    """
+    normalised = _normalize_for_patterns(text)
+
+    for pattern in INJECTION_PATTERNS:
+        if pattern.search(normalised):
+            LOG.warning("Output blocked (injection pattern): %s", pattern.pattern)
+            return False, "Response blocked by output safety filter."
+
+    for pattern in COMPACT_INJECTION_PATTERNS:
+        compact = _compact_for_patterns(normalised)
+        if pattern.search(compact):
+            LOG.warning("Output blocked (compact injection pattern): %s", pattern.pattern)
+            return False, "Response blocked by output safety filter."
+
+    for category, pattern in CONSPIRACY_PATTERNS:
+        if pattern.search(normalised):
+            LOG.warning(
+                "Output blocked (conspiracy/%s): %s", category, pattern.pattern
+            )
+            return False, "Response blocked by output safety filter."
+
+    for category, pattern in EXTRACTION_PATTERNS:
+        if pattern.search(normalised):
+            LOG.warning(
+                "Output blocked (extraction/%s): %s", category, pattern.pattern
+            )
+            return False, "Response blocked by output safety filter."
+
+    for category, pattern in DANGEROUS_TOPICS_PATTERNS:
+        if pattern.search(normalised):
+            LOG.warning(
+                "Output blocked (dangerous/%s): %s", category, pattern.pattern
+            )
+            return False, "Response blocked by output safety filter."
+
+    return True, ""
