@@ -1,13 +1,13 @@
 import os
-
-from dotenv import load_dotenv
-
-load_dotenv()
-
 from pathlib import Path
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load .env using an explicit path so it works regardless of the gunicorn
+# working directory (python-decouple does this automatically; we replicate it).
+load_dotenv(BASE_DIR / '.env')
 
 
 # Quick-start development settings - unsuitable for production
@@ -121,7 +121,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = f"{SCRIPT_NAME}/static/" if SCRIPT_NAME else "static/"
+STATIC_URL = f"{SCRIPT_NAME}/static/"
 STATICFILES_DIRS = [ BASE_DIR / "webapp" / "static" ]
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
