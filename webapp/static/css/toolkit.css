@@ -367,6 +367,7 @@ code, pre, kbd, samp { font-family: var(--font-mono); font-size: 0.9em; }
     z-index: 150;
     transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
     white-space: nowrap;
+    display:none;
 }
 
 .review-btn:hover {
@@ -383,7 +384,7 @@ code, pre, kbd, samp { font-family: var(--font-mono); font-size: 0.9em; }
     height: 100%;
     pointer-events: none; /* This allows clicks to pass through */
     z-index: 9999; /* High z-index to stay on top */
-    display: flex;
+    display: none;
     justify-content: center;
     align-items: center;
     opacity: 0.1; /* Adjust transparency */
