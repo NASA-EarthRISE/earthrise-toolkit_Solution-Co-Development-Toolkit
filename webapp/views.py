@@ -24,7 +24,7 @@ from .moderation import rate_limit, moderate_input, moderate_output, sanitize_hi
 
 UPLOAD_DIR = os.path.join(settings.BASE_DIR, "uploads")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
-static_version = 1.3
+static_version = 1.4
 
 
 def _nav():
