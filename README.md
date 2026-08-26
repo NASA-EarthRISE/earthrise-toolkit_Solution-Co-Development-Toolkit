@@ -2,7 +2,7 @@
 
 [![Python: 3.13](https://img.shields.io/badge/python-3.13-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![EarthRISE: Development](https://img.shields.io/badge/EarthRISE-Development-b50000?labelColor=191f4c)]([https://appliedsciences.nasa.gov/what-we-do/capacity-building/develop](https://science.nasa.gov/earth-science/earth-action/earthrise/))
+[![EarthRISE: Development](https://img.shields.io/badge/EarthRISE-Development-b50000?labelColor=191f4c)](https://science.nasa.gov/earth-science/earth-action/earthrise/)
 
 ## Overview
 
