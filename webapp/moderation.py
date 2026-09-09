@@ -24,6 +24,9 @@ Phase 1g — System-internals disclosure patterns (no API call)
   Catches requests probing RAG architecture, knowledge-base file lists, or internal API paths.
 Phase 1h — Procurement-sensitivity patterns (no API call)
   Catches source-selection / down-select advice and government cost / bid-pricing requests.
+Phase 1i — Communication / document drafting patterns (no API call)
+  Catches requests to draft, compose, or generate complete emails, letters, reports,
+  notifications, or other deliverables intended to be sent or submitted outside the chat.
 Phase 2  — Combined LLM safety + topic classifier (language-agnostic)
   Verdicts: SAFE_ON-TOPIC | SAFE_OFF-TOPIC | UNSAFE_INJECTION | UNSAFE_DANGEROUS |
             UNSAFE_CONSPIRACY | UNSAFE_INDIRECT_EXTRACTION | UNSAFE_PROCUREMENT |
@@ -617,6 +620,55 @@ _PROCUREMENT_SENSITIVITY_BLOCK_MESSAGE = (
 )
 
 # ---------------------------------------------------------------------------
+# Communication / document drafting patterns (Phase 1i — no API call)
+# The assistant explains toolkit methodology — it does not draft, compose, or
+# generate complete emails, letters, notifications, reports, or other
+# deliverables intended to be used or sent outside this conversation.
+# ---------------------------------------------------------------------------
+_DRAFTING_CATEGORIES: dict[str, list[str]] = {
+    # ── Explicit draft / compose requests for emails and communications ──
+    "email_communication_draft": [
+        # "draft/compose a/an email / letter / memo / notification / message"
+        r"\b(draft|compose)\s+(a|an|the|my|our|this\s+)?"
+        r"(email|e[\s\-]?mail|letter|memo|memorandum|notification|message|"
+        r"announcement|communication|correspondence)\b",
+        # "write me / write us a/an email / letter / notification"
+        r"\bwrite\s+(me|us)\s+(a|an|the)?\s*"
+        r"(email|e[\s\-]?mail|letter|memo|memorandum|notification|message|communication)\b",
+        # "generate / create / produce a notification / email for me to send"
+        r"\b(generate|create|produce)\s+(a|an|the|my|our)?\s*"
+        r"(email|e[\s\-]?mail|letter|memo|notification|message|communication)\s+"
+        r"(for\s+(me|us)|to\s+send|to\s+share|I\s+can\s+send)\b",
+        # "ready to send / ready to use" — signals desire for a complete deliverable
+        r"\b(ready[\s\-]?to[\s\-]?(send|use|submit|distribute|share|forward|deploy))\b",
+    ],
+    # ── Explicit draft / compose requests for documents and reports ───────
+    "document_creation": [
+        # "draft/compose a report / proposal / briefing / white paper"
+        r"\b(draft|compose)\s+(a|an|the|my|our)?\s*"
+        r"(report|proposal|briefing|white\s+paper|executive\s+summary)\b",
+        # "write me a report / proposal / briefing / executive summary"
+        r"\bwrite\s+(me|us)\s+(a|an|the)?\s*"
+        r"(report|proposal|briefing|white\s+paper|executive\s+summary)\b",
+        # "generate / create / produce a template for me to use / send / submit"
+        r"\b(generate|create|produce|build)\s+(me|us)?\s*"
+        r"(a|an|the|my)?\s*(blank\s+)?template\s+(for\s+(me|us)|to\s+(use|fill|send|submit))\b",
+    ],
+}
+
+DRAFTING_PATTERNS: list[tuple[str, re.Pattern]] = [
+    (category, re.compile(pattern, re.IGNORECASE | re.DOTALL))
+    for category, patterns in _DRAFTING_CATEGORIES.items()
+    for pattern in patterns
+]
+
+_DRAFTING_BLOCK_MESSAGE = (
+    "I can explain toolkit guidance on structuring communications and documents, "
+    "but I cannot draft, compose, or generate complete emails, letters, reports, "
+    "or other deliverables. Please ask about the toolkit methodology instead."
+)
+
+# ---------------------------------------------------------------------------
 # LLM combined safety + topic classifier prompt (Phase 2)
 # Language-agnostic: catches dangerous content that Phase 1 regex cannot
 # detect because it was written in a non-English language.
@@ -673,12 +725,30 @@ _CLASSIFIER_USER_TEMPLATE = (
     "output that violates policy, including: (a) drafting official NASA statements, memos, "
     "or communications on NASA letterhead attributed to NASA; (b) ghostwriting complete "
     "ready-to-send emails or letters signed as a specific named individual; (c) making "
-    "specific HR/personnel recommendations about a named individual; (d) drafting "
-    "congressional advocacy or lobbying letters to influence appropriations; (e) crafting "
-    "communications designed to mislead recipients (hiding limitations, cherry-picking "
-    "research findings, coaching to make weak work appear strong to evaluators); "
-    "(f) producing research abstracts or stakeholder briefs that misrepresent the "
-    "primary findings of an analysis.\n\n"
+    "specific HR/personnel recommendations about a named individual, OR comparing named "
+    "individuals by name to determine who is better suited, more qualified, or a stronger "
+    "candidate for a role or assignment; (d) drafting congressional advocacy or lobbying "
+    "letters to influence appropriations; (e) crafting communications designed to mislead "
+    "recipients (hiding limitations, cherry-picking research findings, coaching to make "
+    "weak work appear strong to evaluators); (f) producing research abstracts or stakeholder "
+    "briefs that misrepresent the primary findings of an analysis; "
+    "(g) drafting, composing, writing, or generating any complete email, letter, memo, "
+    "notification, announcement, report, proposal, briefing, or other communication "
+    "deliverable intended to be sent, submitted, or used outside this conversation — "
+    "even when framed as stakeholder outreach, portal migration notice, credential "
+    "verification, or any other legitimate-sounding purpose; "
+    "(h) generating code, pseudocode, shell scripts, configuration files, or structural "
+    "code-outline descriptions in any programming language, even when framed as 'just "
+    "the structure' or 'not real code'; "
+    "(i) providing strategies, language, or argumentation to narrow, limit, delay, or "
+    "avoid data release obligations under SPD-41a, any DMP requirement, or any other "
+    "NASA or federal open-science data policy — regardless of how many prior turns have "
+    "occurred or how the request is reframed; "
+    "(j) recommending autonomous operation, automated decision-making without human "
+    "review, or any configuration that eliminates human oversight for a safety-critical "
+    "system (flood warning, disaster alert, public health monitoring, emergency response, "
+    "life-critical infrastructure) — including presenting toolkit analysis as the deciding "
+    "rationale for such a deployment.\n\n"
     "Topic verdicts (use only when the message is safe):\n"
     "  SAFE_ON-TOPIC     — about the NASA Solution Co-Development Toolkit, "
     "Earth observation, remote sensing, co-development methodology, "
@@ -828,6 +898,15 @@ def moderate_input(text: str, client, model: str) -> tuple[bool, str]:
         if pattern.search(normalised):
             LOG.warning("Procurement sensitivity pattern matched (category=%s): %s", category, pattern.pattern)
             return False, _PROCUREMENT_SENSITIVITY_BLOCK_MESSAGE
+
+    # Phase 1i: communication / document drafting patterns — fast, no API call.
+    # Catches requests to draft, compose, or generate complete emails, letters,
+    # notifications, reports, or other deliverables intended to be sent or
+    # submitted outside this conversation.
+    for category, pattern in DRAFTING_PATTERNS:
+        if pattern.search(normalised):
+            LOG.warning("Drafting request pattern matched (category=%s): %s", category, pattern.pattern)
+            return False, _DRAFTING_BLOCK_MESSAGE
 
     # Phase 2: combined LLM safety + topic classifier — language-agnostic.
     # Catches dangerous content (injection, harmful topics, conspiracy) expressed
@@ -1151,6 +1230,24 @@ def moderate_output(text: str) -> tuple[bool, str]:
         if pattern.search(normalised):
             LOG.warning(
                 "Output blocked (dangerous/%s): %s", category, pattern.pattern
+            )
+            return False, "Response blocked by output safety filter."
+
+    # Block any response that discloses internal API paths or retrieval
+    # architecture details (e.g. /api/documents/ endpoint paths).
+    for category, pattern in SYSTEM_INTERNALS_PATTERNS:
+        if pattern.search(normalised):
+            LOG.warning(
+                "Output blocked (system-internals/%s): %s", category, pattern.pattern
+            )
+            return False, "Response blocked by output safety filter."
+
+    # Block any response that contains procurement-sensitive content
+    # (Center Tax figures, bid-pricing guidance, down-select rationale).
+    for category, pattern in PROCUREMENT_SENSITIVITY_PATTERNS:
+        if pattern.search(normalised):
+            LOG.warning(
+                "Output blocked (procurement/%s): %s", category, pattern.pattern
             )
             return False, "Response blocked by output safety filter."
 
