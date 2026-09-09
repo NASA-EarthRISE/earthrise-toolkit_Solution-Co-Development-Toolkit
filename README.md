@@ -365,5 +365,5 @@ python manage.py reingest_missing --purge-orphans
 
 ## License and Distribution
 
-Solution-Co-Development-Toolkit is distributed by EarthRISE under the terms of the MIT License. See
+Solution-Co-Development-Toolkit is distributed by EarthRISE under the terms of the GPLv3 License. See
 [LICENSE](https://github.com/NASA-EarthRISE/Solution-Co-Development-Toolkit/blob/main/LICENSE) in this directory for more information.
