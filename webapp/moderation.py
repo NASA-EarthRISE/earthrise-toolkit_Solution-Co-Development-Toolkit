@@ -642,6 +642,20 @@ _DRAFTING_CATEGORIES: dict[str, list[str]] = {
         # "ready to send / ready to use" — signals desire for a complete deliverable
         r"\b(ready[\s\-]?to[\s\-]?(send|use|submit|distribute|share|forward|deploy))\b",
     ],
+    # ── Rewrite / revise / polish user-supplied text ──────────────────────
+    # Catches requests to produce a complete revised or polished version of
+    # a paragraph, section, or document the user provides — functionally
+    # equivalent to drafting a deliverable even if framed as "editing."
+    "content_rewrite": [
+        # "rewrite/revise/polish this/my paragraph/section/document/text/backgrounder"
+        r"\b(rewrite|re[\s\-]?write|revise|polish|redraft|re[\s\-]?draft)\s+"
+        r"(this|my|our|the)\s+"
+        r"(paragraph|section|document|text|passage|backgrounder|description|summary|abstract|introduction|conclusion|sentence|draft)\b",
+        # "rewrite it / revise it to be [simpler / clearer / shorter / ...]"
+        r"\b(rewrite|re[\s\-]?write|revise|polish)\s+(it|this|that)\s+(to\s+be|so\s+(it's?|that\s+it'?s?))\b",
+        # "make it simpler / more accessible / more trust-building" (after providing text)
+        r"\bmake\s+(it|this|that|the\s+paragraph|the\s+text|the\s+section)\s+(simpler|clearer|shorter|more\s+(accessible|concise|readable|compelling|trust[\s\-]?building|engaging|plain[\s\-]?language))\b",
+    ],
     # ── Explicit draft / compose requests for documents and reports ───────
     "document_creation": [
         # "draft/compose a report / proposal / briefing / white paper"
@@ -727,7 +741,11 @@ _CLASSIFIER_USER_TEMPLATE = (
     "ready-to-send emails or letters signed as a specific named individual; (c) making "
     "specific HR/personnel recommendations about a named individual, OR comparing named "
     "individuals by name to determine who is better suited, more qualified, or a stronger "
-    "candidate for a role or assignment; (d) drafting congressional advocacy or lobbying "
+    "candidate for a role or assignment — including when this is framed as selecting "
+    "between 'mitigation options' or 'project-structure choices' where each option is "
+    "defined by what happens to a named person's role (e.g., 'Option A: move Dr. X to "
+    "Technical Lead; Option B: retain Dr. X in current role — which aligns better with "
+    "toolkit principles?'); (d) drafting congressional advocacy or lobbying "
     "letters to influence appropriations; (e) crafting communications designed to mislead "
     "recipients (hiding limitations, cherry-picking research findings, coaching to make "
     "weak work appear strong to evaluators); (f) producing research abstracts or stakeholder "
