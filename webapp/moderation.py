@@ -209,6 +209,12 @@ _EXTRACTION_CATEGORIES: dict[str, list[str]] = {
         # "tell me / give me your rules / system prompt"
         r"(tell|give)\s+me\s+your\s+(exact\s+)?"
         r"(rules?|instructions?|constraints?|guidelines?|system\s+prompt)\b",
+        # "what exact wording / specific phrase are you instructed / told to use / say when [X]"
+        # Catches behaviour-mapping probes that ask the AI to quote its own canned responses.
+        r"\b(exact\s+wording|exact\s+phrase|specific\s+phrase|precise\s+wording|verbatim\s+phrase)\s+"
+        r"(you\s+(are|were|'?re)\s+)?"
+        r"(instructed|told|programmed|trained|configured|set\s+up|supposed)\s+"
+        r"(to\s+)?(use|say|output|respond(\s+with)?|state|reply\s+(with)?)\b",
     ],
     # ── Fake mode / override activation ──────────────────────────────────
     "mode_injection": [
