@@ -46,5 +46,6 @@ urlpatterns = [
     # Visitor feedback (anonymous) + staff review page
     path("api/feedback", views.api_submit_feedback, name="api_submit_feedback"),
     path("api/response-feedback", views.api_response_feedback, name="api_response_feedback"),
+    path("api/review/prompts", views.api_review_prompts, name="api_review_prompts"),
     path("review/", views.review, name="review"),
 ]

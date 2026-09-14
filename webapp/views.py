@@ -542,36 +542,13 @@ def api_response_feedback(request):
 # Staff review page — feedback results + prompt log
 # ---------------------------------------------------------------------------
 
-@staff_member_required
-def review(request):
-    """Staff-only page for reviewing visitor feedback and chat prompt logs."""
-    from django.db.models import Avg, Count, Q, Prefetch
+_PROMPT_PAGE_SIZE = 25
 
-    # --- Feedback ---
-    type_filter    = request.GET.get('type', '').strip()
-    session_filter = request.GET.get('session', '').strip()
-    feedback_qs = VisitorFeedback.objects.all()
-    if type_filter:
-        feedback_qs = feedback_qs.filter(feedback_type=type_filter)
-    if session_filter:
-        feedback_qs = feedback_qs.filter(session_key=session_filter)
 
-    stats = {
-        'total':      VisitorFeedback.objects.count(),
-        'avg_rating': VisitorFeedback.objects.filter(rating__isnull=False)
-                      .aggregate(avg=Avg('rating'))['avg'],
-        'by_type':    {
-            row['feedback_type']: row['cnt']
-            for row in VisitorFeedback.objects
-                         .values('feedback_type')
-                         .annotate(cnt=Count('id'))
-        },
-    }
+def _build_prompt_qs(session_filter='', prompt_search='', psort='date', pdir='desc'):
+    """Shared queryset builder for prompt listing (review page + AJAX endpoint)."""
+    from django.db.models import Count, Q, Prefetch
 
-    # --- Prompts ---
-    prompt_search = request.GET.get('q', '').strip()
-    psort = request.GET.get('psort', 'date').strip()
-    pdir  = request.GET.get('pdir',  'desc').strip()
     prompt_qs = ChatPrompt.objects.all()
     if prompt_search:
         prompt_qs = prompt_qs.filter(prompt__icontains=prompt_search)
@@ -580,7 +557,6 @@ def review(request):
     _order_map   = {'date': 'asked_at', 'session': 'session_key'}
     _order_field = _order_map.get(psort, 'asked_at')
     prompt_qs = prompt_qs.order_by(_order_field if pdir == 'asc' else f'-{_order_field}')
-
     prompt_qs = (
         prompt_qs
         .annotate(
@@ -603,6 +579,44 @@ def review(request):
             )
         )
     )
+    return prompt_qs
+
+
+@staff_member_required
+def review(request):
+    """Staff-only page for reviewing visitor feedback and chat prompt logs."""
+    from django.db.models import Avg, Count
+    from django.core.paginator import Paginator
+
+    # --- Feedback ---
+    type_filter    = request.GET.get('type', '').strip()
+    session_filter = request.GET.get('session', '').strip()
+    feedback_qs = VisitorFeedback.objects.all()
+    if type_filter:
+        feedback_qs = feedback_qs.filter(feedback_type=type_filter)
+    if session_filter:
+        feedback_qs = feedback_qs.filter(session_key=session_filter)
+
+    stats = {
+        'total':      VisitorFeedback.objects.count(),
+        'avg_rating': VisitorFeedback.objects.filter(rating__isnull=False)
+                      .aggregate(avg=Avg('rating'))['avg'],
+        'by_type':    {
+            row['feedback_type']: row['cnt']
+            for row in VisitorFeedback.objects
+                         .values('feedback_type')
+                         .annotate(cnt=Count('id'))
+        },
+    }
+
+    # --- Prompts (page 1 — remainder loaded via AJAX) ---
+    prompt_search = request.GET.get('q', '').strip()
+    psort = request.GET.get('psort', 'date').strip()
+    pdir  = request.GET.get('pdir',  'desc').strip()
+
+    prompt_qs  = _build_prompt_qs(session_filter, prompt_search, psort, pdir)
+    paginator  = Paginator(prompt_qs, _PROMPT_PAGE_SIZE)
+    page_obj   = paginator.get_page(1)
 
     ctx = _ctx('review', request=request, extra={
         'feedback_list':  feedback_qs[:200],
@@ -610,12 +624,44 @@ def review(request):
         'feedback_types': VisitorFeedback.FEEDBACK_TYPES,
         'type_filter':    type_filter,
         'session_filter': session_filter,
-        'prompt_list':    prompt_qs[:500],
+        'prompt_list':    page_obj,
+        'prompt_total':   paginator.count,
+        'prompt_pages':   paginator.num_pages,
         'prompt_search':  prompt_search,
         'psort':          psort,
         'pdir':           pdir,
     })
     return render(request, 'webapp/feedback_review.html', ctx)
+
+
+@staff_member_required
+def api_review_prompts(request):
+    """AJAX endpoint — returns paginated chat-prompt rows as JSON {html, total, page, pages}."""
+    from django.core.paginator import Paginator
+    from django.template.loader import render_to_string
+
+    prompt_search  = request.GET.get('q',       '').strip()
+    psort          = request.GET.get('psort',   'date').strip()
+    pdir           = request.GET.get('pdir',    'desc').strip()
+    session_filter = request.GET.get('session', '').strip()
+    page_num       = request.GET.get('page',    '1')
+
+    prompt_qs = _build_prompt_qs(session_filter, prompt_search, psort, pdir)
+    paginator = Paginator(prompt_qs, _PROMPT_PAGE_SIZE)
+    page_obj  = paginator.get_page(page_num)
+
+    html = render_to_string(
+        'webapp/feedback_review_prompts_rows.html',
+        {'prompt_list': page_obj, 'prompt_search': prompt_search},
+        request=request,
+    )
+
+    return JsonResponse({
+        'html':  html,
+        'total': paginator.count,
+        'page':  page_obj.number,
+        'pages': paginator.num_pages,
+    })
 
 
 # ---------------------------------------------------------------------------

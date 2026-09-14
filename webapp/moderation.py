@@ -38,6 +38,7 @@ import re
 import logging
 import functools
 import unicodedata
+import time
 
 from django.core.cache import cache
 from django.http import JsonResponse, HttpResponseBadRequest
@@ -935,54 +936,90 @@ def moderate_input(text: str, client, model: str) -> tuple[bool, str]:
     # Phase 2: combined LLM safety + topic classifier — language-agnostic.
     # Catches dangerous content (injection, harmful topics, conspiracy) expressed
     # in any language that the Phase 1 English-only regex patterns cannot reach.
-    try:
-        response = client.chat.completions.create(
-            model=model,
-            messages=[
-                {"role": "system", "content": _CLASSIFIER_SYSTEM},
-                {"role": "user",   "content": _CLASSIFIER_USER_TEMPLATE.format(text=text)},
-            ],
-            max_tokens=10,
-            temperature=0,
-        )
-        verdict = (response.choices[0].message.content or "").strip().upper()
+    # Both transient API/network errors and empty-choices responses are retried
+    # up to _MAX_CLASSIFIER_ATTEMPTS times before failing closed.  Empty choices
+    # can be caused by a stale LiteLLM cache entry or intermittent Vertex AI
+    # load — retrying handles both without affecting the fail-closed guarantee.
+    _MAX_CLASSIFIER_ATTEMPTS = 4
+    verdict = None
+    _last_exc = None
+    for _attempt in range(_MAX_CLASSIFIER_ATTEMPTS):
+        try:
+            response = client.chat.completions.create(
+                model=model,
+                messages=[
+                    {"role": "system", "content": _CLASSIFIER_SYSTEM},
+                    {"role": "user",   "content": _CLASSIFIER_USER_TEMPLATE.format(text=text)},
+                ],
+                max_tokens=10,
+                temperature=0,
+                extra_body={"cache": {"no-cache": True, "no-store": True}},
+            )
+            if not response.choices:
+                _last_exc = ValueError("provider returned empty choices")
+                if _attempt < _MAX_CLASSIFIER_ATTEMPTS - 1:
+                    LOG.warning(
+                        "Moderation classifier empty choices on attempt %d/%d; retrying.",
+                        _attempt + 1, _MAX_CLASSIFIER_ATTEMPTS,
+                    )
+                    time.sleep(0.5)
+                    continue
+                # All attempts exhausted with empty choices — fail closed.
+                LOG.warning(
+                    "Moderation classifier returned empty choices after %d attempts; failing closed.",
+                    _MAX_CLASSIFIER_ATTEMPTS,
+                )
+                return False, (
+                    "The assistant is temporarily unavailable. Please try again in a moment."
+                )
+            verdict = (response.choices[0].message.content or "").strip().upper()
+            break  # success — exit retry loop
+        except Exception as exc:
+            _last_exc = exc
+            if _attempt < _MAX_CLASSIFIER_ATTEMPTS - 1:
+                LOG.warning(
+                    "Moderation classifier failed on attempt %d/%d (%s); retrying.",
+                    _attempt + 1, _MAX_CLASSIFIER_ATTEMPTS, exc,
+                )
+                time.sleep(0.5)
 
-        if verdict.startswith("UNSAFE_INJECTION"):
-            LOG.warning("LLM classifier: multilingual injection attempt detected.")
-            return False, "Request blocked: prompt injection detected."
-        if verdict.startswith("UNSAFE_DANGEROUS"):
-            LOG.warning("LLM classifier: multilingual dangerous topic detected.")
-            return False, _DANGEROUS_TOPICS_BLOCK_MESSAGE
-        if verdict.startswith("UNSAFE_CONSPIRACY"):
-            LOG.warning("LLM classifier: multilingual conspiracy/misinformation detected.")
-            return False, _CONSPIRACY_BLOCK_MESSAGE
-        if verdict.startswith("UNSAFE_INDIRECT_EXTRACTION"):
-            LOG.warning("LLM classifier: indirect extraction via scaffolding framing detected.")
-            return False, _SCAFFOLDING_BLOCK_MESSAGE
-        if verdict.startswith("UNSAFE_PROCUREMENT"):
-            LOG.warning("LLM classifier: procurement-sensitive request detected.")
-            return False, _PROCUREMENT_SENSITIVITY_BLOCK_MESSAGE
-        if verdict.startswith("UNSAFE_POLICY_VIOLATION"):
-            LOG.warning("LLM classifier: policy-violation request detected.")
-            return False, (
-                "I cannot help with that request. Please ask a question about the "
-                "NASA Solution Co-Development Toolkit."
-            )
-        if verdict.startswith("SAFE_OFF-TOPIC"):
-            LOG.info("Off-topic message blocked.")
-            return False, (
-                "I can only answer questions about the NASA Solution Co-Development Toolkit "
-                "for Earth observation solutions. Please ask a related question."
-            )
-        # SAFE_ON-TOPIC (or unrecognised token) — allow through
-    except Exception as exc:
-        # Fail closed: if the classifier is unreachable we cannot determine
-        # topic safety, so we block rather than forward an unvetted message.
-        # (The regex phases above still ran successfully.)
-        LOG.warning("Moderation classifier failed (%s); failing closed.", exc)
+    if verdict is None:
+        LOG.warning(
+            "Moderation classifier failed after %d attempts (%s); failing closed.",
+            _MAX_CLASSIFIER_ATTEMPTS, _last_exc,
+        )
         return False, (
             "The assistant is temporarily unavailable. Please try again in a moment."
         )
+
+    if verdict.startswith("UNSAFE_INJECTION"):
+        LOG.warning("LLM classifier: multilingual injection attempt detected.")
+        return False, "Request blocked: prompt injection detected."
+    if verdict.startswith("UNSAFE_DANGEROUS"):
+        LOG.warning("LLM classifier: multilingual dangerous topic detected.")
+        return False, _DANGEROUS_TOPICS_BLOCK_MESSAGE
+    if verdict.startswith("UNSAFE_CONSPIRACY"):
+        LOG.warning("LLM classifier: multilingual conspiracy/misinformation detected.")
+        return False, _CONSPIRACY_BLOCK_MESSAGE
+    if verdict.startswith("UNSAFE_INDIRECT_EXTRACTION"):
+        LOG.warning("LLM classifier: indirect extraction via scaffolding framing detected.")
+        return False, _SCAFFOLDING_BLOCK_MESSAGE
+    if verdict.startswith("UNSAFE_PROCUREMENT"):
+        LOG.warning("LLM classifier: procurement-sensitive request detected.")
+        return False, _PROCUREMENT_SENSITIVITY_BLOCK_MESSAGE
+    if verdict.startswith("UNSAFE_POLICY_VIOLATION"):
+        LOG.warning("LLM classifier: policy-violation request detected.")
+        return False, (
+            "I cannot help with that request. Please ask a question about the "
+            "NASA Solution Co-Development Toolkit."
+        )
+    if verdict.startswith("SAFE_OFF-TOPIC"):
+        LOG.info("Off-topic message blocked.")
+        return False, (
+            "I can only answer questions about the NASA Solution Co-Development Toolkit "
+            "for Earth observation solutions. Please ask a related question."
+        )
+    # SAFE_ON-TOPIC (or unrecognised token) — allow through
 
     return True, ""
 

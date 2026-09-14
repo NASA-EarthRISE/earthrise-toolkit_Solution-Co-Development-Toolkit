@@ -1,0 +1,36 @@
+{% for cp in prompt_list %}
+<tr>
+    <td class="text-muted text-nowrap">{{ cp.asked_at|date:"Y-m-d H:i" }}</td>
+    <td><a href="#" class="session-pill js-session-filter" data-session="{{ cp.session_key }}" title="{{ cp.session_key }}">{{ cp.session_key|truncatechars:10 }}</a></td>
+    <td>
+        <span class="fw-medium">{{ cp.prompt|truncatechars:140 }}</span>
+        {% if cp.prompt|length > 140 %}
+        <br><span class="expand-btn" onclick="toggleFull(this)">Show more &#8595;</span>
+        <div class="full-text d-none">{{ cp.prompt }}</div>
+        {% endif %}
+    </td>
+    <td>
+        <span class="text-muted">{{ cp.response|truncatechars:160 }}</span>
+        {% if cp.response|length > 160 %}
+        <br><span class="expand-btn" onclick="toggleFull(this)">Show more &#8595;</span>
+        <div class="full-text d-none">{{ cp.response }}</div>
+        {% endif %}
+    </td>
+    <td style="white-space:nowrap;">
+        {% if cp.thumbs_up %}<span title="Thumbs up" style="color:#198754;">&#128077; {{ cp.thumbs_up }}</span>{% endif %}
+        {% if cp.thumbs_down %}<span title="Thumbs down" style="color:#dc3545;margin-left:4px;">&#128078; {{ cp.thumbs_down }}</span>{% endif %}
+        {% if not cp.thumbs_up and not cp.thumbs_down %}<span class="text-muted">&mdash;</span>{% endif %}
+        {% if cp.down_comments %}
+        <br><span class="expand-btn" onclick="toggleFull(this)" style="color:#dc3545;">Comments &#8595;</span>
+        <div class="full-text d-none">{% for fb in cp.down_comments %}<div style="margin-bottom:4px;"><em>{{ fb.feedback_text }}</em></div>{% endfor %}</div>
+        {% endif %}
+    </td>
+    <td class="text-muted" style="font-size:0.72rem;word-break:break-all;">
+        {{ cp.page_url|truncatechars:60|default:"&mdash;" }}
+    </td>
+</tr>
+{% empty %}
+<tr><td colspan="6" class="text-center text-muted py-3">
+    {% if prompt_search %}No prompts matching &ldquo;{{ prompt_search }}&rdquo;.{% else %}No prompts logged yet.{% endif %}
+</td></tr>
+{% endfor %}
