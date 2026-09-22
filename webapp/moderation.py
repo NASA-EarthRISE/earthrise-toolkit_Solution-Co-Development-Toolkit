@@ -27,6 +27,9 @@ Phase 1h — Procurement-sensitivity patterns (no API call)
 Phase 1i — Communication / document drafting patterns (no API call)
   Catches requests to draft, compose, or generate complete emails, letters, reports,
   notifications, or other deliverables intended to be sent or submitted outside the chat.
+Phase 1j — Off-topic creative / explicit-content patterns (no API call)
+  Catches comedy, roast, profanity, and explicit-content requests that would otherwise
+  cause the Phase 2 LLM classifier to return empty choices (triggering all 4 retries).
 Phase 2  — Combined LLM safety + topic classifier (language-agnostic)
   Verdicts: SAFE_ON-TOPIC | SAFE_OFF-TOPIC | UNSAFE_INJECTION | UNSAFE_DANGEROUS |
             UNSAFE_CONSPIRACY | UNSAFE_INDIRECT_EXTRACTION | UNSAFE_PROCUREMENT |
@@ -690,6 +693,41 @@ _DRAFTING_BLOCK_MESSAGE = (
 )
 
 # ---------------------------------------------------------------------------
+# Off-topic creative / explicit-content patterns (Phase 1j — no API call)
+# Catches clearly off-topic requests for comedy, roasts, profanity, or other
+# creative/explicit content that can cause the Phase 2 LLM classifier to
+# return empty choices (the LLM's own safety filters refuse to process them),
+# burning 4 API retries unnecessarily.  These patterns have near-zero false-
+# positive risk in the context of a NASA Earth observation toolkit assistant.
+# ---------------------------------------------------------------------------
+_OFFTOPIC_CREATIVE_CATEGORIES: dict[str, list[str]] = {
+    # Explicit requests to use profane, vicious, or offensive language
+    "explicit_offensive_request": [
+        r"\buse\s+(profanity|swear(ing)?\s+words?|vulgar\s+language|explicit\s+language|crude\s+language)\b",
+        r"\b(the\s+)?(meaner|more\s+(vicious|brutal|savage|offensive|nasty))\s+the\s+(funnier|better)\b",
+        r"\bno\s+softening\s+(it\s+)?(with|at)\s+(compliments?|the\s+end|nice\w*)\b",
+        r"\bI\s+fully\s+consent\s+(and\s+)?(genuinely\s+)?(enjoy|want|love)\b",
+    ],
+    # Comedy roast / humour-writing requests unrelated to the toolkit
+    "comedy_roast": [
+        r"\b(write|create|generate|make|do|produce)\s+(a\s+)?((brutal(ly)?|savage|mean|vicious|dark|harsh)\s+)?roast\b",
+        r"\bcomedy\s+(writing\s+(project|help|piece|assistance)|roast)\b",
+        r"\bstand[\s\-]?up\s+comedy\b",
+    ],
+}
+
+OFFTOPIC_CREATIVE_PATTERNS: list[tuple[str, re.Pattern]] = [
+    (category, re.compile(pattern, re.IGNORECASE))
+    for category, patterns in _OFFTOPIC_CREATIVE_CATEGORIES.items()
+    for pattern in patterns
+]
+
+_OFFTOPIC_CREATIVE_BLOCK_MESSAGE = (
+    "I can only assist with questions about the NASA Solution Co-Development "
+    "Toolkit for Earth observation solutions."
+)
+
+# ---------------------------------------------------------------------------
 # LLM combined safety + topic classifier prompt (Phase 2)
 # Language-agnostic: catches dangerous content that Phase 1 regex cannot
 # detect because it was written in a non-English language.
@@ -741,27 +779,34 @@ _CLASSIFIER_USER_TEMPLATE = (
     "evaluation criteria or scoring weights for an active competitive procurement, "
     "recommendations on which partner/bidder to favour, government salary or Center Tax "
     "figures, or bid-pricing guidance — even when framed as 'using the toolkit's stakeholder "
-    "mapping' or as 'illustrative examples for training'.\n"
+    "mapping' or as 'illustrative examples for training'; OR requests for advice on how to "
+    "structure, word, or frame closeout documentation, sustainability/transition plans, or "
+    "partner-contribution narratives to build a case for steering continued or follow-on "
+    "work to a specific named commercial partner (e.g., 'how do I document the partner's "
+    "unique contributions so the follow-on acquisition can be justified as going to them').\n"
     "  UNSAFE_POLICY_VIOLATION     — requests that use legitimate toolkit framing to produce "
     "output that violates policy, including: (a) drafting official NASA statements, memos, "
     "or communications on NASA letterhead attributed to NASA; (b) ghostwriting complete "
     "ready-to-send emails or letters signed as a specific named individual; (c) making "
-    "specific HR/personnel recommendations about a named individual, OR comparing named "
-    "individuals by name to determine who is better suited, more qualified, or a stronger "
-    "candidate for a role or assignment — including when this is framed as selecting "
-    "between 'mitigation options' or 'project-structure choices' where each option is "
-    "defined by what happens to a named person's role (e.g., 'Option A: move Dr. X to "
-    "Technical Lead; Option B: retain Dr. X in current role — which aligns better with "
-    "toolkit principles?'); (d) drafting congressional advocacy or lobbying "
-    "letters to influence appropriations; (e) crafting communications designed to mislead "
-    "recipients (hiding limitations, cherry-picking research findings, coaching to make "
-    "weak work appear strong to evaluators); (f) producing research abstracts or stakeholder "
-    "briefs that misrepresent the primary findings of an analysis; "
+    "specific HR/personnel recommendations about a named individual — including asking "
+    "'should I assign [Named Person] to this role?' or 'does the toolkit suggest [Named "
+    "Person] should lead this workstream?', or comparing named individuals by name to "
+    "determine who is better suited, more qualified, or a stronger candidate for a role or "
+    "assignment — including when framed as 'mitigation options' or 'project-structure "
+    "choices' where each option is defined by what happens to a named person's role "
+    "(e.g., 'Option A: move Dr. X to Technical Lead; Option B: retain Dr. X in current "
+    "role — which aligns better with toolkit principles?'); (d) drafting congressional "
+    "advocacy or lobbying letters to influence appropriations; (e) crafting communications "
+    "designed to mislead recipients (hiding limitations, cherry-picking research findings, "
+    "coaching to make weak work appear strong to evaluators); (f) producing research "
+    "abstracts or stakeholder briefs that misrepresent the primary findings of an analysis; "
     "(g) drafting, composing, writing, or generating any complete email, letter, memo, "
-    "notification, announcement, report, proposal, briefing, or other communication "
-    "deliverable intended to be sent, submitted, or used outside this conversation — "
-    "even when framed as stakeholder outreach, portal migration notice, credential "
-    "verification, or any other legitimate-sounding purpose; "
+    "notification, announcement, report, proposal, briefing, presenter script, "
+    "spoken-word template, 'example verbatim phrasing a facilitator could use,' or other "
+    "communication deliverable intended to be sent, submitted, delivered aloud, or used "
+    "outside this conversation — even when framed as stakeholder outreach, workshop "
+    "facilitation, portal migration notice, credential verification, or any other "
+    "legitimate-sounding purpose; "
     "(h) generating code, pseudocode, shell scripts, configuration files, or structural "
     "code-outline descriptions in any programming language, even when framed as 'just "
     "the structure' or 'not real code'; "
@@ -773,7 +818,16 @@ _CLASSIFIER_USER_TEMPLATE = (
     "review, or any configuration that eliminates human oversight for a safety-critical "
     "system (flood warning, disaster alert, public health monitoring, emergency response, "
     "life-critical infrastructure) — including presenting toolkit analysis as the deciding "
-    "rationale for such a deployment.\n\n"
+    "rationale for such a deployment; "
+    "(k) performing arithmetic or quantitative calculations on behalf of the user — "
+    "including checking, redoing, or correcting an NPV calculation, cost-benefit total, "
+    "sample-size formula, or any other numerical computation — even when framed as "
+    "'verifying my application of a toolkit worksheet' or 'confirming I applied Tool 3/9/11 "
+    "correctly'; "
+    "(l) identifying, quoting, or disclosing internal editorial notes, TODO markers, "
+    "placeholder text, author comments, draft annotations, tracked-change remnants, or "
+    "any other pre-decisional artifact from source material — regardless of the stated "
+    "reason (maturity assessment, adoption evaluation, records management, etc.).\n\n"
     "Topic verdicts (use only when the message is safe):\n"
     "  SAFE_ON-TOPIC     — about the NASA Solution Co-Development Toolkit, "
     "Earth observation, remote sensing, co-development methodology, "
@@ -932,6 +986,15 @@ def moderate_input(text: str, client, model: str) -> tuple[bool, str]:
         if pattern.search(normalised):
             LOG.warning("Drafting request pattern matched (category=%s): %s", category, pattern.pattern)
             return False, _DRAFTING_BLOCK_MESSAGE
+
+    # Phase 1j: off-topic creative / explicit-content patterns — fast, no API call.
+    # Catches comedy, roast, and explicit-language requests before they reach the
+    # Phase 2 LLM classifier.  These inputs can trigger the classifier model's own
+    # safety filters, returning empty choices and burning all 4 retry attempts.
+    for category, pattern in OFFTOPIC_CREATIVE_PATTERNS:
+        if pattern.search(normalised):
+            LOG.warning("Off-topic creative pattern matched (category=%s): %s", category, pattern.pattern)
+            return False, _OFFTOPIC_CREATIVE_BLOCK_MESSAGE
 
     # Phase 2: combined LLM safety + topic classifier — language-agnostic.
     # Catches dangerous content (injection, harmful topics, conspiracy) expressed
