@@ -404,9 +404,12 @@ def api_message_stream(request):
                 except Exception:
                     delta = None
                 if delta and delta.content:
-                    content = delta.content
-                    collected.append(content)
-                    yield _sse({"delta": content})
+                    collected.append(delta.content)
+                    # Deltas are buffered server-side only.
+                    # Nothing is sent to the client until output moderation
+                    # passes on the complete response — this prevents the
+                    # race condition where partially-streamed unsafe content
+                    # is visible in the browser before the blocked event fires.
 
             full = "".join(collected)
 
@@ -415,6 +418,11 @@ def api_message_stream(request):
                 LOG.warning("Blocked unsafe LLM output in api_message_stream")
                 yield _sse({"blocked": "I cannot provide that response."})
                 return
+
+            # Moderation passed — send the entire response as one delta now.
+            # The client's onmessage handler accumulates this into `raw` exactly
+            # as it would with many small chunks, so no JS changes are needed.
+            yield _sse({"delta": full})
 
             history.append({"role": "user", "content": user_text})
             history.append({"role": "assistant", "content": full})
